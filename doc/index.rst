@@ -8,7 +8,7 @@ Resources
 ---------
 
 * http://docs.openstack.org/developer/horizon/topics/tutorial.html
-
+* http://sensuapp.org/docs/0.12/api
 
 Contents:
 

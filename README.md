@@ -1,9 +1,12 @@
 
-# Horizon Billing Panel
+# Horizon Monitoring Panel
 
-This is a simple Horizon-based interface for billometer.
+This is a simple Horizon-based interface for sensu.
 
-To enable it in dashboard, install the horizon_billing package and turn it on in openstack-dashboard's local_settings.py:
+* add 'horizon_monitoring' to INSTALLED_APPS tuple;
+* add 'monitoring' to 'dashboards' key in HORIZON_CONFIG.
 
-* add 'horizon_billing' to INSTALLED_APPS tuple;
-* add 'billing' to 'dashboards' key in HORIZON_CONFIG.
+## Read more
+
+* http://docs.openstack.org/developer/horizon/topics/tutorial.html
+* http://sensuapp.org/docs/0.12/api
