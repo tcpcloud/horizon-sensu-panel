@@ -9,9 +9,10 @@ log = logging.getLogger('utils.sensu')
 
 class Sensu:
 
-    host = settings.SENSU_API.get('host')
-    user = settings.SENSU_API.get('user')
-    password = settings.SENSU_API.get('password')
+    host = settings.SENSU_HOST
+    port = settings.SENSU_PORT
+    user = settings.SENSU_USER
+    password = settings.SENSU_PASSWORD
 
     def check_list(self):
         pass
