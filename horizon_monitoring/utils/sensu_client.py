@@ -9,12 +9,11 @@ log = logging.getLogger('utils.sensu')
 
 class Sensu(object):
 
-    host = None
-    port = None
+    host = settings.SENSU_HOST
+    port = settings.SENSU_PORT
 
     def __init__(self):
-        host = settings.SENSU_HOST
-        port = settings.SENSU_PORT
+        pass
 
     def request(self, path):
         request = requests.get('%s%s' % (self.api, path))
