@@ -8,4 +8,4 @@ class IndexView(tables.DataTableView):
     template_name = 'horizon_monitoring/clients/index.html'
 
     def get_data(self):
-        return sensu_api.check_list
+        return sensu_api.client_list
