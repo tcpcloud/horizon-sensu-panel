@@ -12,12 +12,17 @@ class Sensu(object):
     host = None
     port = None
 
-    def request(self, path):
-        return []
-
     def __init__(self):
         host = settings.SENSU_HOST
         port = settings.SENSU_PORT
+
+    def request(self, path):
+        request = requests.get('%s%s' % (self.api, path))
+        return request.json()
+
+    @property
+    def api(self):
+        return 'http://%s:%s' % (self.host, self.port)
 
     @property
     def check_list(self):
