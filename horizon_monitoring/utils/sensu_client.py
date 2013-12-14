@@ -25,7 +25,7 @@ class Sensu(object):
 
     @property
     def check_list(self):
-        return = self.request('/checks')
+        return self.request('/checks')
 
     @property
     def client_list(self):
