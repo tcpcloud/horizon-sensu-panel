@@ -8,4 +8,7 @@ class NoActionDataTable(tables.DataTable):
     """
 
     def get_object_id(self, datum):
-        return datum
+        return datum['name']
+
+    def get_object_display(self, datum):
+        return datum['name']
