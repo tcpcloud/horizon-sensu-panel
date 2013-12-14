@@ -5,13 +5,13 @@ import horizon
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
     name = _("Monitoring Panel")
-    panels = ('checks', )
+    panels = ('events', 'checks', 'clients', )
 
 class MonitoringDashboard(horizon.Dashboard):
     name = _("Monitoring")
     slug = "monitoring"
     panels = (MonitoringPanels,)
-    default_panel = 'checks'
+    default_panel = 'events'
     permissions = ('openstack.roles.admin',)
 
 horizon.register(MonitoringDashboard)
