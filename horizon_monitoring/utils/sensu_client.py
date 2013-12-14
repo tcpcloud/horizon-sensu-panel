@@ -7,20 +7,28 @@ from django.conf import settings
 
 log = logging.getLogger('utils.sensu')
 
-class Sensu:
+class Sensu(object):
 
-    host = settings.SENSU_HOST
-    port = settings.SENSU_PORT
+    host = None
+    port = None
 
+    def request(self, path):
+        return []
+
+    def __init__(self):
+        host = settings.SENSU_HOST
+        port = settings.SENSU_PORT
+
+    @property
     def check_list(self):
-        pass
-        # return requests request
+        return self.request('/checks')
 
+    @property
     def client_list(self):
-        pass
-        # return requests request
+        return self.request('/clients')
 
+    @property
     def event_list(self):
-        pass
-        # return requests request
+        return self.request('/events')
 
+sensu_api = Sensu()
