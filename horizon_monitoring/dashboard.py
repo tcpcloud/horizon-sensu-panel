@@ -5,5 +5,8 @@ import horizon
 class MonitoringDashboard(horizon.Dashboard):
     name = _("Monitoring")
     slug = "monitoring"
+    panels = ('checks',)
+    default_panel = 'checks'
+#    permissions = ('openstack.roles.admin',)
 
 horizon.register(MonitoringDashboard)
