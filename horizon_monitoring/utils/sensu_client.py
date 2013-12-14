@@ -25,10 +25,7 @@ class Sensu(object):
 
     @property
     def check_list(self):
-        data = self.request('/checks')
-        for datum in data:
-            datum['id'] = datum['name']
-        return data
+        return = self.request('/checks')
 
     @property
     def client_list(self):
