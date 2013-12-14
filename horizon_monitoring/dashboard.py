@@ -4,7 +4,7 @@ import horizon
 
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
-    name = _("Monitoring Panel")
+    name = _("Sensu monitoring")
     panels = ('events', 'checks', 'clients', )
 
 class MonitoringDashboard(horizon.Dashboard):
