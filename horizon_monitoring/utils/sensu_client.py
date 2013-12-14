@@ -11,8 +11,6 @@ class Sensu:
 
     host = settings.SENSU_HOST
     port = settings.SENSU_PORT
-    user = settings.SENSU_USER
-    password = settings.SENSU_PASSWORD
 
     def check_list(self):
         pass
