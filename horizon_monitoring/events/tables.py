@@ -12,11 +12,13 @@ from horizon_monitoring.utils.filters import timestamp_to_datetime, \
 class ResolveEvent(tables.LinkAction):
     name = "resolve_event"  
     verbose_name = _("Resolve")
-    classes = ("btn-edit")
+    classes = ("ajax-modal", "btn-edit")
 
-    def get_link_url(self, datum):
+    def get_link_url(self, event):
         #base_url = reverse(self.url, datum['id'])
-        return '../detail/%s/' % datum['client']
+        return '/monitoring/events/%s/%s/resolve/' % (event['check'], event['client'])
+
+        #return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
 
 class EventDetail(tables.LinkAction):
     name = "event_detail"
@@ -24,11 +26,11 @@ class EventDetail(tables.LinkAction):
     url = "horizon:monitoring:events:detail"
     classes = ("ajax-modal", "btn-edit")
 
-    def get_link_url(self, project):
-        return self._get_link_url(project, 'instance_info')
+    def get_link_url(self, event):
+        return self._get_link_url(event, 'event_detail')
 
-    def _get_link_url(self, project, step_slug):
-        base_url = urlresolvers.reverse(self.url, args=[project['check'], project['client']])
+    def _get_link_url(self, event, step_slug):
+        base_url = urlresolvers.reverse(self.url, args=[event['check'], event['client']])
         param = urlencode({"step": step_slug})
         return "?".join([base_url, param])
 
