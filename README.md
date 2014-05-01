@@ -13,3 +13,4 @@ This is a simple Horizon based interface for Sensu.
 
 * http://docs.openstack.org/developer/horizon/topics/tutorial.html
 * http://sensuapp.org/docs/0.12/api
+* http://docs.openstack.org/developer/horizon/_modules/horizon/tables/base.html

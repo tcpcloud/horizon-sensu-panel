@@ -1,9 +1,13 @@
 
+from django.core import urlresolvers
+from django.template.defaultfilters import timesince
+from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
+
 from horizon import tables
 
-from django.template.defaultfilters import timesince
-from horizon_monitoring.utils.filters import timestamp_to_datetime, nonbreakable_spaces, join_list_with_comma
+from horizon_monitoring.utils.filters import timestamp_to_datetime, \
+    nonbreakable_spaces, join_list_with_comma, unit_times
 
 class ResolveEvent(tables.LinkAction):
     name = "resolve_event"  
@@ -14,18 +18,17 @@ class ResolveEvent(tables.LinkAction):
         #base_url = reverse(self.url, datum['id'])
         return '../detail/%s/' % datum['client']
 
-class EditInstance(tables.LinkAction):
+class EventDetail(tables.LinkAction):
     name = "event_detail"
-    verbose_name = _("Details")
-    url = "horizon_monitoring:project:instances:update"
+    verbose_name = _("Detail")
+    url = "horizon:monitoring:events:detail"
     classes = ("ajax-modal", "btn-edit")
-
 
     def get_link_url(self, project):
         return self._get_link_url(project, 'instance_info')
 
     def _get_link_url(self, project, step_slug):
-        base_url = urlresolvers.reverse(self.url, args=[project.id])
+        base_url = urlresolvers.reverse(self.url, args=[project['check'], project['client']])
         param = urlencode({"step": step_slug})
         return "?".join([base_url, param])
 
@@ -50,15 +53,14 @@ class SilenceClient(tables.LinkAction):
         #base_url = reverse(self.url, datum['id'])
         return '../detail/%s/' % datum['client']
 
-
 class SensuEventsTable(tables.DataTable):
     client = tables.Column('client', verbose_name=_("Client"))
     check = tables.Column('check', verbose_name=_("Check"))
-    occurrences = tables.Column('occurrences', verbose_name=_("Occurences"))
-    output = tables.Column('output', verbose_name=_("Output"))
-    status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',))
+    output = tables.Column('output', verbose_name=_("Output"), truncate=200)
+    status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"))
-    issued = tables.Column('issued', verbose_name=_("Last Occurences"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
+    occurrences = tables.Column('occurrences', verbose_name=_("Occured"), filters=(unit_times, ))
+    issued = tables.Column('issued', verbose_name=_("Issued"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
 
     def get_object_id(self, datum):
         return '%s-%s' % (datum['client'], datum['check'])
@@ -69,4 +71,4 @@ class SensuEventsTable(tables.DataTable):
     class Meta:
         name = "events"
         verbose_name = _("Current Events")
-        row_actions = (ResolveEvent, SilenceCheck, SilenceClient)
+        row_actions = (EventDetail, ResolveEvent, SilenceCheck, SilenceClient)
