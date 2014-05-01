@@ -35,4 +35,8 @@ class Sensu(object):
     def event_list(self):
         return self.request('/events')
 
+    @property
+    def service_status(self):
+        return self.request('/info')
+
 sensu_api = Sensu()

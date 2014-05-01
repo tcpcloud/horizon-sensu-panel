@@ -8,11 +8,29 @@ from horizon_monitoring.utils.filters import timestamp_to_datetime, nonbreakable
 class ResolveEvent(tables.LinkAction):
     name = "resolve_event"  
     verbose_name = _("Resolve")
-    classes = ("btn")
+    classes = ("btn-edit")
 
     def get_link_url(self, datum):
         #base_url = reverse(self.url, datum['id'])
         return '../detail/%s/' % datum['client']
+
+class EditInstance(tables.LinkAction):
+    name = "event_detail"
+    verbose_name = _("Details")
+    url = "horizon_monitoring:project:instances:update"
+    classes = ("ajax-modal", "btn-edit")
+
+
+    def get_link_url(self, project):
+        return self._get_link_url(project, 'instance_info')
+
+    def _get_link_url(self, project, step_slug):
+        base_url = urlresolvers.reverse(self.url, args=[project.id])
+        param = urlencode({"step": step_slug})
+        return "?".join([base_url, param])
+
+    def allowed(self, request, instance):
+        return True
 
 class SilenceCheck(tables.LinkAction):
     name = "silence_check"  

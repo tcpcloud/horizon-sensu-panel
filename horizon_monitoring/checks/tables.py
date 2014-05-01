@@ -1,14 +1,30 @@
 
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
+from django.core import urlresolvers
+from django.utils.http import urlencode
 
 from horizon_monitoring.utils.filters import join_list_with_newline
+from horizon_monitoring.utils.sensu_client import sensu_api
+
+
+class RequestCheck(tables.LinkAction):
+    name = "request_check"
+    verbose_name = _("Request Check")
+    classes = ("btn-edit",)
+
+    def get_link_url(self, project):
+        return '%s/info' % sensu_api.api
+
+    def allowed(self, request, instance):
+        return True
 
 class SensuChecksTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_("Name"))
-    command = tables.Column('command', verbose_name=_("Command"))
     subscribers = tables.Column('subscribers', verbose_name=_("Subscribers"), filters=(join_list_with_newline,))
+    handlers = tables.Column('handlers', verbose_name=_("Handlers"), filters=(join_list_with_newline,))
     interval = tables.Column('interval', verbose_name=_("Interval"))
+    command = tables.Column('command', verbose_name=_("Command"))
 
     def get_object_id(self, datum):
         return datum['name']
@@ -19,4 +35,5 @@ class SensuChecksTable(tables.DataTable):
     class Meta:
         name = "checks"
         verbose_name = _("Checks")
+        row_actions = (RequestCheck,)
 
