@@ -21,5 +21,5 @@ class SensuClientsTable(tables.DataTable):
 
     class Meta:
         name = "clients"
-        verbose_name = _("Clients")
+        verbose_name = _("Monitored Clients")
 

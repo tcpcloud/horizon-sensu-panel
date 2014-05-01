@@ -28,4 +28,9 @@ class InfoView(tables.DataTableView):
         return context
 
     def get_data(self):
-        return sensu_api.service_status
+        data = sensu_api.service_status
+
+        return [
+        	{'name': _('RabbitMQ connected'), 'value': data['rabbitmq']['connected']},
+        	{'name': _('Redis connected'), 'value': data['redis']['connected']},
+        ]

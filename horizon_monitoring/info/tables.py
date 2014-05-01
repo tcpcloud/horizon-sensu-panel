@@ -12,4 +12,4 @@ class SensuInfoTable(tables.DataTable):
 
     class Meta:
         name = "info"
-        verbose_name = _("Infos")
+        verbose_name = _("Monitoring Service Status")

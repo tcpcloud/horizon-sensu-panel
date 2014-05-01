@@ -56,7 +56,7 @@ class SensuEventsTable(tables.DataTable):
     check = tables.Column('check', verbose_name=_("Check"))
     occurrences = tables.Column('occurrences', verbose_name=_("Occurences"))
     output = tables.Column('output', verbose_name=_("Output"))
-    status = tables.Column('status', verbose_name=_("Status"))
+    status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',))
     flapping = tables.Column('flapping', verbose_name=_("Flapping"))
     issued = tables.Column('issued', verbose_name=_("Last Occurences"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
 
@@ -68,5 +68,5 @@ class SensuEventsTable(tables.DataTable):
 
     class Meta:
         name = "events"
-        verbose_name = _("Events")
+        verbose_name = _("Current Events")
         row_actions = (ResolveEvent, SilenceCheck, SilenceClient)

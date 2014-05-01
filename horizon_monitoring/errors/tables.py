@@ -15,6 +15,6 @@ class KedbErrorsTable(tables.DataTable):
         return datum['name']
 
     class Meta:
-        name = "clients"
-        verbose_name = _("Clients")
+        name = "errors"
+        verbose_name = _("Known Errors Database")
 

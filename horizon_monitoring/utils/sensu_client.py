@@ -33,7 +33,19 @@ class Sensu(object):
 
     @property
     def event_list(self):
-        return self.request('/events')
+        events = self.request('/events')
+        return events
+
+    def event_resolve(self, event):
+
+        data = {
+            "client": event['client'],
+            "check": event['check']
+        }
+
+        request = requests.get('%s%s' % (self.api, '/event/resolve'))
+
+        return request
 
     @property
     def service_status(self):

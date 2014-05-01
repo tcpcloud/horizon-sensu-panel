@@ -34,6 +34,6 @@ class SensuChecksTable(tables.DataTable):
 
     class Meta:
         name = "checks"
-        verbose_name = _("Checks")
+        verbose_name = _("Service Checks Database")
         row_actions = (RequestCheck,)
 

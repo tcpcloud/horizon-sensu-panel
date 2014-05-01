@@ -10,3 +10,21 @@
 {% block main %}
 {{ table.render }}
 {% endblock %}
+
+{% block js %}
+{% include "horizon/_scripts.html" %}
+<script type='text/javascript' charset='utf-8'>
+$( document ).ready(function() {
+	$('td.status_column:contains("2")').parent().addClass('critical');
+	$('td.status_column:contains("3")').parent().addClass('unknown');
+	$('td.status_column:contains("1")').parent().addClass('critical');
+});
+</script>
+
+<style type="text/css">
+tr.critical td {
+	background-color: rgb(244, 200, 197)!important;
+	color: rgb(157, 38, 29)!important;
+}
+</style>
+{% endblock %}
