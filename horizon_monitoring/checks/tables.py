@@ -11,13 +11,11 @@ from horizon_monitoring.utils.sensu_client import sensu_api
 class RequestCheck(tables.LinkAction):
     name = "request_check"
     verbose_name = _("Request Check")
-    classes = ("btn-edit",)
+    url = "horizon:monitoring:checks:request"
+    classes = ("ajax-modal", "btn-edit")
 
-    def get_link_url(self, project):
-        return '%s/info' % sensu_api.api
-
-    def allowed(self, request, instance):
-        return True
+    def get_link_url(self, check):
+        return urlresolvers.reverse(self.url, args=[check['name']])
 
 class SensuChecksTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_("Name"))

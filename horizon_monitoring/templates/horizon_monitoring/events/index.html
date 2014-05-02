@@ -18,7 +18,10 @@ $( document ).ready(function() {
 	$('td.status_column:contains("2")').parent().addClass('critical');
 	$('td.status_column:contains("3")').parent().addClass('unknown');
 	$('td.status_column:contains("1")').parent().addClass('critical');
+
+	setTimeout(function(){ window.location.reload(1); }, 15000);
 });
+
 </script>
 
 <style type="text/css">

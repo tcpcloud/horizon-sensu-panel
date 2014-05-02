@@ -27,6 +27,12 @@ class Sensu(object):
     def check_list(self):
         return self.request('/checks')
 
+    def check_request(self, check, subscibers):
+        payload = { "subscibers": subscibers, "check": check }
+        url = '%s/request' % self.api
+        response = requests.post(url, data=json.dumps(payload))
+        return response
+
     @property
     def client_list(self):
         return self.request('/clients')
