@@ -6,20 +6,20 @@
 {% block form_action %}{% url "horizon:monitoring:events:resolve" check client %}{% endblock %}
 
 {% block modal_id %}rebuild_instance_modal{% endblock %}
-{% block modal-header %}{% trans "Rebuild Instance" %}{% endblock %}
+{% block modal-header %}{% trans "Resolve Event" %} {{ check.name }}{% endblock %}
 
 {% block modal-body %}
 <div class="left">
   <fieldset>
-  {% include "horizon/common/_form_fields.html" %}
+    {% include "horizon/common/_form_fields.html" %}
   </fieldset>
+  {{ check }}-{{ client }}
+<br />
+{{ event }}
 </div>
 <div class="right">
-  <h3>{% trans "Description" %}:</h3>
+  <h4>{% trans "Description" %}:</h4>
   <p>{% trans "Select the image to rebuild your instance." %}</p>
-  {% if can_set_server_password %}
-  <p>{% trans "You may optionally set a password on the rebuilt instance." %}</p>
-  {% endif %}
 </div>
 {% endblock %}
 

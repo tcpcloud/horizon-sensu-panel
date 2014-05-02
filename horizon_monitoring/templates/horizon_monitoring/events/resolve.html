@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Rebuild Instance" %}{% endblock %}
+{% block title %}{% trans "Resolve Event" %}{% endblock %}
 
 {% block page_header %}
-  {% include "horizon/common/_page_header.html" with title=_("Rebuild Instance") %}
+{% include "horizon/common/_page_header.html" with title=_("Resolve Event") %}
 {% endblock %}
 
 {% block main %}
-  {% include "horizon_monitoring/events/_resolve.html" %}
+{% include "horizon_monitoring/events/_resolve.html" %}
 {% endblock %}

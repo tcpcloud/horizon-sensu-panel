@@ -19,24 +19,20 @@ class ResolveEventForm(forms.SelfHandlingForm):
         client = kwargs.get('initial', {}).get('client')
         self.fields['client'].initial = client
 
-
     def clean(self):
         cleaned_data = super(ResolveEventForm, self).clean()
         return cleaned_data
 
-    # We have to protect the entire "data" dict because it contains the
-    # password and confirm_password strings.
     # @sensitive_variables('data', 'password')
     def handle(self, request, data):
         client = data.get('client')
         check = data.get('check')
+
         try:
-            sensu_api
             messages.success(request, _('Rebuilding instance %s.') % instance)
         except Exception:
             redirect = reverse('horizon:monitoring:events:index')
-            exceptions.handle(request, _("Unable to rebuild instance."),
-                              redirect=redirect)
+            exceptions.handle(request, _("Unable to rebuild instance."), redirect=redirect)
         return True
 
 

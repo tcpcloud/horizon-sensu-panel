@@ -12,22 +12,20 @@ from horizon_monitoring.utils.filters import timestamp_to_datetime, \
 class ResolveEvent(tables.LinkAction):
     name = "resolve_event"  
     verbose_name = _("Resolve")
+    url = "horizon:monitoring:events:resolve"
     classes = ("ajax-modal", "btn-edit")
 
     def get_link_url(self, event):
-        #base_url = reverse(self.url, datum['id'])
-        return '/monitoring/events/%s/%s/resolve/' % (event['check'], event['client'])
-
-        #return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
+        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
 
 class EventDetail(tables.LinkAction):
     name = "event_detail"
     verbose_name = _("Detail")
     url = "horizon:monitoring:events:detail"
-    classes = ("ajax-modal", "btn-edit")
+    classes = ("btn-edit")
 
     def get_link_url(self, event):
-        return self._get_link_url(event, 'event_detail')
+        return self._get_link_url(event, 'overview')
 
     def _get_link_url(self, event, step_slug):
         base_url = urlresolvers.reverse(self.url, args=[event['check'], event['client']])
@@ -40,20 +38,20 @@ class EventDetail(tables.LinkAction):
 class SilenceCheck(tables.LinkAction):
     name = "silence_check"  
     verbose_name = _("Silence Check")
-    classes = ("btn")
+    url = "horizon:monitoring:events:silence_check"
+    classes = ("ajax-modal", "btn")
 
-    def get_link_url(self, datum):
-        #base_url = reverse(self.url, datum['id'])
-        return '../detail/%s/' % datum['client']
+    def get_link_url(self, event):
+        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
 
 class SilenceClient(tables.LinkAction):
     name = "silence_client"  
     verbose_name = _("Silence Client")
-    classes = ("btn")
+    url = "horizon:monitoring:events:silence_client"
+    classes = ("ajax-modal", "btn")
 
-    def get_link_url(self, datum):
-        #base_url = reverse(self.url, datum['id'])
-        return '../detail/%s/' % datum['client']
+    def get_link_url(self, event):
+        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
 
 class SensuEventsTable(tables.DataTable):
     client = tables.Column('client', verbose_name=_("Client"))

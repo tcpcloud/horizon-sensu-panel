@@ -1,11 +1,16 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load i18n %}
-{% block title %}{% trans "Event Detail" %}{% endblock %}
+
+{% block title %}{% trans "Incidents/Events" %}{% endblock %}
 
 {% block page_header %}
-  {% include "horizon/common/_page_header.html" with title=_("Event Detail") %}
-{% endblock %}
+{% include "horizon/common/_page_header.html" with title=_("Monitoring System") %}
+{% endblock page_header %}
 
 {% block main %}
-  {% include "horizon_monitoring/events/_detail.html" %}
+<div class="row-fluid">
+  <div class="span12">
+  {{ tab_group.render }}
+  </div>
+</div>
 {% endblock %}

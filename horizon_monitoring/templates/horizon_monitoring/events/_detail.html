@@ -7,26 +7,12 @@
 {% block form_action %}{% url "horizon:monitoring:events:resolve" check client %}{% endblock %}
 
 {% block modal_id %}rebuild_instance_modal{% endblock %}
-{% block modal-header %}{% trans "Rebuild Instance" %}{% endblock %}
+{% block modal-header %}{% trans "Event Detail" %}{% endblock %}
 
 {% block modal-body %}
-  {{ tab_group.render }}
-
-<div class="left">
-  <fieldset>
-  {% include "horizon/common/_form_fields.html" %}
-  </fieldset>
-</div>
-<div class="right">
-  <h3>{% trans "Description" %}:</h3>
-  <p>{% trans "Select the image to rebuild your instance." %}</p>
-  {% if can_set_server_password %}
-  <p>{% trans "You may optionally set a password on the rebuilt instance." %}</p>
-  {% endif %}
-</div>
+{{ tab_group.render }}
 {% endblock %}
 
 {% block modal-footer %}
-  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Resolve Event" %}" />
-  <a href="{% url "horizon:monitoring:events:index" %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+<a href="{% url "horizon:monitoring:events:index" %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
 {% endblock %}

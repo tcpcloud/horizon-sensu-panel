@@ -36,6 +36,13 @@ class Sensu(object):
         events = self.request('/events')
         return events
 
+    def event_detail(self, check, client):
+
+        path = '/events/%s/%s' % (client, check)
+        request = requests.get('%s%s' % (self.api, path))
+
+        return request.json()
+
     def event_resolve(self, event):
 
         data = {

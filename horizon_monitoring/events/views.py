@@ -32,6 +32,41 @@ class ResolveView(forms.ModalFormView):
         context = super(ResolveView, self).get_context_data(**kwargs)
         context['check'] = self.kwargs['check']
         context['client'] = self.kwargs['client']
+        context['event'] = sensu_api.event_detail(self.kwargs['check'], self.kwargs['client'])
+        return context
+
+    def get_initial(self):
+        return {
+            'check': self.kwargs['check'],
+            'client': self.kwargs['client'],
+        }
+
+class SilenceCheckView(forms.ModalFormView):
+    form_class = ResolveEventForm
+    template_name = 'horizon_monitoring/events/resolve.html'
+    success_url = reverse_lazy('horizon:monitoring:events:index')
+
+    def get_context_data(self, **kwargs):
+        context = super(ResolveView, self).get_context_data(**kwargs)
+        context['check'] = self.kwargs['check']
+        context['client'] = self.kwargs['client']
+        return context
+
+    def get_initial(self):
+        return {
+            'check': self.kwargs['check'],
+            'client': self.kwargs['client'],
+        }
+
+class SilenceClientView(forms.ModalFormView):
+    form_class = ResolveEventForm
+    template_name = 'horizon_monitoring/events/resolve.html'
+    success_url = reverse_lazy('horizon:monitoring:events:index')
+
+    def get_context_data(self, **kwargs):
+        context = super(ResolveView, self).get_context_data(**kwargs)
+        context['check'] = self.kwargs['check']
+        context['client'] = self.kwargs['client']
         return context
 
     def get_initial(self):

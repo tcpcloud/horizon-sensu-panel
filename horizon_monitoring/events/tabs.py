@@ -16,16 +16,15 @@ class OverviewTab(tabs.Tab):
         return {"instance": self.tab_group.kwargs['instance']}
 
 class WorkaroundTab(tabs.Tab):
-    name = _("Console")
-    slug = "console"
-    template_name = "horizon_monitoring/events/_detail_console.html"
+    name = _("Workarounds")
+    slug = "workarounds"
+    template_name = "horizon_monitoring/events/_detail_workarounds.html"
     preload = False
 
     def get_context_data(self, request):
         instance = self.tab_group.kwargs['instance']
         # Currently prefer VNC over SPICE, since noVNC has had much more
         # testing than spice-html5
-        console_type = getattr(settings, 'CONSOLE_TYPE', 'AUTO')
 
         return {'console_url': console_type, 'instance_id': instance.id}
 
