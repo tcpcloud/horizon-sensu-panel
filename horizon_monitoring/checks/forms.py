@@ -19,12 +19,12 @@ class RequestCheckForm(forms.SelfHandlingForm):
         self.fields['check'].initial = kwargs.get('initial', {}).get('check')
 
     def clean(self):
-        cleaned_data = super(ResolveEventForm, self).clean()
+        cleaned_data = super(RequestCheckForm, self).clean()
         return cleaned_data
 
     # @sensitive_variables('data', 'password')
     def handle(self, request, data):
-        client = data.get('client')
+        check = data.get('check')
         subscibers = data.get('subscibers').split(',')
 
         try:
