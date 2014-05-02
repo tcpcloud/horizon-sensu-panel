@@ -1,7 +1,7 @@
 
-# Horizon Monitoring Panels
+# Horizon Monitoring Dashboard
 
-This is a simple Horizon based interface for Sensu.
+This is a simple Horizon based interface for Sensu Monitoring Framework with Known Error Database.
 
 ## Installation notes
 
@@ -9,8 +9,13 @@ This is a simple Horizon based interface for Sensu.
 * add 'monitoring' to 'dashboards' key in HORIZON_CONFIG
 * add to horizon settings file
  
-    SENSU_HOST='localhost'
-    SENSU_PORT=4567
+      SENSU_HOST='localhost'
+      SENSU_PORT=4567
+
+  and optionally
+
+      KEDB_HOST='localhost'
+      KEDB_PORT=6754
 
 ## Read more
 
