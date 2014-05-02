@@ -7,7 +7,10 @@ This is a simple Horizon based interface for Sensu.
 
 * add 'horizon_monitoring' to INSTALLED_APPS tuple
 * add 'monitoring' to 'dashboards' key in HORIZON_CONFIG
-* add 'SENSU_HOST' and 'SENSU_PORT' to horizon settings
+* add to horizon settings file
+ 
+    SENSU_HOST='localhost'
+    SENSU_PORT=4567
 
 ## Read more
 
