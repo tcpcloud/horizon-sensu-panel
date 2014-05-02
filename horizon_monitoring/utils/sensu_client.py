@@ -37,22 +37,15 @@ class Sensu(object):
         return events
 
     def event_detail(self, check, client):
+        url = '%s/events/%s/%s' % (self.api, client, check)
+        response = requests.get(url)
+        return response.json()
 
-        path = '/events/%s/%s' % (client, check)
-        request = requests.get('%s%s' % (self.api, path))
-
-        return request.json()
-
-    def event_resolve(self, event):
-
-        data = {
-            "client": event['client'],
-            "check": event['check']
-        }
-
-        request = requests.get('%s%s' % (self.api, '/event/resolve'))
-
-        return request
+    def event_resolve(self, check, client):
+        payload = { "client": client, "check": check }
+        url = '%s/resolve' % self.api
+        response = requests.post(url, data=json.dumps(payload))
+        return response
 
     @property
     def service_status(self):

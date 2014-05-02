@@ -13,11 +13,12 @@ from horizon_monitoring.utils.sensu_client import sensu_api
 
 class ResolveEventForm(forms.SelfHandlingForm):
     client = forms.CharField(widget=forms.HiddenInput())
+    check = forms.CharField(widget=forms.HiddenInput())
 
     def __init__(self, request, *args, **kwargs):
         super(ResolveEventForm, self).__init__(request, *args, **kwargs)
-        client = kwargs.get('initial', {}).get('client')
-        self.fields['client'].initial = client
+        self.fields['client'].initial = kwargs.get('initial', {}).get('client')
+        self.fields['check'].initial = kwargs.get('initial', {}).get('check')
 
     def clean(self):
         cleaned_data = super(ResolveEventForm, self).clean()
@@ -29,10 +30,10 @@ class ResolveEventForm(forms.SelfHandlingForm):
         check = data.get('check')
 
         try:
-            messages.success(request, _('Rebuilding instance %s.') % instance)
+            response = sensu_api.event_resolve(check, client)
+            messages.success(request, _('Resolving event %s.') % response)
         except Exception:
             redirect = reverse('horizon:monitoring:events:index')
-            exceptions.handle(request, _("Unable to rebuild instance."), redirect=redirect)
+            exceptions.handle(request, _("Unable to resolve event."), redirect=redirect)
+
         return True
-
-
