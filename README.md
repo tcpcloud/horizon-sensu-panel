@@ -22,5 +22,6 @@ This is a simple Horizon based interface for Sensu Monitoring Framework with Kno
 * http://docs.openstack.org/developer/horizon/topics/tutorial.html
 * http://sensuapp.org/docs/0.12/api
 * http://docs.openstack.org/developer/horizon/_modules/horizon/tables/base.html
+* http://docs.openstack.org/developer/horizon/ref/tables.html
 * http://nagios.sourceforge.net/docs/3_0/flapping.html
 * https://packages.debian.org/wheezy/nagios-plugins-openstack
