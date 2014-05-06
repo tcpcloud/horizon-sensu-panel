@@ -9,8 +9,17 @@ from horizon import tables
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
+class FullScreenView(tables.LinkAction):
+    name = "fullscreen_view"
+    verbose_name = _("Fullscreen view")
+    url = "horizon:monitoring:events:fullscreen_view"
+    classes = ("btn")
+
+    def get_link_url(self, event):
+        return urlresolvers.reverse(self.url)
+
 class ResolveEvent(tables.LinkAction):
-    name = "resolve_event"  
+    name = "resolve_event"
     verbose_name = _("Resolve")
     url = "horizon:monitoring:events:resolve"
     classes = ("ajax-modal", "btn-edit")
@@ -60,10 +69,7 @@ class SensuEventsTable(tables.DataTable):
     status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"))
     occurrences = tables.Column('occurrences', verbose_name=_("Occured"), filters=(unit_times, ))
-    issued = tables.Column('issued', verbose_name=_("Issued"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
-
-    def get_object_id(self, datum):
-        return '%s-%s' % (datum['client'], datum['check'])
+    issued = tables.Column('issued', verbose_name=_("Last occurence"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
 
     def get_object_id(self, datum):
         return '%s-%s' % (datum['client'], datum['check'])
@@ -72,3 +78,19 @@ class SensuEventsTable(tables.DataTable):
         name = "events"
         verbose_name = _("Current Events")
         row_actions = (EventDetail, ResolveEvent, SilenceCheck, SilenceClient)
+        table_actions = (FullScreenView, )
+
+class FullScreenSensuEventsTable(tables.DataTable):
+    client = tables.Column('client', verbose_name=_("Client"))
+    check = tables.Column('check', verbose_name=_("Check"))
+    output = tables.Column('output', verbose_name=_("Output"), truncate=100)
+    status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
+    issued = tables.Column('issued', verbose_name=_("Last occurence"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
+
+    def get_object_id(self, datum):
+        return '%s-%s' % (datum['client'], datum['check'])
+
+
+    class Meta:
+        name = "events"
+        verbose_name = _("Current Events")
