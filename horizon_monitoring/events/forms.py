@@ -1,3 +1,4 @@
+import time
 
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import filesizeformat
@@ -67,11 +68,14 @@ class RecheckEventForm(forms.SelfHandlingForm):
 class SilenceCheckForm(forms.SelfHandlingForm):
     client = forms.CharField(widget=forms.HiddenInput())
     check = forms.CharField(widget=forms.HiddenInput())
+    expire = forms.IntegerField()
+    reason = forms.CharField(widget=forms.Textarea())
 
     def __init__(self, request, *args, **kwargs):
         super(SilenceCheckForm, self).__init__(request, *args, **kwargs)
         self.fields['client'].initial = kwargs.get('initial', {}).get('client')
         self.fields['check'].initial = kwargs.get('initial', {}).get('check')
+        self.fields['expire'].initial = 120
 
     def clean(self):
         cleaned_data = super(SilenceCheckForm, self).clean()
@@ -80,9 +84,14 @@ class SilenceCheckForm(forms.SelfHandlingForm):
     def handle(self, request, data):
         client = data.get('client')
         check = data.get('check')
+        expire = data.get('expire')
+        content = {
+            'timestamp': int(time.time()),
+            'reason': data.get('reason'),
+        }
 
         try:
-            response = sensu_api.check_silence(check, client)
+            response = sensu_api.check_silence(check, client, expire, content)
             messages.success(request, _('Silence check event %s.') % response)
         except Exception:
             redirect = reverse('horizon:monitoring:events:index')

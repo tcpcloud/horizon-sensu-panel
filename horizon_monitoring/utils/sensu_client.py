@@ -32,8 +32,8 @@ class Sensu(object):
         response = requests.get(url)
         return response.json()
 
-    def check_silence(self, check, client):
-        payload = { "path": '%s/%s' % (client, check), "expire": 200, "content": { "reason": "things are stashy" } }
+    def check_silence(self, check, client, expire, content):
+        payload = { "path": '%s/%s' % (client, check), "expire": expire, "content": content }
         url = '%s/stashes' % self.api
         response = requests.post(url, data=json.dumps(payload))
         return response
@@ -61,7 +61,17 @@ class Sensu(object):
     @property
     def event_list(self):
         events = self.request('/events')
+        stashes = self.request('/stashes')
+        stash_map = []
+        for stash in stashes:
+            stash_map.append(stash['path'])
         for event in events:
+            if '%s/%s' % (event['client'], event['check']) in stash_map:
+                event['silenced'] = True
+            elif event['client'] in stash_map:
+                event['silenced'] = True
+            else:
+                event['silenced'] = False
             if event['status'] == 3:
                 event['status'] = 0
         return sorted(sorted(events, key=lambda x: x['client'], reverse=False), key=lambda x: x['status'], reverse=True)

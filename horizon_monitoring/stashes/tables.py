@@ -9,10 +9,21 @@ from horizon import tables
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
+class ReasonColumn(tables.Column):
+
+    def get_raw_data(self, datum):
+        return datum['content']['reason']
+
+class CreatedColumn(tables.Column):
+
+    def get_raw_data(self, datum):
+        return datum['content']['timestamp']
+
 class SensuStashesTable(tables.DataTable):
     path = tables.Column('path', verbose_name=_("Path"), )
-    content = tables.Column('content', verbose_name=_("Content"),)
-    expire = tables.Column('expire', verbose_name=_("Expire"), )
+    reason = ReasonColumn('content', verbose_name=_("Reason"),)
+    created = CreatedColumn('created', verbose_name=_("Created"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces) )
+    expire = tables.Column('expire', verbose_name=_("Expires"), )
 
     def get_object_id(self, datum):
         return datum['path']
