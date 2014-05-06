@@ -25,6 +25,6 @@ class MonitoringDashboard(horizon.Dashboard):
     slug = "monitoring"
     panels = (MonitoringPanels,)
     default_panel = 'events'
-    permissions = ('openstack.roles.admin',)
+#    permissions = ('openstack.roles.admin',)
 
 horizon.register(MonitoringDashboard)

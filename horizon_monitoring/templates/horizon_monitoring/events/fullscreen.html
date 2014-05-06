@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_fullscreen.html' %}
 {% load i18n %}
 
 {% block title %}{% trans "Current Events" %}{% endblock %}
@@ -27,5 +27,6 @@ $( document ).ready(function() {
   tr.critical:hover { background-color: rgb(157, 38, 29)!important; color: rgb(255, 255, 255)!important; }
   tr.warning { background-color: rgb(254, 233, 204)!important; color: rgb(248, 148, 6)!important; }
   tr.warning:hover { background-color: rgb(248, 148, 6)!important; color: rgb(255, 255, 255)!important; }
+  #main_content { padding-left: 25px; padding-right: 25px; }
 </style>
 {% endblock %}

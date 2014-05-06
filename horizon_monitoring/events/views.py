@@ -16,6 +16,13 @@ from horizon_monitoring.events.tabs import SensuEventDetailTabs
 from horizon_monitoring.events.forms import ResolveEventForm
 from horizon_monitoring.utils.sensu_client import sensu_api
 
+class FullScreenIndexView(tables.DataTableView):
+    table_class = SensuEventsTable
+    template_name = 'horizon_monitoring/events/fullscreen.html'
+
+    def get_data(self):
+        return sensu_api.event_list
+
 class IndexView(tables.DataTableView):
     table_class = SensuEventsTable
     template_name = 'horizon_monitoring/events/index.html'
