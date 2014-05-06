@@ -40,6 +40,9 @@ class Sensu(object):
     @property
     def event_list(self):
         events = self.request('/events')
+        for event in events:
+            if event['status'] == 3:
+                event['status'] = -1
         return sorted(sorted(events, key=lambda x: x['client'], reverse=False), key=lambda x: x['status'], reverse=True)
         #return events
 
