@@ -27,11 +27,32 @@ class Sensu(object):
     def check_list(self):
         return self.request('/checks')
 
+    def check_detail(self, check):
+        url = '%s/checks/%s' % (self.api, check)
+        response = requests.get(url)
+        return response.json()
+
+    def check_silence(self, check, client):
+        payload = { "path": '%s/%s' % (client, check), "expire": 200, "content": { "reason": "things are stashy" } }
+        url = '%s/stashes' % self.api
+        response = requests.post(url, data=json.dumps(payload))
+        return response
+
     def check_request(self, check, subscibers):
         payload = { "subscibers": subscibers, "check": check }
         url = '%s/request' % self.api
         response = requests.post(url, data=json.dumps(payload))
         return response
+
+    def event_resolve(self, check, client):
+        payload = { "client": client, "check": check }
+        url = '%s/event_resolveve' % self.api
+        response = requests.post(url, data=json.dumps(payload))
+        return response
+
+    @property
+    def stash_list(self):
+        return self.request('/stashes')
 
     @property
     def client_list(self):
@@ -56,6 +77,10 @@ class Sensu(object):
         url = '%s/resolve' % self.api
         response = requests.post(url, data=json.dumps(payload))
         return response
+
+    def event_recheck(self, check, client):
+        check_obj = self.check_detail(check)
+        return self.check_request(check, check_obj['subscribers'])
 
     @property
     def service_status(self):

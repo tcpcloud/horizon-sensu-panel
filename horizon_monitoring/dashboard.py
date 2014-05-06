@@ -11,9 +11,9 @@ except:
     include_kedb = False
 
 if include_kedb:
-	monitoring_panels = ('events', 'errors', 'checks', 'clients', 'info')
+	monitoring_panels = ('events', 'stashes', 'errors', 'checks', 'clients', 'info')
 else:
-	monitoring_panels = ('events', 'checks', 'clients', 'info')
+	monitoring_panels = ('events', 'stashes', 'checks', 'clients', 'info')
 
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"

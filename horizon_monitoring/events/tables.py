@@ -11,16 +11,25 @@ from horizon_monitoring.utils.filters import timestamp_to_datetime, \
 
 class FullScreenView(tables.LinkAction):
     name = "fullscreen_view"
-    verbose_name = _("Fullscreen")
+    verbose_name = _("Fullscreen Mode")
     url = "horizon:monitoring:events:fullscreen_index"
     classes = ("btn")
 
     def get_link_url(self):
         return urlresolvers.reverse(self.url, args=[])
 
+class RecheckEvent(tables.LinkAction):
+    name = "recheck_event"
+    verbose_name = _("Recheck Event")
+    url = "horizon:monitoring:events:recheck"
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, event):
+        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
+
 class ResolveEvent(tables.LinkAction):
     name = "resolve_event"
-    verbose_name = _("Resolve")
+    verbose_name = _("Resolve Event")
     url = "horizon:monitoring:events:resolve"
     classes = ("ajax-modal", "btn-edit")
 
@@ -77,7 +86,7 @@ class SensuEventsTable(tables.DataTable):
     class Meta:
         name = "events"
         verbose_name = _("Current Events")
-        row_actions = (EventDetail, ResolveEvent, SilenceCheck, SilenceClient)
+        row_actions = (EventDetail, ResolveEvent, RecheckEvent, SilenceCheck,)# SilenceClient)
         table_actions = (FullScreenView, )
 
 class FullScreenSensuEventsTable(tables.DataTable):
