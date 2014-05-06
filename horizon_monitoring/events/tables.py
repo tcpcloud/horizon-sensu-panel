@@ -11,12 +11,12 @@ from horizon_monitoring.utils.filters import timestamp_to_datetime, \
 
 class FullScreenView(tables.LinkAction):
     name = "fullscreen_view"
-    verbose_name = _("Fullscreen view")
-    url = "horizon:monitoring:events:fullscreen_view"
+    verbose_name = _("Fullscreen")
+    url = "horizon:monitoring:events:fullscreen_index"
     classes = ("btn")
 
-    def get_link_url(self, event):
-        return urlresolvers.reverse(self.url)
+    def get_link_url(self):
+        return urlresolvers.reverse(self.url, args=[])
 
 class ResolveEvent(tables.LinkAction):
     name = "resolve_event"
