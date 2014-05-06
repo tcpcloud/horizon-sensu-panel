@@ -54,6 +54,11 @@ class Sensu(object):
     def stash_list(self):
         return self.request('/stashes')
 
+    def stash_delete(self, path):
+        url = '%s/stashes/%s' % (self.api, path)
+        response = requests.delete(url)
+        return response
+
     @property
     def client_list(self):
         return self.request('/clients')

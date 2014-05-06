@@ -9,6 +9,15 @@ from horizon import tables
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
+class StashDelete(tables.LinkAction):
+    name = "stash_delete"  
+    verbose_name = _("Delete Stash")
+    url = "horizon:monitoring:stashes:delete"
+    classes = ("ajax-modal", "btn")
+
+    def get_link_url(self, stash):
+        return urlresolvers.reverse(self.url, args=[stash['path'],])
+
 class ReasonColumn(tables.Column):
 
     def get_raw_data(self, datum):
@@ -31,3 +40,5 @@ class SensuStashesTable(tables.DataTable):
     class Meta:
         name = "stashes"
         verbose_name = _("Stashes")
+        row_actions = (StashDelete, )
+
