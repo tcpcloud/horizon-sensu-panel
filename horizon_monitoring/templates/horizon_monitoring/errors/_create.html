@@ -1,0 +1,22 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}vytvorit_ukol{% endblock %}
+{% block form_action %}{% url "horizon:monitoring:errors:create" %}{% endblock %}
+
+{% block modal-header %}New error{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+  {% include "horizon/common/_form_fields.html" %}
+</div>
+<div class="right">
+  <h4>{% trans "Create error" %}:</h4>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Create" %}" />
+  <a href="{% url "horizon:monitoring:errors:index" %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}
