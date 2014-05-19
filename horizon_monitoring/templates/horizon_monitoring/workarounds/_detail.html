@@ -1,0 +1,17 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}detail_workaround{% endblock %}
+
+{% block modal-header %}Workaround detail{% endblock %}
+
+{% block modal-body %}
+<div class="center">
+  {% include "horizon/common/_form_fields.html" %}
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <a href="{% url "horizon:monitoring:workarounds:index" %}" class="btn secondary cancel close">{% trans "Close" %}</a>
+{% endblock %}
