@@ -1,7 +1,8 @@
 
-import horizon
 from django.utils.translation import ugettext_lazy as _
-from horizon_monitoring import dashboard
+import horizon
+from horizon_monitoring.dashboard import MonitoringDashboard
+from django.conf import settings
 
 try:
     host = settings.KEDB_HOST
@@ -14,4 +15,4 @@ class KedbErrorsPanel(horizon.Panel):
     slug = 'errors'
 
 if include_kedb:
-    dashboard.MonitoringDashboard.register(KedbErrorsPanel)
+    MonitoringDashboard.register(KedbErrorsPanel)
