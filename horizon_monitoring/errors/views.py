@@ -1,10 +1,10 @@
 
 from horizon import tables
 from horizon import forms
-from .tables import KedbErrorsTable
 from horizon_monitoring.utils.kedb_client import kedb_api
 
-from horizon_monitoring.errors.forms import ErrorDetailForm
+from .tables import KedbErrorsTable
+from .forms import ErrorDetailForm
 
 class IndexView(tables.DataTableView):
     table_class = KedbErrorsTable
