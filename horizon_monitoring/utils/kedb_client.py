@@ -24,11 +24,20 @@ class Kedb(object):
         return 'http://%s:%s' % (self.host, self.port)
 
     @property
+    def workaround_list(self):
+        return self.request('/api/workarounds')
+
+    @property
     def error_list(self):
         return self.request('/api/known-errors')
 
-    def check_detail(self, error):
-        url = '%s/known-errors/%s' % (self.api, error)
+    def workaround_detail(self, workaround):
+        url = '%s/api/workarounds/%s/' % (self.api, workaround)
+        response = requests.get(url)
+        return response.json()
+
+    def error_detail(self, error):
+        url = '%s/api/known-errors/%s/' % (self.api, error)
         response = requests.get(url)
         return response.json()
 
