@@ -1,10 +1,12 @@
-
 from horizon import tables
 from horizon import forms
-from horizon_monitoring.utils.kedb_client import kedb_api
+from horizon import workflows
 
+from horizon_monitoring.utils.kedb_client import kedb_api
 from .tables import KedbErrorsTable
+from horizon_monitoring.workarounds.tables import WorkaroundTable
 from .forms import ErrorDetailForm
+from .workflows import UpdateError
 
 class IndexView(tables.DataTableView):
     table_class = KedbErrorsTable
@@ -13,18 +15,28 @@ class IndexView(tables.DataTableView):
     def get_data(self):
         return kedb_api.error_list
 
-class DetailView(forms.ModalFormView):
-    """view pro zobrazeni modalni okna pro vyber sablony 
-    ktere redirectne na samotny render sablony
-    """
+
+class UpdateView(forms.ModalFormView):
+    
+    #workflow_class = UpdateError
+    table_class = WorkaroundTable
     form_class = ErrorDetailForm
     template_name = 'horizon_monitoring/errors/detail.html'
+    #context_object_name = 'form'
 
     def get_context_data(self, **kwargs):
-        context = super(DetailView, self).get_context_data(**kwargs)
-        context['error'] = kedb_api.error_detail(error=self.kwargs['id'])
+        context = super(UpdateView, self).get_context_data(**kwargs)
+        context['error'] = kedb_api.error_detail(self.kwargs['id'])
+        context['workarounds'] = context['error'].get("workarounds", [])
+        context['workarounds_table'] = WorkaroundTable(request=self.request, data=context['workarounds'])
         return context
 
     def get_initial(self):
-        error = self.get_context_data()['error']
-        return error
+        return self.get_context_data()['error']
+
+class CreateView(forms.ModalFormView):
+    """view, ktery bude vyvolavat akce nad eventem
+    """
+    form_class = ErrorDetailForm
+    table_class = WorkaroundTable
+    template_name = 'horizon_monitoring/errors/detail.html'

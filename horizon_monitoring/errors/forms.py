@@ -20,6 +20,21 @@ SEVERITY_CHOICES = (
     ("high", u"high"),
 )
 
+"""
+class ErrorDetailForm(forms.Form):
+    name = forms.CharField(label=u"Name", required=True)
+    description = forms.CharField(label=u"Description", widget=forms.Textarea)
+
+    check = forms.CharField(label=u"Sensu check", max_length=255, required=True)
+    output_pattern = forms.CharField(label=u"Output pattern", required=False, widget=forms.Textarea)
+    level = forms.ChoiceField(label=u"Level", required=True, choices=LEVEL_CHOICES, initial='level1')
+    severity = forms.ChoiceField(label=u"Severity", required=True, choices=SEVERITY_CHOICES, initial='medium')
+
+    def __init__(self, *args, **kwargs):
+        super(ErrorDetailForm, self).__init__(*args, **kwargs)
+        self.fields.keyOrder = ['name','level', 'severity', 'description', 'check', 'output_pattern',]
+"""
+
 class ErrorDetailForm(forms.SelfHandlingForm):
 
     name = forms.CharField(label=u"Name", required=True)
@@ -29,7 +44,6 @@ class ErrorDetailForm(forms.SelfHandlingForm):
     output_pattern = forms.CharField(label=u"Output pattern", required=False, widget=forms.Textarea)
     level = forms.ChoiceField(label=u"Level", required=True, choices=LEVEL_CHOICES, initial='level1')
     severity = forms.ChoiceField(label=u"Severity", required=True, choices=SEVERITY_CHOICES, initial='medium')
-
 
     def __init__(self, *args, **kwargs):
         super(ErrorDetailForm, self).__init__(*args, **kwargs)
