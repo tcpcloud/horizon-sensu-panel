@@ -28,7 +28,7 @@ class ErrorDetailForm(forms.SelfHandlingForm):
     check = forms.CharField(label=u"Sensu check", max_length=255, required=True)
     output_pattern = forms.CharField(label=u"Output pattern", required=False, widget=forms.Textarea)
     level = forms.ChoiceField(label=u"Level", required=True, choices=LEVEL_CHOICES, initial='level1')
-    severity = forms.ChoiceField(label=u"Level", required=True, choices=SEVERITY_CHOICES, initial='medium')
+    severity = forms.ChoiceField(label=u"Severity", required=True, choices=SEVERITY_CHOICES, initial='medium')
 
 
     def __init__(self, *args, **kwargs):

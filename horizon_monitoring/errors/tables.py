@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+from django.core.cache import cache
 from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
@@ -11,7 +13,8 @@ class ErrorDetail(tables.LinkAction):
 
     def get_link_url(self, error):
         url = "horizon:monitoring:errors:detail"
-
+        key = "error-%s"% error.get("id")
+        cache.set(key, error)
         return urlresolvers.reverse(url, args=(error.get("id"),))
 
     def allowed(self, request, instance):
@@ -22,7 +25,7 @@ class KedbErrorsTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_("Name"))
     check = tables.Column('check', verbose_name=_("Check"))
     severity = tables.Column('severity', verbose_name=_("Severity"))
-    level = tables.Column('level', verbose_name=_("Resolves"))
+    level = tables.Column('level', verbose_name=_("Level"))
 
     def get_object_id(self, datum):
         return datum['name']
