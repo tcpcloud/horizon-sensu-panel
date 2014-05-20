@@ -30,6 +30,6 @@ class WorkaroundTable(tables.DataTable):
         return datum['id']
 
     class Meta:
-        name = "errors"
+        name = "workarounds"
         verbose_name = _("Workarounds list")
         row_actions = (WorkaroundDetail, )

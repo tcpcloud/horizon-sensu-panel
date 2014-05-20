@@ -10,9 +10,10 @@ from django.db.models.fields import BLANK_CHOICE_DASH
 from django.conf import settings
 
 class WorkaroundDetailForm(forms.SelfHandlingForm):
+    """base workaround form"""
 
     id = forms.CharField(label=u"ID", required=True)
-    description = forms.CharField(label=u"description", required=True)
+    description = forms.CharField(label=u"description", required=True, , widget=forms.Textarea)
     known_error = forms.CharField(label=u"Known error", required=True)
 
     def __init__(self, *args, **kwargs):
@@ -22,7 +23,8 @@ class WorkaroundDetailForm(forms.SelfHandlingForm):
         pass
 
 class WorkaroundCreateForm(WorkaroundDetailForm):
-
+    """form handle reqiure error id
+    """
     def __init__(self, *args, **kwargs):
         super(WorkaroundCreateForm, self).__init__(*args, **kwargs)
 
