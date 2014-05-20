@@ -13,7 +13,7 @@ class WorkaroundDetailForm(forms.SelfHandlingForm):
     """base workaround form"""
 
     id = forms.CharField(label=u"ID", required=True)
-    description = forms.CharField(label=u"description", required=True, , widget=forms.Textarea)
+    description = forms.CharField(label=u"description", required=True, widget=forms.Textarea)
     known_error = forms.CharField(label=u"Known error", required=True)
 
     def __init__(self, *args, **kwargs):
