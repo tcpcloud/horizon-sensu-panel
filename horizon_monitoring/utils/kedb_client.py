@@ -25,7 +25,11 @@ class Kedb(object):
             req = requests.Request(method, '%s%s' % (self.api, path),data=json.dumps(params),headers=headers).prepare()
             response = requests.Session().send(req)
 
-        if response.status_code in (200, 201, 204):
+        """delete ok"""
+        if response.status_code == 204:
+            return True
+
+        if response.status_code in (200, 201):
             return response.json()
         else:
             if request:
