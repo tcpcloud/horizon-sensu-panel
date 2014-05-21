@@ -1,5 +1,5 @@
 
-import requests
+import requests 
 import json
 import logging
 from horizon import messages
@@ -20,16 +20,18 @@ class Kedb(object):
 
         if method == "GET":
             request = requests.get('%s%s' % (self.api, path))
-        elif method == "POST":
+        elif method in ["POST", "PUT"]:
             headers = {"Content-Type": "application/json" }
-            request = requests.post('%s%s' % (self.api, path),data=json.dumps(params),headers=headers)
-        
+            _request = requests.Request(method, '%s%s' % (self.api, path),data=json.dumps(params),headers=headers)
+            prepped = _request.prepare()
+            request = requests.Session().send(prepped)
+
         if request.status_code in (200, 201):
             return request.json()
         else:
             if main_request:
                 """handle errors"""
-                messages.error(main_request, "%s - %s - %s - %s" % (method, path, params, request.status_code))
+                messages.error(main_request, "%s - %s - %s - %s - %s" % (method, path, params, request.status_code, str(request.text)))
                 return {}
             return [{'id':1, 'name': request.status_code}, {'id':2, 'name': request.text}]
 
@@ -54,12 +56,12 @@ class Kedb(object):
         return self.request(url)
 
     def error_create(self, error, data):
-        url = '%s/known-errors' % self.api
+        url = '/known-errors'
         return self.request(url, "PUT", data)
 
     def error_update(self, request, error, data):
-        url = '%s/known-errors/%s/' % (self.api, error)
-        return self.request(url, "POST", data, request)
+        url = '/known-errors/%s/' % (error)
+        return self.request(url, "PUT", data, request)
 
     def error_delete(self, error):
         url = '%s/api/known-errors/%s' % (self.api, error)
