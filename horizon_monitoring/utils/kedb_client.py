@@ -2,7 +2,7 @@
 import requests
 import json
 import logging
-
+from horizon import messages
 from django.conf import settings
 
 log = logging.getLogger('utils.kedb')
@@ -15,7 +15,7 @@ class Kedb(object):
     def __init__(self):
         pass
 
-    def request(self, path, method="GET", params={}):
+    def request(self, path, method="GET", params={}, main_request=None):
         log.debug("%s - %s - %s"%(method,path,params))
 
         if method == "GET":
@@ -27,8 +27,10 @@ class Kedb(object):
         if request.status_code in (200, 201):
             return request.json()
         else:
-            """handle errors"""
-#            messages.error(request, "%s - %s - %s - %s" % (method, path, params, request.status_code))
+            if main_request:
+                """handle errors"""
+                messages.error(main_request, "%s - %s - %s - %s" % (method, path, params, request.status_code))
+                return {}
             return [{'id':1, 'name': request.status_code}, {'id':2, 'name': request.text}]
 
     @property
@@ -45,7 +47,7 @@ class Kedb(object):
 
     def workaround_detail(self, workaround):
         url = '/workarounds/%s/' % (workaround)
-        return requests.get(url)
+        return self.request(url)
 
     def error_detail(self, error):
         url = '/known-errors/%s/' % (error)
@@ -55,9 +57,9 @@ class Kedb(object):
         url = '%s/known-errors' % self.api
         return self.request(url, "PUT", data)
 
-    def error_update(self, error, data):
+    def error_update(self, request, error, data):
         url = '%s/known-errors/%s/' % (self.api, error)
-        return self.request(url, "POST", data)
+        return self.request(url, "POST", data, request)
 
     def error_delete(self, error):
         url = '%s/api/known-errors/%s' % (self.api, error)
