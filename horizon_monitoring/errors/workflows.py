@@ -26,8 +26,10 @@ from horizon import exceptions
 from horizon import forms
 from horizon import workflows
 from horizon_monitoring.workarounds.tables import WorkaroundTable
-from .tables import KedbErrorsFormsetTable
+from .tables import KedbErrorsFormsetTable, WorkaroundsFormSet
 from openstack_dashboard import api
+from horizon_monitoring.utils.kedb_client import kedb_api
+
 from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
 
 class CreateErrorAction(workflows.Action):
@@ -59,7 +61,7 @@ class CreateErrorInfo(workflows.Step):
                    "severity",
                    "ownership")
 
-class UpdateErrorWorkaroundsAction(workflows.MembershipAction):
+class UpdateErrorWorkaroundsAction(workflows.Action):
 
     def __init__(self, request, *args, **kwargs):
         super(UpdateErrorWorkaroundsAction, self).__init__(request,
@@ -90,7 +92,7 @@ class UpdateErrorWorkarounds(workflows.Step):
         request = self.workflow.request
         step_template = template.loader.get_template(self.template_name)
         data = kedb_api.error_detail(self.workflow.context['id']).get("workarounds")
-        kedb = WorkaroundTable(request=request, data=data)
+        kedb = KedbErrorsFormsetTable(request=request, data=data)
         extra_context = {"form": self.action,
                          "step": self,
                          "workarounds_table": kedb}
@@ -144,17 +146,19 @@ class CreateFlavor(workflows.Workflow):
 
 class UpdateErrorAction(CreateErrorAction):
 
-
     class Meta:
         name = _("Error detail")
         slug = 'update_info'
         help_text = _("From here you can edit the error details.")
 
+    def clean(self):
+        cleaned_data = super(UpdateErrorAction, self).clean()
+        return cleaned_data
+
 class UpdateErrorInfo(workflows.Step):
     action_class = UpdateErrorAction
-    depends_on = ("error_id",)
-    contributes = ("error_id",
-                   "name",
+    depends_on = ("id",)
+    contributes = ("name",
                    "description",
                    "check",
                    "output_pattern",
@@ -162,7 +166,6 @@ class UpdateErrorInfo(workflows.Step):
                    "severity",
                    "ownership")
 
-from horizon_monitoring.utils.kedb_client import kedb_api
 
 class UpdateError(workflows.Workflow):
     slug = "update_error"
@@ -178,6 +181,11 @@ class UpdateError(workflows.Workflow):
         return message % self.context['name']
 
     def handle(self, request, data):
-
-        
-        return kedb_api.error_update(error=data["id"], data=data)
+        formset = WorkaroundsFormSet(request.POST, prefix="workarounds")
+        workarounds = []
+        for form in formset.forms:
+            if form.is_valid():
+                workarounds.append(form.cleaned_data)       
+        data["workarounds"] = workarounds
+        result = kedb_api.error_update(request=request,error=data["id"], data=data)
+        return result
