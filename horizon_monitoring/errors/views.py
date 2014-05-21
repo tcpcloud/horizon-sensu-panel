@@ -4,6 +4,8 @@ from horizon import forms
 from horizon import workflows
 
 from horizon_monitoring.utils.kedb_client import kedb_api
+from horizon_monitoring.utils.sensu_client import sensu_api
+
 from .tables import KedbErrorsTable
 from horizon_monitoring.workarounds.tables import WorkaroundTable
 from .forms import ErrorDetailForm, ErrorCreateForm
@@ -45,8 +47,11 @@ class CreateView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         check = self.kwargs.get("check", None)
-        if check:
+        client = self.kwargs.get("client", None)
+        if check and client:
             context["check"] = check
+            context["client"] = client
+            context["output_pattern"] = sensu_api.event_detail(check, client)["output"]
         return context
 
     def get_initial(self):

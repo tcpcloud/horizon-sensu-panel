@@ -1,4 +1,4 @@
-
+from django.conf import settings
 from django.core import urlresolvers
 from django.template.defaultfilters import timesince
 from django.utils.http import urlencode
@@ -8,6 +8,7 @@ from horizon import tables
 
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
+
 
 class FullScreenView(tables.LinkAction):
     name = "fullscreen_view"
@@ -57,15 +58,23 @@ class ErrorCreate(tables.LinkAction):
     """error create
     """
     name = "error_create"
-    verbose_name = _("Create Error")
+    verbose_name = _("Create Known Error")
     classes = ("ajax-modal", "btn-edit")
-
+    url = "horizon:monitoring:errors:create_check"
+    
     def get_link_url(self, datum):
-        url = "horizon:monitoring:errors:create_check"
-        return urlresolvers.reverse(url, args=[datum.get("check")])
+        return urlresolvers.reverse(self.url, kwargs={'check':datum.get("check"), 'client':datum.get("client")})
 
     def allowed(self, request, instance):
-        return True
+        allowed = False
+        try:
+            kedb = getattr(settings, "KEDB_HOST", None)
+            if kedb:
+                allowed = True
+        except:
+            pass
+        finally:
+            return allowed
 
 class SilenceCheck(tables.LinkAction):
     name = "silence_check"  
@@ -86,6 +95,18 @@ class SilenceClient(tables.LinkAction):
         return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
 
 class SensuEventsTable(tables.DataTable):
+
+    @staticmethod
+    def kedb():
+        allowed = False
+        try:
+            kedb = getattr(settings, "KEDB_HOST", None)
+            if not kedb:
+                allowed = False
+        except:
+            return allowed
+
+
     client = tables.Column('client', verbose_name=_("Client"))
     check = tables.Column('check', verbose_name=_("Check"))
     output = tables.Column('output', verbose_name=_("Output"), truncate=100)
