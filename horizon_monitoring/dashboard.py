@@ -11,7 +11,7 @@ except:
     include_kedb = False
 
 if include_kedb:
-    monitoring_panels = ('events', 'errors', 'stashes', 'checks', 'clients', 'info', 'workarounds', )
+    monitoring_panels = ('events', 'errors', 'workarounds', 'stashes', 'checks', 'clients', 'info',  )
 else:
     monitoring_panels = ('events', 'stashes', 'checks', 'clients', 'info', )
 
