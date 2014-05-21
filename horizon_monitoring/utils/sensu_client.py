@@ -48,7 +48,7 @@ class Sensu(object):
         payload = { "client": client, "check": check }
         url = '%s/event_resolveve' % self.api
         response = requests.post(url, data=json.dumps(payload))
-        return response
+        return response.text
 
     @property
     def stash_list(self):

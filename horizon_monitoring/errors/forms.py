@@ -13,6 +13,7 @@ from django.db.models.fields import BLANK_CHOICE_DASH
 from django.conf import settings
 from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
 from horizon_monitoring.utils.kedb_client import kedb_api
+from horizon_monitoring.utils.sensu_client import sensu_api
 
 """
 class ErrorDetailForm(forms.Form):
@@ -65,12 +66,32 @@ class ErrorCreateForm(ErrorDetailForm):
         
         return True
 
-class ErrorCheckCreateForm(ErrorCreateForm):
+class ErrorCheckCreateForm(ErrorDetailForm):
     """mel by jit volat bez sensu checku tak i snim
     """
+
     resolve = forms.BooleanField(required=True, initial=False, label=u"Resolve check ?")
-    silence = forms.BooleanField(required=True, initial=False, label=u"Silence check ?")
+    #silence = forms.BooleanField(required=True, initial=False, label=u"Silence check ?")
 
     def __init__(self, *args, **kwargs):
         super(ErrorCheckCreateForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['silence','resolve','name','level', 'severity', 'description', 'check', 'output_pattern', 'ownership']
+        self.fields.keyOrder = ['resolve','name','level', 'severity', 'description', 'check', 'output_pattern', 'ownership']
+
+    def handle(self, request, data):
+        
+        try:
+            response = kedb_api.error_create(data)
+            messages.success(request, _('Create error %s.') % response.get("name"))
+            
+            if data.get("resolve", False):
+                try:
+                    response = sensu_api.event_resolve(data.get("check"), data.get("client"))
+                    messages.success(request, _('Resolving event %s.') % response)
+                except Exception, e:
+                    messages.error(request, _('In Resolving event %s.') % response)
+        
+        except Exception:
+            redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
+            exceptions.handle(request, _("Unable to create error."), redirect=redirect)
+
+        return True

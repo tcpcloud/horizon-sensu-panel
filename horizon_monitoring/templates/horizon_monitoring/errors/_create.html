@@ -3,7 +3,15 @@
 {% load url from future %}
 
 {% block form_id %}vytvorit_ukol{% endblock %}
-{% block form_action %}{% url "horizon:monitoring:errors:create" %}{% endblock %}
+{% block form_action %}
+
+{% if check and client %}
+{% url "horizon:monitoring:errors:create_check" check client %}
+{% else %}
+{% url "horizon:monitoring:errors:create" %}
+{% endif %}
+
+{% endblock %}
 
 {% block modal-header %}New Error{% endblock %}
 

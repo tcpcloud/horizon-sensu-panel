@@ -2,6 +2,8 @@ from django.core.urlresolvers import reverse_lazy
 from horizon import tables
 from horizon import forms
 from horizon import workflows
+from horizon import exceptions
+from horizon import messages
 
 from horizon_monitoring.utils.kedb_client import kedb_api
 from horizon_monitoring.utils.sensu_client import sensu_api
@@ -40,15 +42,14 @@ class UpdateView(workflows.WorkflowView):
 
 class CreateView(forms.ModalFormView):
 
-    form_class = ErrorCreateForm
+    form_class = ErrorCheckCreateForm
     template_name = 'horizon_monitoring/errors/create.html'
     success_url = reverse_lazy("horizon:monitoring:errors:index")
 
-    def get_form(self, form_class):
-        """Returns an instance of the form to be used in this view."""
-        if self.kwargs.get("check", None):
-            return ErrorCheckCreateForm(self.request, **self.get_form_kwargs())
-        return form_class(self.request, **self.get_form_kwargs())
+    def get_form_class(self):
+        if not self.get_context_data().get("check", None):
+            return ErrorCreateForm
+        return self.form_class
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
