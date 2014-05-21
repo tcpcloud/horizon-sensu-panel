@@ -31,16 +31,8 @@ from openstack_dashboard import api
 from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
 
 class CreateErrorAction(workflows.Action):
-    _flavor_id_regex = (r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-'
-                        r'[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[0-9]+|auto$')
-  
-    name = forms.RegexField(label=_("Name"),
-                            max_length=255,
-                            regex=r'^[\w\.\- ]+$',
-                            error_messages={'invalid': _('Name may only '
-                                'contain letters, numbers, underscores, '
-                                'periods and hyphens.')})
 
+    id = forms.CharField(widget=forms.widgets.HiddenInput)
     name = forms.CharField(label=u"Name", required=True)
     description = forms.CharField(label=u"Description", widget=forms.Textarea)
     check = forms.CharField(label=u"Sensu check", max_length=255, required=True)
@@ -96,12 +88,9 @@ class UpdateErrorWorkarounds(workflows.Step):
     def render(self):
         """Renders the step."""
         request = self.workflow.request
-        """mega psycho fuj, budeme delat jakobych to nikdy nenapsal"""
-        array = self.workflow.get_absolute_url().split("/")
-        error_id = array[-3]
         step_template = template.loader.get_template(self.template_name)
-        data_ = kedb_api.error_detail(error_id).get("workarounds")
-        kedb = KedbErrorsFormsetTable(request=request, data=data_)
+        data = kedb_api.error_detail(self.workflow.context['id']).get("workarounds")
+        kedb = WorkaroundTable(request=request, data=data)
         extra_context = {"form": self.action,
                          "step": self,
                          "workarounds_table": kedb}
@@ -154,17 +143,14 @@ class CreateFlavor(workflows.Workflow):
 
 
 class UpdateErrorAction(CreateErrorAction):
-    error_id = forms.CharField(widget=forms.widgets.HiddenInput)
+
 
     class Meta:
         name = _("Error detail")
         slug = 'update_info'
         help_text = _("From here you can edit the error details.")
 
-    def clean(self):
-        return self.cleaned_data
-
-class UpdateError(workflows.Step):
+class UpdateErrorInfo(workflows.Step):
     action_class = UpdateErrorAction
     depends_on = ("error_id",)
     contributes = ("error_id",
@@ -185,7 +171,7 @@ class UpdateError(workflows.Workflow):
     success_message = _('Modified error "%s".')
     failure_message = _('Unable to modify error "%s".')
     success_url = "horizon:monitoring:errors:index"
-    default_steps = (UpdateError,
+    default_steps = (UpdateErrorInfo,
                      UpdateErrorWorkarounds)
 
     def format_status_message(self, message):
@@ -193,12 +179,5 @@ class UpdateError(workflows.Workflow):
 
     def handle(self, request, data):
 
-        # Add flavor access if the flavor is not public.
-        for project in flavor_projects:
-            try:
-                api.nova.add_tenant_to_flavor(request, flavor.id, project)
-            except Exception:
-                exceptions.handle(request, _('Modified flavor information, '
-                                             'but unable to modify flavor '
-                                             'access.'))
-        return True
+        
+        return kedb_api.error_update(error=data["id"], data=data)

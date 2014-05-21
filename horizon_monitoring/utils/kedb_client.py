@@ -43,18 +43,18 @@ class Kedb(object):
 
     def error_create(self, error, data):
         payload = data
-        url = '%s/known-errors' % self.api
+        url = '%s/api/known-errors' % self.api
         response = requests.put(url, data=json.dumps(payload))
         return response.json()
 
     def error_update(self, error, data):
         payload = data
-        url = '%s/known-errors/%s' % (self.api, error)
-        response = requests.post(url, data=json.dumps(payload))
+        url = '%s/api/known-errors/%s/' % (self.api, error)
+        response = requests.put(url, data=json.dumps(payload))
         return response.json()
 
     def error_delete(self, error):
-        url = '%s/known-errors/%s' % (self.api, error)
+        url = '%s/api/known-errors/%s' % (self.api, error)
         response = requests.get(url)
         return response.json()
 
