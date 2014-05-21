@@ -87,12 +87,6 @@ class Sensu(object):
         response = requests.get(url)
         return response.json()
 
-    def event_resolve(self, check, client):
-        payload = { "client": client, "check": check }
-        url = '%s/resolve' % self.api
-        response = requests.post(url, data=json.dumps(payload))
-        return response
-
     def event_recheck(self, check, client):
         check_obj = self.check_detail(check)
         return self.check_request(check, check_obj['subscribers'])
