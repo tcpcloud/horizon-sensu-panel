@@ -21,25 +21,15 @@
 
 from django.utils.translation import ugettext_lazy as _
 
+from django import template
 from horizon import exceptions
 from horizon import forms
 from horizon import workflows
-
+from horizon_monitoring.workarounds.tables import WorkaroundTable
 from openstack_dashboard import api
-from horizon_monitoring.utils.kedb_client import kedb_api
+from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
 
-LEVEL_CHOICES = (
-    ("level1", u"level 1"),
-    ("level2", u"level 2"),
-)
-
-SEVERITY_CHOICES = (
-    ("low", u"low"),
-    ("medium", u"medium"),
-    ("high", u"high"),
-)
-
-class CreateErrorInfoAction(workflows.Action):
+class CreateErrorAction(workflows.Action):
     _flavor_id_regex = (r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-'
                         r'[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[0-9]+|auto$')
   
@@ -56,111 +46,75 @@ class CreateErrorInfoAction(workflows.Action):
     output_pattern = forms.CharField(label=u"Output pattern", required=False, widget=forms.Textarea)
     level = forms.ChoiceField(label=u"Level", required=True, choices=LEVEL_CHOICES, initial='level1')
     severity = forms.ChoiceField(label=u"Severity", required=True, choices=SEVERITY_CHOICES, initial='medium')
+    ownership = forms.ChoiceField(required=True, initial='cloudlab', choices=OWNERSHIP_CHOICES)
 
     class Meta:
         name = _("Error Info")
-        help_text = _("From here you can update a "
-                      "error to organize workarounds.")
+        help_text = _("From here you can update a error.")
 
     def clean(self):
-        cleaned_data = super(CreateErrorInfoAction, self).clean()
+        cleaned_data = super(CreateErrorAction, self).clean()
         return cleaned_data
 
 class CreateErrorInfo(workflows.Step):
-    action_class = CreateErrorInfoAction
-    contributes = ("error_id",
-                   "name",
+    action_class = CreateErrorAction
+    contributes = ("name",
                    "description",
                    "check",
                    "output_pattern",
                    "level",
-                   "severity")
+                   "severity",
+                   "ownership")
 
+class UpdateErrorWorkaroundsAction(workflows.MembershipAction):
 
-class UpdateFlavorAccessAction(workflows.MembershipAction):
     def __init__(self, request, *args, **kwargs):
-        super(UpdateFlavorAccessAction, self).__init__(request,
+        super(UpdateErrorWorkaroundsAction, self).__init__(request,
                                                        *args,
                                                        **kwargs)
         err_msg = _('Unable to retrieve workarounds list. '
                     'Please try again later.')
-        context = args[0]
-
-        default_role_field_name = self.get_default_role_field_name()
-        self.fields[default_role_field_name] = forms.CharField(required=False)
-        self.fields[default_role_field_name].initial = 'member'
-
-        field_name = self.get_member_field_name('member')
-        self.fields[field_name] = forms.MultipleChoiceField(required=False)
-
-        # Get list of available projects.
-        workarounds = []
-        error_id = context.get('error_id')
-        try:
-            workarounds = kedb_api.error_detail(error=error_id).get("workarounds")
-            has_more = True
-        except Exception:
-            exceptions.handle(request, err_msg)
-        projects_list = [(workaround.get("id"), workaround.get("description"))
-                         for workaround in workarounds]
-
-        self.fields[field_name].choices = projects_list
-
-        # If we have a POST from the CreateFlavor workflow, the flavor id
-        # isn't an existing flavor. For the UpdateFlavor case, we don't care
-        # about the access list for the current flavor anymore as we're about
-        # to replace it.
-        if request.method == 'POST':
-            return
-
-        # Get list of flavor projects if the flavor is not public.
-        flavor_access = []
-        try:
-            if error_id:
-                error = kedb_api.error_detail(error_id)
-                flavor_access = error.get("workarounds")
-        except Exception:
-            exceptions.handle(request, err_msg)
-
-        self.fields[field_name].initial = flavor_access
 
     class Meta:
-        name = _("Flavor Access")
-        slug = "update_flavor_access"
+        name = _("Error Workarounds")
+        slug = "update_error_workaounds"
 
-
-class UpdateFlavorAccess(workflows.UpdateMembersStep):
-    action_class = UpdateFlavorAccessAction
+class UpdateErrorWorkarounds(workflows.Step):
+    action_class = UpdateErrorWorkaroundsAction
     help_text = _("You can control access to this flavor by moving projects "
                   "from the left column to the right column. Only projects "
                   "in the right column can use the flavor. If there are no "
                   "projects in the right column, all projects can use the "
                   "flavor.")
-    available_list_title = _("All Projects")
-    members_list_title = _("Selected Projects")
-    no_available_text = _("No projects found.")
-    no_members_text = _("No projects selected. "
-                        "All projects can use the flavor.")
-    show_roles = False
-    depends_on = ("error_id",)
-    contributes = ("flavor_access",)
+    no_available_text = _("No workarounds found.")
 
-    def contribute(self, data, context):
-        if data:
-            member_field_name = self.get_member_field_name('member')
-            context['flavor_access'] = data
-        return context
+    template_name = "horizon_monitoring/errors/_update.html"
+    depends_on = ("id",)
+    contributes = ("error_id",)
 
+    def render(self):
+        """Renders the step."""
+        request = self.workflow.request
+        """mega psycho fuj, budeme delat jakobych to nikdy nenapsal"""
+        array = self.workflow.get_absolute_url().split("/")
+        error_id = array[-3]
+        step_template = template.loader.get_template(self.template_name)
+        data_ = kedb_api.error_detail(error_id).get("workarounds")
+        extra_context = {"form": self.action,
+                         "step": self,
+                         "workarounds_table": WorkaroundTable(request=request, data=data_)}
+        context = template.RequestContext(request, extra_context)
+        return step_template.render(context)
 
-class CreateError(workflows.Workflow):
-    slug = "create_error"
-    name = _("Create error")
-    finalize_button_name = _("Create error")
+class CreateFlavor(workflows.Workflow):
+    slug = "create_flavor"
+    name = _("Create Error")
+    finalize_button_name = _("Create Errorr")
     success_message = _('Created new error "%s".')
     failure_message = _('Unable to create error "%s".')
-    success_url = "horizon:monitorint:errors:index"
+    success_url = "horizon:monitoring:errors:index"
     default_steps = (CreateErrorInfo,
-                     UpdateFlavorAccess)
+                     UpdateErrorWorkarounds)
 
     def format_status_message(self, message):
         return message % self.context['name']
@@ -197,24 +151,19 @@ class CreateError(workflows.Workflow):
         return True
 
 
-class UpdateErrorInfoAction(CreateErrorInfoAction):
+class UpdateErrorAction(CreateErrorAction):
     error_id = forms.CharField(widget=forms.widgets.HiddenInput)
 
     class Meta:
-        name = _("Error Info")
+        name = _("Error detail")
         slug = 'update_info'
         help_text = _("From here you can edit the error details.")
 
     def clean(self):
-        name = self.cleaned_data.get('name')
-        id = self.cleaned_data.get('id')
-        check = self.cleaned_data.get('check')
-        
         return self.cleaned_data
 
-
-class UpdateErrorInfo(workflows.Step):
-    action_class = UpdateErrorInfoAction
+class UpdateError(workflows.Step):
+    action_class = UpdateErrorAction
     depends_on = ("error_id",)
     contributes = ("error_id",
                    "name",
@@ -222,54 +171,25 @@ class UpdateErrorInfo(workflows.Step):
                    "check",
                    "output_pattern",
                    "level",
-                   "severity")
+                   "severity",
+                   "ownership")
+
+from horizon_monitoring.utils.kedb_client import kedb_api
 
 class UpdateError(workflows.Workflow):
-    """base workflow
-    """
     slug = "update_error"
-    name = _("Edit error")
+    name = _("Edit Error")
     finalize_button_name = _("Save")
     success_message = _('Modified error "%s".')
     failure_message = _('Unable to modify error "%s".')
     success_url = "horizon:monitoring:errors:index"
-    default_steps = (UpdateErrorInfo,
-                     UpdateFlavorAccess)
+    default_steps = (UpdateError,
+                     UpdateErrorWorkarounds)
 
     def format_status_message(self, message):
         return message % self.context['name']
 
     def handle(self, request, data):
-        flavor_projects = data["flavor_access"]
-        is_public = not flavor_projects
-
-        # Update flavor information
-        try:
-            flavor_id = data['flavor_id']
-            # Grab any existing extra specs, because flavor edit is currently
-            # implemented as a delete followed by a create.
-            extras_dict = api.nova.flavor_get_extras(self.request,
-                                                     flavor_id,
-                                                     raw=True)
-            # Mark the existing flavor as deleted.
-            api.nova.flavor_delete(request, flavor_id)
-            # Then create a new flavor with the same name but a new ID.
-            # This is in the same try/except block as the delete call
-            # because if the delete fails the API will error out because
-            # active flavors can't have the same name.
-            flavor = api.nova.flavor_create(request,
-                                            data['name'],
-                                            data['memory_mb'],
-                                            data['vcpus'],
-                                            data['disk_gb'],
-                                            ephemeral=data['eph_gb'],
-                                            swap=data['swap_mb'],
-                                            is_public=is_public)
-            if (extras_dict):
-                api.nova.flavor_extra_set(request, flavor.id, extras_dict)
-        except Exception:
-            exceptions.handle(request, ignore=True)
-            return False
 
         # Add flavor access if the flavor is not public.
         for project in flavor_projects:

@@ -16,23 +16,29 @@ class IndexView(tables.DataTableView):
         return kedb_api.error_list
 
 
-class UpdateView(forms.ModalFormView):
+class UpdateView(workflows.WorkflowView):
     
-    #workflow_class = UpdateError
-    table_class = WorkaroundTable
-    form_class = ErrorDetailForm
-    template_name = 'horizon_monitoring/errors/detail.html'
+    workflow_class = UpdateError
+    #table_class = WorkaroundTable
+    #form_class = ErrorDetailForm
+    template_name = 'horizon_monitoring/errors/update.html'
     #context_object_name = 'form'
 
     def get_context_data(self, **kwargs):
+        """context ktery neni pro kazdy krok, ale v hlavni sablone ho lze vyrendrovat
+        lepsi je overridnout render metodu per Step, kde lze pohodlne pribalit context
+        """
         context = super(UpdateView, self).get_context_data(**kwargs)
         context['error'] = kedb_api.error_detail(self.kwargs['id'])
         context['workarounds'] = context['error'].get("workarounds", [])
-        context['workarounds_table'] = WorkaroundTable(request=self.request, data=context['workarounds'])
         return context
 
-    def get_initial(self):
-        return self.get_context_data()['error']
+    def get_initial(self, **kwargs):
+        context = super(UpdateView, self).get_initial(**kwargs)
+        context['error'] = kedb_api.error_detail(self.kwargs['id'])
+        context['workarounds'] = context['error'].get("workarounds", [])
+        context['workarounds_table'] = WorkaroundTable(request=self.request, data=context['workarounds'])
+        return context['error']
 
 class CreateView(forms.ModalFormView):
     """view, ktery bude vyvolavat akce nad eventem
