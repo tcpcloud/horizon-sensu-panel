@@ -22,9 +22,8 @@ class Kedb(object):
             request = requests.get('%s%s' % (self.api, path))
         elif method in ["POST", "PUT"]:
             headers = {"Content-Type": "application/json" }
-            _request = requests.Request(method, '%s%s' % (self.api, path),data=json.dumps(params),headers=headers)
-            prepped = _request.prepare()
-            request = requests.Session().send(prepped)
+            _request = requests.Request(method, '%s%s' % (self.api, path),data=json.dumps(params),headers=headers).prepare()
+            request = requests.Session().send(_request)
 
         if request.status_code in (200, 201):
             return request.json()
