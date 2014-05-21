@@ -4,11 +4,14 @@ from django.template.defaultfilters import timesince
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
+#from django import forms as django_forms
 from horizon import tables
 from horizon import forms
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.conf import settings
 from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
+from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
+
 
 """
 class ErrorDetailForm(forms.Form):

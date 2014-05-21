@@ -1,7 +1,10 @@
 # -*- coding: UTF-8 -*-
 from django.core import urlresolvers
+from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
+from horizon.tables.formset import FormsetDataTable
+from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
 
 class ErrorUpdate(tables.LinkAction):
     """error detail
@@ -16,6 +19,9 @@ class ErrorUpdate(tables.LinkAction):
 
     def allowed(self, request, instance):
         return True
+
+
+
 
 class KedbErrorsTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
@@ -36,3 +42,8 @@ class KedbErrorsTable(tables.DataTable):
         name = "errors"
         verbose_name = _("Known Errors Database")
         row_actions = (ErrorUpdate, )
+
+WorkaroundsFormSet = formset_factory(WorkaroundDetailForm)
+
+class KedbErrorsFormsetTable(formset.FormsetDataTable):
+    formset_class = WorkaroundsFormSet
