@@ -26,6 +26,7 @@ from horizon import exceptions
 from horizon import forms
 from horizon import workflows
 from horizon_monitoring.workarounds.tables import WorkaroundTable
+from .tables import KedbErrorsFormsetTable
 from openstack_dashboard import api
 from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
 
@@ -100,9 +101,11 @@ class UpdateErrorWorkarounds(workflows.Step):
         error_id = array[-3]
         step_template = template.loader.get_template(self.template_name)
         data_ = kedb_api.error_detail(error_id).get("workarounds")
+        kedb = KedbErrorsFormsetTable(request=request, data=data_)
         extra_context = {"form": self.action,
                          "step": self,
-                         "workarounds_table": WorkaroundTable(request=request, data=data_)}
+                         "workarounds_table": kedb,
+                         "formset": WorkaroundsFormSet(initial=data_, prefix="workarounds") }
         context = template.RequestContext(request, extra_context)
         return step_template.render(context)
 

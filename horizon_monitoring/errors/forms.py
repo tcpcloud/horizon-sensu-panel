@@ -10,7 +10,6 @@ from horizon import forms
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.conf import settings
 from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
-from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
 
 
 """
