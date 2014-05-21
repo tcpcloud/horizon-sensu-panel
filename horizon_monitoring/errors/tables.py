@@ -24,6 +24,7 @@ class KedbErrorsTable(tables.DataTable):
     check = tables.Column('check', verbose_name=_("Check"))
     severity = tables.Column('severity', verbose_name=_("Severity"))
     level = tables.Column('level', verbose_name=_("Level"))
+    ownership = tables.Column('ownership', verbose_name=_("Ownership"))
 
     def get_object_id(self, datum):
         return datum['name']
