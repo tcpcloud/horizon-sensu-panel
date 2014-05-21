@@ -18,6 +18,21 @@ class WorkaroundDetail(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+class WorkaroundUpdate(tables.LinkAction):
+    """workaround detail
+    """
+    name = "workaround_update"
+    verbose_name = _("Workaround update")
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, workaround):
+        url = "horizon:monitoring:workarounds:update"
+
+        return urlresolvers.reverse(url, args=(workaround.get("id"),))
+
+    def allowed(self, request, instance):
+        return True
+
 class WorkaroundDelete(tables.DeleteAction):
 
     data_type_singular = _("Workaround")
@@ -56,4 +71,4 @@ class WorkaroundTable(tables.DataTable):
     class Meta:
         name = "workarounds"
         verbose_name = _("Workarounds list")
-        row_actions = (WorkaroundDelete, )
+        row_actions = (WorkaroundDelete, WorkaroundUpdate, )

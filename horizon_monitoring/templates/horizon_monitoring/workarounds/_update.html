@@ -1,0 +1,19 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}detail_workaround{% endblock %}
+
+{% block form_action %}{% url "horizon:monitoring:workarounds:update" workaround_id %}{% endblock %}
+{% block modal-header %}Workaround detail{% endblock %}
+
+{% block modal-body %}
+<div class="center">
+  {% include "horizon/common/_form_fields.html" %}
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Save" %}" />
+  <a href="{% url "horizon:monitoring:errors:index" %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}
