@@ -10,20 +10,24 @@ try:
 except:
     include_kedb = False
 
-if include_kedb:
-    monitoring_panels = ('events', 'errors', 'workarounds', 'stashes', 'checks', 'clients', 'info',  )
-else:
-    monitoring_panels = ('events', 'stashes', 'checks', 'clients', 'info', )
-
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
     name = _("Monitoring")
-    panels = monitoring_panels
+    panels =  ('events', 'stashes', 'checks', 'clients', 'info', )
+
+class KEDBPanels(horizon.PanelGroup):
+    slug = "kedb"
+    name = _("KEDB")
+    panels = ('errors', 'workarounds',)
 
 class MonitoringDashboard(horizon.Dashboard):
     name = _("Monitoring")
     slug = "monitoring"
-    panels = (MonitoringPanels,)
+    if include_kedb:
+        panels = (MonitoringPanels, KEDBPanels)
+    else:
+        panels = (MonitoringPanels)
+
     default_panel = 'events'
 #    permissions = ('openstack.roles.admin',)
 
