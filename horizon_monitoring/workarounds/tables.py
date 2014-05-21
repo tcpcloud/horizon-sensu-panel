@@ -1,6 +1,7 @@
 from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
+from horizon_monitoring.utils.kedb_client import kedb_api
 
 class WorkaroundDetail(tables.LinkAction):
     """workaround detail
@@ -13,6 +14,17 @@ class WorkaroundDetail(tables.LinkAction):
         url = "horizon:monitoring:workarounds:detail"
 
         return urlresolvers.reverse(url, args=(workaround.get("id"),))
+
+    def allowed(self, request, instance):
+        return True
+
+class WorkaroundDelete(tables.DeleteAction):
+
+    data_type_singular = _("Workaround")
+    data_type_plural = _("Workarounds")
+
+    def delete(self, request, obj_id):
+        kedb_api.workaround_delete(obj_id)
 
     def allowed(self, request, instance):
         return True
@@ -44,4 +56,4 @@ class WorkaroundTable(tables.DataTable):
     class Meta:
         name = "workarounds"
         verbose_name = _("Workarounds list")
-        #row_actions = (WorkaroundDetail, )
+        row_actions = (WorkaroundDelete, )

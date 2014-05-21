@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import tables
 from horizon.tables import formset
 from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
+from horizon_monitoring.utils.kedb_client import kedb_api
 
 class ErrorUpdate(tables.LinkAction):
     """error detail
@@ -20,6 +21,32 @@ class ErrorUpdate(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+class ErrorDelete(tables.DeleteAction):
+    """error delete
+    """
+    data_type_singular = _("Error")
+    data_type_plural = _("Errors")
+
+    def delete(self, request, obj_id):
+        kedb_api.error_delete(request, obj_id)
+
+    def allowed(self, request, instance):
+        return True
+
+class ErrorCreate(tables.LinkAction):
+    """error create
+    """
+    name = "error_create"
+    verbose_name = _("Error create")
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, error):
+        url = "horizon:monitoring:errors:create"
+        return urlresolvers.reverse(url, args=(error.get("id"),))
+
+    def allowed(self, request, instance):
+        return True
+
 class KedbErrorsTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
@@ -30,7 +57,7 @@ class KedbErrorsTable(tables.DataTable):
     ownership = tables.Column('ownership', verbose_name=_("Ownership"))
 
     def get_object_id(self, datum):
-        return datum['name']
+        return datum['id']
 
     def get_object_display(self, datum):
         return datum['name']
@@ -38,7 +65,8 @@ class KedbErrorsTable(tables.DataTable):
     class Meta:
         name = "errors"
         verbose_name = _("Known Errors Database")
-        row_actions = (ErrorUpdate, )
+        row_actions = (ErrorUpdate, ErrorDelete )
+        table_actions= (ErrorCreate, )
 
 WorkaroundsFormSet = formset_factory(WorkaroundDetailForm)
 from random import randint
