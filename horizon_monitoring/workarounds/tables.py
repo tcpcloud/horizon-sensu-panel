@@ -17,11 +17,23 @@ class WorkaroundDetail(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+class ErrorColumn(tables.Column):
+
+    def get_raw_data(self, datum):
+        return datum["error_detail"]["name"]
+
 class WorkaroundTable(tables.DataTable):
+
+    def get_error_link(self):
+        url = "horizon:monitoring:errors:update"
+        error_id = self.get("error_detail").get("id")
+        return urlresolvers.reverse(url, args=(error_id,))
 
     id = tables.Column('id', verbose_name=_("ID"))
     description = tables.Column('description', verbose_name=_("Description"))
-    known_error = tables.Column('known_error', verbose_name=_("Known_error"))
+    known_error = ErrorColumn('known_error', verbose_name=_("Known_error"), link=get_error_link)
+    action = tables.Column('action', verbose_name=_("Action"))
+    engine = tables.Column('engine', verbose_name=_("Engine"))
     
     def get_object_id(self, datum):
         return datum['id']
