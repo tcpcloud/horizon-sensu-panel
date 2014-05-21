@@ -53,6 +53,20 @@ class EventDetail(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+class ErrorCreate(tables.LinkAction):
+    """error create
+    """
+    name = "error_create"
+    verbose_name = _("Create Error")
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, datum):
+        url = "horizon:monitoring:errors:create_check"
+        return urlresolvers.reverse(url, args=[datum.get("check")])
+
+    def allowed(self, request, instance):
+        return True
+
 class SilenceCheck(tables.LinkAction):
     name = "silence_check"  
     verbose_name = _("Silence Check")
@@ -87,7 +101,7 @@ class SensuEventsTable(tables.DataTable):
     class Meta:
         name = "events"
         verbose_name = _("Current Events")
-        row_actions = (EventDetail, ResolveEvent, RecheckEvent, SilenceCheck,)# SilenceClient)
+        row_actions = (EventDetail, ResolveEvent, RecheckEvent, SilenceCheck, ErrorCreate)# SilenceClient)
         table_actions = (FullScreenView, )
 
 class FullScreenSensuEventsTable(tables.DataTable):

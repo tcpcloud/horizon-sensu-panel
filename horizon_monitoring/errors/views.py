@@ -44,7 +44,10 @@ class CreateView(forms.ModalFormView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
+        check = self.kwargs.get("check", None)
+        if check:
+            context["check"] = check
         return context
 
     def get_initial(self):
-        return {}
+        return self.get_context_data()
