@@ -64,3 +64,13 @@ class ErrorCreateForm(ErrorDetailForm):
             exceptions.handle(request, _("Unable to create error."), redirect=redirect)
         
         return True
+
+class ErrorCheckCreateForm(ErrorCreateForm):
+    """mel by jit volat bez sensu checku tak i snim
+    """
+    resolve = forms.BooleanField(required=True, initial=False, label=u"Resolve check ?")
+    silence = forms.BooleanField(required=True, initial=False, label=u"Silence check ?")
+
+    def __init__(self, *args, **kwargs):
+        super(ErrorCheckCreateForm, self).__init__(*args, **kwargs)
+        self.fields.keyOrder = ['silence','resolve','name','level', 'severity', 'description', 'check', 'output_pattern', 'ownership']

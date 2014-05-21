@@ -8,7 +8,7 @@ from horizon_monitoring.utils.sensu_client import sensu_api
 
 from .tables import KedbErrorsTable
 from horizon_monitoring.workarounds.tables import WorkaroundTable
-from .forms import ErrorDetailForm, ErrorCreateForm
+from .forms import ErrorDetailForm, ErrorCreateForm, ErrorCheckCreateForm
 from .workflows import UpdateError
 
 class IndexView(tables.DataTableView):
@@ -43,6 +43,12 @@ class CreateView(forms.ModalFormView):
     form_class = ErrorCreateForm
     template_name = 'horizon_monitoring/errors/create.html'
     success_url = reverse_lazy("horizon:monitoring:errors:index")
+
+    def get_form(self, form_class):
+        """Returns an instance of the form to be used in this view."""
+        if self.kwargs.get("check", None):
+            return ErrorCheckCreateForm(self.request, **self.get_form_kwargs())
+        return form_class(self.request, **self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
