@@ -30,8 +30,8 @@ class WorkaroundTable(tables.DataTable):
         return urlresolvers.reverse(url, args=(error_id,))
 
     id = tables.Column('id', verbose_name=_("ID"))
+    known_error = ErrorColumn('known_error', verbose_name=_("Known error"), link=get_error_link)
     description = tables.Column('description', verbose_name=_("Description"))
-    known_error = ErrorColumn('known_error', verbose_name=_("Known_error"), link=get_error_link)
     action = tables.Column('action', verbose_name=_("Action"))
     engine = tables.Column('engine', verbose_name=_("Engine"))
     
@@ -44,4 +44,4 @@ class WorkaroundTable(tables.DataTable):
     class Meta:
         name = "workarounds"
         verbose_name = _("Workarounds list")
-        row_actions = (WorkaroundDetail, )
+        #row_actions = (WorkaroundDetail, )
