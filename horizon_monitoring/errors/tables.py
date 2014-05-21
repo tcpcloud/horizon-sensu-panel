@@ -51,7 +51,7 @@ class WorkaroundCreate(tables.LinkAction):
     """workaround create
     """
     name = "workaround_create"
-    verbose_name = _("Create Workraound")
+    verbose_name = _("Create Workaround")
     classes = ("ajax-modal", "btn-edit")
 
     def get_link_url(self, error):

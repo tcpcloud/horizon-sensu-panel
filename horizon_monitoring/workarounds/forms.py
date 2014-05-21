@@ -20,8 +20,8 @@ ENGINE_CHOICES = (
 
 class WorkaroundDetailForm(django_forms.Form):
 
-    description = forms.CharField(label=u"description", required=True, widget=forms.Textarea)
-    action = forms.CharField(label=u"action", required=False, widget=forms.Textarea)
+    description = forms.CharField(label=u"Description", required=True, widget=forms.Textarea)
+    action = forms.CharField(label=u"Action", required=False, widget=forms.Textarea)
     known_error = forms.CharField(label=u"Known error", required=True)
     engine = forms.ChoiceField(required=True, initial='salt', choices=ENGINE_CHOICES)
 
@@ -34,8 +34,8 @@ class WorkaroundDetailForm(django_forms.Form):
 
 class WorkaroundCreateForm(forms.SelfHandlingForm):
 
-    description = forms.CharField(label=u"description", required=True, widget=forms.Textarea)
-    action = forms.CharField(label=u"action", required=False, widget=forms.Textarea)
+    description = forms.CharField(label=u"Description", required=True, widget=forms.Textarea)
+    action = forms.CharField(label=u"Action", required=False, widget=forms.Textarea)
     known_error = forms.CharField(label=u"Known error", required=True)
     engine = forms.ChoiceField(required=True, initial='salt', choices=ENGINE_CHOICES)
 
