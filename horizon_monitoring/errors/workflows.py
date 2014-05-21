@@ -91,7 +91,7 @@ class UpdateErrorWorkarounds(workflows.Step):
         """Renders the step."""
         request = self.workflow.request
         step_template = template.loader.get_template(self.template_name)
-        data = kedb_api.error_detail(self.workflow.context['id']).get("workarounds")
+        data = kedb_api.error_update(self.workflow.context['id']).get("workarounds")
         kedb = KedbErrorsFormsetTable(request=request, data=data)
         extra_context = {"form": self.action,
                          "step": self,
@@ -165,7 +165,6 @@ class UpdateErrorInfo(workflows.Step):
                    "level",
                    "severity",
                    "ownership")
-
 
 class UpdateError(workflows.Workflow):
     slug = "update_error"
