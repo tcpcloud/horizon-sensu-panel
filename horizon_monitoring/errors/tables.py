@@ -37,12 +37,12 @@ class ErrorCreate(tables.LinkAction):
     """error create
     """
     name = "error_create"
-    verbose_name = _("Error create")
+    verbose_name = _("Create Error")
     classes = ("ajax-modal", "btn-edit")
 
-    def get_link_url(self, error):
+    def get_link_url(self):
         url = "horizon:monitoring:errors:create"
-        return urlresolvers.reverse(url, args=(error.get("id"),))
+        return urlresolvers.reverse(url, args=[])
 
     def allowed(self, request, instance):
         return True
@@ -51,7 +51,7 @@ class WorkaroundCreate(tables.LinkAction):
     """workaround create
     """
     name = "workaround_create"
-    verbose_name = _("Workaound create")
+    verbose_name = _("Create Workraound")
     classes = ("ajax-modal", "btn-edit")
 
     def get_link_url(self, error):

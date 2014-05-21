@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse_lazy
 from horizon import tables
 from horizon import forms
 from horizon import workflows
@@ -5,7 +6,7 @@ from horizon import workflows
 from horizon_monitoring.utils.kedb_client import kedb_api
 from .tables import KedbErrorsTable
 from horizon_monitoring.workarounds.tables import WorkaroundTable
-from .forms import ErrorDetailForm
+from .forms import ErrorDetailForm, ErrorCreateForm
 from .workflows import UpdateError
 
 class IndexView(tables.DataTableView):
@@ -36,8 +37,14 @@ class UpdateView(workflows.WorkflowView):
         return context['error']
 
 class CreateView(forms.ModalFormView):
-    """view, ktery bude vyvolavat akce nad eventem
-    """
-    form_class = ErrorDetailForm
-    table_class = WorkaroundTable
-    template_name = 'horizon_monitoring/errors/detail.html'
+
+    form_class = ErrorCreateForm
+    template_name = 'horizon_monitoring/errors/create.html'
+    success_url = reverse_lazy("horizon:monitoring:errors:index")
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
+        return context
+
+    def get_initial(self):
+        return {}

@@ -15,7 +15,7 @@ class IndexView(tables.DataTableView):
 
 class CreateView(forms.ModalFormView):
     form_class = WorkaroundCreateForm
-    template_name = 'horizon_monitoring/errors/create.html'
+    template_name = 'horizon_monitoring/workarounds/create.html'
     success_url = reverse_lazy("horizon:monitoring:workarounds:index")
     
     def get_context_data(self, **kwargs):

@@ -7,10 +7,12 @@ from django.template.defaultfilters import slugify
 #from django import forms as django_forms
 from horizon import tables
 from horizon import forms
+from horizon import exceptions
+from horizon import messages
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.conf import settings
 from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
-
+from horizon_monitoring.utils.kedb_client import kedb_api
 
 """
 class ErrorDetailForm(forms.Form):
@@ -46,10 +48,19 @@ class ErrorDetailForm(forms.SelfHandlingForm):
         pass
 
 class ErrorCreateForm(ErrorDetailForm):
-    """volat lze jen nad danym checkem
+    """mel by jit volat bez sensu checku tak i snim
     """
+
     def __init__(self, *args, **kwargs):
         super(ErrorCreateForm, self).__init__(*args, **kwargs)
 
     def handle(self, request, data):
-        pass
+        
+        try:
+            response = kedb_api.error_create(data)
+            messages.success(request, _('Create error %s.') % response.get("name"))
+        except Exception:
+            redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
+            exceptions.handle(request, _("Unable to create error."), redirect=redirect)
+        
+        return True

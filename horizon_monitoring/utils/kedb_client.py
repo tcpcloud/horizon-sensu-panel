@@ -72,9 +72,9 @@ class Kedb(object):
             return self.request(url)
         return self.request(url, "PUT", data)
 
-    def error_create(self, error, data):
-        url = '/known-errors'
-        return self.request(url, "PUT", data)
+    def error_create(self, data, request=None):
+        url = '/known-errors/'
+        return self.request(url, "POST", data, request)
 
     def error_delete(self, request, error):
         url = '/known-errors/%s/' % (error)
