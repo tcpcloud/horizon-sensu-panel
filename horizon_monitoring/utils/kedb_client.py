@@ -64,7 +64,7 @@ class Kedb(object):
 
     def workaround_create(self, workaround):
         url = '/workarounds/'
-        return self.request(url, "PUT", workaround)
+        return self.request(url, "POST", workaround)
 
     def error_update(self, error, data=None):
         url = '/known-errors/%s/' % (error)

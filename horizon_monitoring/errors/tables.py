@@ -47,6 +47,20 @@ class ErrorCreate(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+class WorkaroundCreate(tables.LinkAction):
+    """workaround create
+    """
+    name = "workaround_create"
+    verbose_name = _("Workaound create")
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, error):
+        url = "horizon:monitoring:workarounds:create"
+        return urlresolvers.reverse(url, args=(error.get("id"),))
+
+    def allowed(self, request, instance):
+        return True
+
 class KedbErrorsTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
@@ -65,7 +79,7 @@ class KedbErrorsTable(tables.DataTable):
     class Meta:
         name = "errors"
         verbose_name = _("Known Errors Database")
-        row_actions = (ErrorUpdate, ErrorDelete )
+        row_actions = (ErrorUpdate, WorkaroundCreate, ErrorDelete )
         table_actions= (ErrorCreate, )
 
 WorkaroundsFormSet = formset_factory(WorkaroundDetailForm)
