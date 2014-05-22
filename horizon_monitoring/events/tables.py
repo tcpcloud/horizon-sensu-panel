@@ -9,6 +9,7 @@ from horizon import tables
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
+from horizon_monitoring.utils.sensu_client import sensu_api
 
 class FullScreenView(tables.LinkAction):
     name = "fullscreen_view"
@@ -28,14 +29,21 @@ class RecheckEvent(tables.LinkAction):
     def get_link_url(self, event):
         return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
 
-class ResolveEvent(tables.LinkAction):
+class ResolveEvent(tables.BatchAction):
+    action_present = ("Resolve",)
+    action_past = ("Resolved",)
+    data_type_singular = _("Event")
+    data_type_plural = _("Events")
     name = "resolve_event"
     verbose_name = _("Resolve Event")
-    url = "horizon:monitoring:events:resolve"
-    classes = ("ajax-modal", "btn-edit")
+    success_url = "horizon:monitoring:events:index"
+    classes = ("btn-danger", "btn-delete")
 
-    def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
+    def action(self, request, event):
+        response = sensu_api.event_resolve(event['check'], event['client'])
+
+    def allowed(self, request, instance):
+        return True
 
 class EventDetail(tables.LinkAction):
     name = "event_detail"
@@ -124,7 +132,7 @@ class SensuEventsTable(tables.DataTable):
         name = "events"
         verbose_name = _("Current Events")
         row_actions = (EventDetail, ResolveEvent, RecheckEvent, SilenceCheck, ErrorCreate)# SilenceClient)
-        table_actions = (FullScreenView, )
+        table_actions = (FullScreenView, ResolveEvent )
 
 class FullScreenSensuEventsTable(tables.DataTable):
     client = tables.Column('client', verbose_name=_("Client"))
