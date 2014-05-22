@@ -5,6 +5,7 @@ from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
+from horizon_monitoring.utils.tables import FilterAction
 
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
@@ -132,7 +133,7 @@ class SensuEventsTable(tables.DataTable):
         name = "events"
         verbose_name = _("Current Events")
         row_actions = (EventDetail, ResolveEvent, RecheckEvent, SilenceCheck, ErrorCreate)# SilenceClient)
-        table_actions = (FullScreenView, ResolveEvent )
+        table_actions = (FullScreenView, ResolveEvent, FilterAction )
 
 class FullScreenSensuEventsTable(SensuEventsTable):
     
