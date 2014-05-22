@@ -21,16 +21,53 @@ class FullScreenView(tables.LinkAction):
     def get_link_url(self):
         return urlresolvers.reverse(self.url, args=[])
 
-class RecheckEvent(tables.LinkAction):
+class EventAction(tables.BatchAction):
+    """base event action"""
+    data_type_singular = _("Event")
+    data_type_plural = _("Events")
+
+    verbose_name = _("Resolve Event")
+    success_url = "horizon:monitoring:events:index"
+
+    def get_check_client(self, object_id):
+        check, client = None, None
+        try:
+            split = object_id.split("-")
+            check = split[1]
+            client = split[0]
+        except Exception, e:
+            pass
+        finally:
+            return check, client
+
+    def resolve(self, request, object_id):
+        check, client = self.get_check_client(object_id)
+        response = sensu_api.event_resolve(check, client)
+
+    def recheck(self, request, object_id):
+        check, client = self.get_check_client(object_id)
+        response = sensu_api.event_recheck(check, client)
+
+    def action(self, request, object_id):
+        pass
+
+class RecheckEvent(EventAction):
+    action_present = ("Recheck",)
+    action_past = ("Rechecked",)
+    data_type_singular = _("Event")
+    data_type_plural = _("Events")
     name = "recheck_event"
-    verbose_name = _("Recheck Event")
-    url = "horizon:monitoring:events:recheck"
-    classes = ("ajax-modal", "btn-edit")
+    verbose_name = _("Resolve Event")
+    success_url = "horizon:monitoring:events:index"
+    classes = ("btn-danger", "btn-info")
 
-    def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
+    def action(self, request, object_id):
+        self.recheck(request, object_id)
 
-class ResolveEvent(tables.BatchAction):
+    def allowed(self, request, instance):
+        return True
+
+class ResolveEvent(EventAction):
     action_present = ("Resolve",)
     action_past = ("Resolved",)
     data_type_singular = _("Event")
@@ -40,8 +77,8 @@ class ResolveEvent(tables.BatchAction):
     success_url = "horizon:monitoring:events:index"
     classes = ("btn-danger", "btn-delete")
 
-    def action(self, request, event):
-        response = sensu_api.event_resolve(event['check'], event['client'])
+    def action(self, request, object_id):
+        self.resolve(request, object_id)
 
     def allowed(self, request, instance):
         return True
@@ -129,11 +166,14 @@ class SensuEventsTable(tables.DataTable):
     def get_object_id(self, datum):
         return '%s-%s' % (datum['client'], datum['check'])
 
+    def get_object_display(self, datum):
+        return '%s-%s' % (datum['client'], datum['check'])
+
     class Meta:
         name = "events"
         verbose_name = _("Current Events")
         row_actions = (EventDetail, ResolveEvent, RecheckEvent, SilenceCheck, ErrorCreate)# SilenceClient)
-        table_actions = (FullScreenView, ResolveEvent, FilterAction )
+        table_actions = (FullScreenView, ResolveEvent, FilterAction, RecheckEvent )
 
 class FullScreenSensuEventsTable(SensuEventsTable):
     
