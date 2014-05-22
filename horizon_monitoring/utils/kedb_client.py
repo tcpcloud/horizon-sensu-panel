@@ -7,6 +7,8 @@ from django.conf import settings
 
 log = logging.getLogger('utils.kedb')
 
+#from .request_util import Req
+
 class Kedb(object):
 
     host = settings.KEDB_HOST
@@ -44,11 +46,11 @@ class Kedb(object):
 
     @property
     def workaround_list(self):
-        return self.request('/api/workarounds')
+        return self.request('/workarounds')
 
     @property
     def error_list(self):
-        return self.request('/api/known-errors')
+        return self.request('/known-errors')
 
     def event_list(self, events):
         url = 'http://%s:%s/event-list/' % (self.host, self.port)
