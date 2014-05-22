@@ -37,8 +37,8 @@ class ErrorDetailForm(forms.SelfHandlingForm):
 
     check = forms.CharField(label=u"Sensu check", max_length=255, required=True)
     output_pattern = forms.CharField(label=u"Output pattern", required=False, widget=forms.Textarea)
-    level = forms.ChoiceField(label=u"Level", required=True, choices=LEVEL_CHOICES, initial='level1')
-    severity = forms.ChoiceField(label=u"Severity", required=True, choices=SEVERITY_CHOICES, initial='medium')
+    level = forms.ChoiceField(label=u"Level", required=True, choices=LEVEL_CHOICES)
+    severity = forms.ChoiceField(label=u"Severity", required=True, choices=SEVERITY_CHOICES)
     ownership = forms.ChoiceField(required=True, initial='cloudlab', choices=OWNERSHIP_CHOICES)
 
     def __init__(self, *args, **kwargs):
@@ -70,28 +70,30 @@ class ErrorCheckCreateForm(ErrorDetailForm):
     """mel by jit volat bez sensu checku tak i snim
     """
 
-    resolve = forms.BooleanField(required=True, initial=False, label=u"Resolve check ?")
+    #resolve = forms.BooleanField(required=True, initial=False, label=u"Resolve check ?")
     #silence = forms.BooleanField(required=True, initial=False, label=u"Silence check ?")
 
     def __init__(self, *args, **kwargs):
         super(ErrorCheckCreateForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['resolve','name','level', 'severity', 'description', 'check', 'output_pattern', 'ownership']
+        self.fields.keyOrder = ['name', 'level', 'severity', 'description', 'check', 'output_pattern', 'ownership']
 
     def handle(self, request, data):
         
         try:
             response = kedb_api.error_create(data)
             messages.success(request, _('Create error %s.') % response.get("name"))
-            
+     
+            """       
             if data.get("resolve", False):
                 try:
                     response = sensu_api.event_resolve(data.get("check"), data.get("client"))
                     messages.success(request, _('Resolving event %s.') % response)
                 except Exception, e:
                     messages.error(request, _('In Resolving event %s.') % response)
-        
+            """
+
         except Exception:
             redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
-            exceptions.handle(request, _("Unable to create error."), redirect=redirect)
+            exceptions.handle(request, _("Unable to create kwown error."), redirect=redirect)
 
         return True
