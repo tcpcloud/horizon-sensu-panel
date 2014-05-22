@@ -134,17 +134,12 @@ class SensuEventsTable(tables.DataTable):
         row_actions = (EventDetail, ResolveEvent, RecheckEvent, SilenceCheck, ErrorCreate)# SilenceClient)
         table_actions = (FullScreenView, ResolveEvent )
 
-class FullScreenSensuEventsTable(tables.DataTable):
-    client = tables.Column('client', verbose_name=_("Client"))
-    check = tables.Column('check', verbose_name=_("Check"))
-    output = tables.Column('output', verbose_name=_("Output"), truncate=100)
-    status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
-    silenced = tables.Column('silenced', verbose_name=_("Silenced"), classes=('silenced_column',))
-    issued = tables.Column('issued', verbose_name=_("Last occurence"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
-
+class FullScreenSensuEventsTable(SensuEventsTable):
+    
     def get_object_id(self, datum):
         return '%s-%s' % (datum['client'], datum['check'])
 
     class Meta:
         name = "events"
         verbose_name = _("Current Events")
+        columns = ("client", "check", "output", "status", "silenced", "issued")
