@@ -6,6 +6,7 @@ from horizon import tables
 #from horizon.tables import formset
 from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
 from horizon_monitoring.utils.kedb_client import kedb_api
+from horizon_monitoring.utils.tables import FilterAction
 
 class ErrorUpdate(tables.LinkAction):
     """error detail
@@ -80,7 +81,7 @@ class KedbErrorsTable(tables.DataTable):
         name = "errors"
         verbose_name = _("Known Errors Database")
         row_actions = (ErrorUpdate, WorkaroundCreate, ErrorDelete)
-        table_actions= (ErrorCreate, ErrorDelete)
+        table_actions= (ErrorCreate, ErrorDelete, FilterAction)
 
 WorkaroundsFormSet = formset_factory(WorkaroundDetailForm)
 from random import randint
