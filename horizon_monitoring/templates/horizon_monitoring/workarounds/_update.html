@@ -8,7 +8,13 @@
 {% block modal-header %}Workaround detail{% endblock %}
 
 {% block modal-body %}
-<div class="center">
+<style type="text/css">
+.form-inline .form-field label { width:190px; float:left; }
+.form-inline .form-field .input { margin-left: 200px; }
+.form-inline textarea { width:420px; height: 100px; }
+.form-inline input, .form-inline button, .form-inline a.btn { margin-left: 0px; }
+</style>
+<div class="form-inline">
   {% include "horizon/common/_form_fields.html" %}
 </div>
 {% endblock %}
