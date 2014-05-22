@@ -126,19 +126,28 @@ class SilenceCheck(tables.LinkAction):
     name = "silence_check"  
     verbose_name = _("Silence Check")
     url = "horizon:monitoring:events:silence_check"
-    classes = ("ajax-modal", "btn")
+    classes = ("ajax-modal", "btn-edit")
 
     def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
+        return urlresolvers.reverse(self.url, args=[event['check'],])
 
 class SilenceClient(tables.LinkAction):
     name = "silence_client"  
     verbose_name = _("Silence Client")
     url = "horizon:monitoring:events:silence_client"
+    classes = ("ajax-modal", "btn-edit")
+
+    def get_link_url(self, event):
+        return urlresolvers.reverse(self.url, args=[event['client'],])
+
+class SilenceClientCheck(tables.LinkAction):
+    name = "silence_client_check"  
+    verbose_name = _("Silence Client check")
+    url = "horizon:monitoring:events:silence_client_check"
     classes = ("ajax-modal", "btn")
 
     def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
+        return urlresolvers.reverse(self.url, args=[event['check'] , event['client']])
 
 class SensuEventsTable(tables.DataTable):
 
