@@ -49,18 +49,20 @@ class Req(object):
             req = requests.Request(method, path, data=json.dumps(params),headers=headers).prepare()
             response = requests.Session().send(req)
 
-        """delete ok"""
-        if response.status_code == 204:
-            return True
+        try:
+            response = response.json()
+        except Exception, e:
 
-        if response.status_code in (200, 201):
-            return response.json()
-        else:
+            """delete ok"""
+            if response.status_code == 204:
+                return True
+
             if request:
                 """handle errors"""
                 messages.error(request, "%s - %s - %s - %s - %s" % (method, path, params, response.status_code, str(response.text)))
                 return {}
             return { 'status_code': response.status_code, 'text': response.text }
+        return response
 
 class BaseClient(object):
     """small util class for easy api manipulate
@@ -86,16 +88,16 @@ class BaseClient(object):
     host = None
     port = None
     protocol = "http"
-    api_prefix = "api"
+    api_prefix = "/api"
 
     req = Req()
 
     @property
-    def api(self, api_prefix="api"):
-        return  '{0}://{1}:{2}/{3}'.format(self.protocol.lower(),
+    def api(self):
+        return  '{0}://{1}:{2}{3}'.format(self.protocol.lower(),
                                             self.host, 
                                             self.port,
-                                            api_prefix)
+                                            self.api_prefix)
 
     def request(self, *args, **kwargs):
         """small util method for simplify create request with handled exceptions
