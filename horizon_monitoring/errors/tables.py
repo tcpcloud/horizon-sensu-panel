@@ -3,7 +3,7 @@ from django.core import urlresolvers
 from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
-from horizon.tables import formset
+#from horizon.tables import formset
 from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
 from horizon_monitoring.utils.kedb_client import kedb_api
 
@@ -85,7 +85,8 @@ class KedbErrorsTable(tables.DataTable):
 WorkaroundsFormSet = formset_factory(WorkaroundDetailForm)
 from random import randint
 
-class KedbErrorsFormsetTable(formset.FormsetDataTable):
+#class KedbErrorsFormsetTable(formset.FormsetDataTable):
+class KedbErrorsFormsetTable(tables.DataTable):
     formset_class = WorkaroundsFormSet
 
     def get_object_display(self, datum):

@@ -5,6 +5,13 @@ import logging
 
 from django.conf import settings
 
+try:
+    from horizon_monitoring.utils.kedb_client import kedb_api
+    host = settings.KEDB_HOST
+    include_kedb = True
+except:
+    include_kedb = False
+
 log = logging.getLogger('utils.sensu')
 
 class Sensu(object):
@@ -67,6 +74,8 @@ class Sensu(object):
     def event_list(self):
         events = self.request('/events')
         stashes = self.request('/stashes')
+        if include_kedb:
+          events = kedb_api.event_list(events)
         stash_map = []
         for stash in stashes:
             stash_map.append(stash['path'])

@@ -44,11 +44,17 @@ class Kedb(object):
 
     @property
     def workaround_list(self):
-        return self.request('/workarounds')
+        return self.request('/api/workarounds')
 
     @property
     def error_list(self):
-        return self.request('/known-errors')
+        return self.request('/api/known-errors')
+
+    @property
+    def event_ist(self, payload):
+        url = '/event-list/'
+        response = requests.post(url, data=json.dumps(payload))
+        return response.json()
 
     def workaround_update(self, workaround, data=None):
         """zapouzdruje jak detail tak update
