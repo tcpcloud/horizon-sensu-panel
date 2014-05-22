@@ -79,8 +79,8 @@ class KedbErrorsTable(tables.DataTable):
     class Meta:
         name = "errors"
         verbose_name = _("Known Errors Database")
-        row_actions = (ErrorUpdate, WorkaroundCreate, ErrorDelete )
-        table_actions= (ErrorCreate, )
+        row_actions = (ErrorUpdate, WorkaroundCreate, ErrorDelete)
+        table_actions= (ErrorCreate, ErrorDelete)
 
 WorkaroundsFormSet = formset_factory(WorkaroundDetailForm)
 from random import randint
