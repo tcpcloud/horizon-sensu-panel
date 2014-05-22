@@ -7,11 +7,9 @@
   <h4>{% trans "Event" %}</h4>
   <hr class="header_rule">
   <dl>
-    <dt>{% trans "Flavor" %}</dt>
-    <dd>{{ instance.full_flavor.name }}</dd>
-    <dt>{% trans "RAM" %}</dt>
-    <dd>{{ instance.full_flavor.ram|mbformat }}</dd>
-    <dt>{% trans "VCPUs" %}</dt>
-    <dd>{{ instance.full_flavor.vcpus }} {% trans "VCPU" %}</dd>
+    <dt>{% trans "Check" %}</dt>
+    <dd>{{ instance.0.check }}</dd>
+    <dt>{% trans "Output" %}</dt>
+    <dd>{{ instance.0.output }}</dd>
   </dl>
 </div>
