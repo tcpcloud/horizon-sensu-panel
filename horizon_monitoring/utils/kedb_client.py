@@ -7,38 +7,15 @@ from django.conf import settings
 
 log = logging.getLogger('utils.kedb')
 
-#from .request_util import Req
+from .request_util import Req, BaseClient
 
-class Kedb(object):
+class Kedb(BaseClient):
 
     host = settings.KEDB_HOST
     port = settings.KEDB_PORT
 
     def __init__(self):
         pass
-
-    def request(self, path, method="GET", params={}, request=None):
-        log.debug("%s - %s - %s"%(method,path,params))
-
-        if method == "GET":
-            response = requests.get('%s%s' % (self.api, path))
-        elif method in ["POST", "PUT", "DELETE"]:
-            headers = {"Content-Type": "application/json" }
-            req = requests.Request(method, '%s%s' % (self.api, path),data=json.dumps(params),headers=headers).prepare()
-            response = requests.Session().send(req)
-
-        """delete ok"""
-        if response.status_code == 204:
-            return True
-
-        if response.status_code in (200, 201):
-            return response.json()
-        else:
-            if request:
-                """handle errors"""
-                messages.error(request, "%s - %s - %s - %s - %s" % (method, path, params, response.status_code, str(response.text)))
-                return {}
-            return { 'status_code': response.status_code, 'text': response.text }
 
     @property
     def api(self):
