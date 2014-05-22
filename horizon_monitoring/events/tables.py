@@ -109,7 +109,7 @@ class SensuEventsTable(tables.DataTable):
 
     client = tables.Column('client', verbose_name=_("Client"))
     check = tables.Column('check', verbose_name=_("Check"))
-    severity = tables.Column('severity', verbose_name=_("severity"))
+    known_error = tables.Column('known_error', verbose_name=_("Known"))
     output = tables.Column('output', verbose_name=_("Output"), truncate=100)
     status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"))
