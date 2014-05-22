@@ -14,21 +14,16 @@ except:
 
 log = logging.getLogger('utils.sensu')
 
-class Sensu(object):
+from .request_util import Req, BaseClient
+
+class Sensu(BaseClient):
 
     host = settings.SENSU_HOST
     port = settings.SENSU_PORT
+    api_prefix = ""
 
     def __init__(self):
         pass
-
-    def request(self, path):
-        request = requests.get('%s%s' % (self.api, path))
-        return request.json()
-
-    @property
-    def api(self):
-        return 'http://%s:%s' % (self.host, self.port)
 
     @property
     def check_list(self):
