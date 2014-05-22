@@ -9,14 +9,18 @@ from horizon import tables
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
-class StashDelete(tables.LinkAction):
-    name = "stash_delete"  
-    verbose_name = _("Delete Stash")
-    url = "horizon:monitoring:stashes:delete"
-    classes = ("ajax-modal", "btn")
+from horizon_monitoring.utils.sensu_client import sensu_api
 
-    def get_link_url(self, stash):
-        return urlresolvers.reverse(self.url, args=[stash['path'],])
+class StashDelete(tables.DeleteAction):
+    action_present = ("Delete",)
+    action_past = ("Deleted",)
+    data_type_singular = _("Stash")
+    data_type_plural = _("stashes")
+    name = "stash_delete"
+    success_url = "horizon:monitoring:stashes:index"
+
+    def delete(self, request, path):
+        sensu_api.stash_delete(path)
 
 class ReasonColumn(tables.Column):
 
@@ -34,6 +38,9 @@ class SensuStashesTable(tables.DataTable):
     created = CreatedColumn('created', verbose_name=_("Created"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces) )
     expire = tables.Column('expire', verbose_name=_("Expires"), )
 
+    def get_object_display(self, datum):
+        return datum['path']
+
     def get_object_id(self, datum):
         return datum['path']
 
@@ -41,4 +48,5 @@ class SensuStashesTable(tables.DataTable):
         name = "stashes"
         verbose_name = _("Stashes")
         row_actions = (StashDelete, )
+        table_actions = (StashDelete, )
 
