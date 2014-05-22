@@ -71,4 +71,5 @@ class WorkaroundTable(tables.DataTable):
     class Meta:
         name = "workarounds"
         verbose_name = _("Workarounds list")
-        row_actions = (WorkaroundDelete, WorkaroundUpdate, )
+        row_actions = (WorkaroundUpdate, WorkaroundDelete )
+        table_actions = (WorkaroundDelete, )
