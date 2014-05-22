@@ -6,6 +6,7 @@ from horizon import tables
 from django.template.defaultfilters import timesince
 
 from horizon_monitoring.utils.filters import timestamp_to_datetime, nonbreakable_spaces, join_list_with_comma
+from horizon_monitoring.utils.tables import FilterAction
 
 class SensuClientsTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_("Client Name"))
@@ -22,4 +23,4 @@ class SensuClientsTable(tables.DataTable):
     class Meta:
         name = "clients"
         verbose_name = _("Monitored Clients")
-
+        table_actions = (FilterAction, )

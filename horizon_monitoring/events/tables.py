@@ -191,7 +191,10 @@ class SensuEventsTable(tables.DataTable):
                         SilenceClient,
                         SilenceClientCheck,
                         ErrorCreate)# SilenceClient)
-        table_actions = (FullScreenView, ResolveEvent, FilterAction, RecheckEvent )
+        table_actions = (FullScreenView,
+                         ResolveEvent,
+                         FilterAction,
+                         RecheckEvent )
 
 class FullScreenSensuEventsTable(SensuEventsTable):
     

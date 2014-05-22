@@ -10,6 +10,7 @@ from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
 from horizon_monitoring.utils.sensu_client import sensu_api
+from horizon_monitoring.utils.tables import FilterAction
 
 class StashDelete(tables.DeleteAction):
     action_present = ("Delete",)
@@ -48,5 +49,5 @@ class SensuStashesTable(tables.DataTable):
         name = "stashes"
         verbose_name = _("Stashes")
         row_actions = (StashDelete, )
-        table_actions = (StashDelete, )
+        table_actions = (StashDelete, FilterAction )
 
