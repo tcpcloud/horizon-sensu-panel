@@ -142,7 +142,7 @@ class SilenceClient(tables.LinkAction):
 
 class SilenceClientCheck(tables.LinkAction):
     name = "silence_client_check"  
-    verbose_name = _("Silence Client check")
+    verbose_name = _("Silence Client Check")
     url = "horizon:monitoring:events:silence_client_check"
     classes = ("ajax-modal", "btn")
 
@@ -184,7 +184,13 @@ class SensuEventsTable(tables.DataTable):
     class Meta:
         name = "events"
         verbose_name = _("Current Events")
-        row_actions = (EventDetail, ResolveEvent, RecheckEvent, SilenceCheck, ErrorCreate)# SilenceClient)
+        row_actions = (EventDetail,
+                        ResolveEvent,
+                        RecheckEvent,
+                        SilenceCheck,
+                        SilenceClient,
+                        SilenceClientCheck,
+                        ErrorCreate)# SilenceClient)
         table_actions = (FullScreenView, ResolveEvent, FilterAction, RecheckEvent )
 
 class FullScreenSensuEventsTable(SensuEventsTable):
