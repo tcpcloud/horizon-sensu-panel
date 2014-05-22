@@ -18,10 +18,6 @@ class Kedb(BaseClient):
         pass
 
     @property
-    def api(self):
-        return 'http://%s:%s/api' % (self.host, self.port)
-
-    @property
     def workaround_list(self):
         return self.request('/workarounds')
 
