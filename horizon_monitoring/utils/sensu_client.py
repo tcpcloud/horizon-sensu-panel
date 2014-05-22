@@ -14,7 +14,7 @@ except:
 
 log = logging.getLogger('utils.sensu')
 
-from .request_util import Req, BaseClient
+from .request_util import BaseClient
 
 class Sensu(BaseClient):
 
