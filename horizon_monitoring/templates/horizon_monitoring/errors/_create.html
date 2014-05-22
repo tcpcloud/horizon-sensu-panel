@@ -13,14 +13,17 @@
 
 {% endblock %}
 
-{% block modal-header %}New Error{% endblock %}
+{% block modal-header %}New Known Error{% endblock %}
 
 {% block modal-body %}
-<div class="left">
+<style type="text/css">
+.form-inline .form-field label { width:190px; float:left; }
+.form-inline .form-field .input { margin-left: 200px; }
+.form-inline textarea { width:420px; height: 100px; }
+.form-inline input, .form-inline button, .form-inline a.btn { margin-left: 0px; }
+</style>
+<div class="form-inline">
   {% include "horizon/common/_form_fields.html" %}
-</div>
-<div class="right">
-  <h4>{% trans "Create Error" %}:</h4>
 </div>
 {% endblock %}
 
