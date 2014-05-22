@@ -26,10 +26,9 @@ class Kedb(BaseClient):
         return self.request('/known-errors')
 
     def event_list(self, events):
-        url = 'http://%s:%s/event-list/' % (self.host, self.port)
+        url = '/event-list/'
         payload = { "events": events }
-        response = requests.post(url, data=json.dumps(payload))
-        return response.json()
+        return self.request(url, "POST", payload)
 
     def workaround_update(self, workaround, data=None):
         """zapouzdruje jak detail tak update
