@@ -1,12 +1,12 @@
 LEVEL_CHOICES = (
-    ("level1", u"level 1"),
-    ("level2", u"level 2"),
+    ("l1", u"Level 1"),
+    ("l2", u"Level 2"),
 )
 
 SEVERITY_CHOICES = (
-    ("low", u"low"),
-    ("medium", u"medium"),
-    ("high", u"high"),
+    ("int", u"Internal"),
+    ("sla999", u"SLA 99.9"),
+    ("sla9999", u"SLA 99.99"),
 )
 
 OWNERSHIP_CHOICES = (
