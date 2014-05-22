@@ -106,10 +106,10 @@ class SensuEventsTable(tables.DataTable):
         except:
             return allowed
 
-
     client = tables.Column('client', verbose_name=_("Client"))
     check = tables.Column('check', verbose_name=_("Check"))
     known_error = tables.Column('known_error', verbose_name=_("Known"))
+    error_name = tables.Column('error_name', verbose_name=_("Error name"))
     output = tables.Column('output', verbose_name=_("Output"), truncate=100)
     status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"))
