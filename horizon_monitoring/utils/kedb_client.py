@@ -50,9 +50,8 @@ class Kedb(object):
     def error_list(self):
         return self.request('/api/known-errors')
 
-    @property
-    def event_ist(self, payload):
-        url = '/event-list/'
+    def event_list(self, payload):
+        url = '%s%s' % (self.api, '/event-list/')
         response = requests.post(url, data=json.dumps(payload))
         return response.json()
 
