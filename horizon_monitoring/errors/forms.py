@@ -79,9 +79,8 @@ class ErrorCheckCreateForm(ErrorDetailForm):
 
     def handle(self, request, data):
         
-        try:
-            response = kedb_api.error_create(data)
-            messages.success(request, _('Create error %s.') % response.get("name"))
+        response = kedb_api.error_create(data)
+        messages.success(request, _('Create error %s.') % response)
      
             """       
             if data.get("resolve", False):
@@ -92,8 +91,8 @@ class ErrorCheckCreateForm(ErrorDetailForm):
                     messages.error(request, _('In Resolving event %s.') % response)
             """
 
-        except Exception:
-            redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
-            exceptions.handle(request, _("Unable to create kwown error."), redirect=redirect)
+#        except Exception:
+#            redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
+ #           exceptions.handle(request, _("Unable to create kwown error."), redirect=redirect)
 
         return True

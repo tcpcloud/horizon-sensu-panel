@@ -51,3 +51,4 @@ class SilenceForm(EventForm):
             redirect = reverse('horizon:monitoring:events:index')
             exceptions.handle(request, _("Silence check."), redirect=redirect)
         return True
+

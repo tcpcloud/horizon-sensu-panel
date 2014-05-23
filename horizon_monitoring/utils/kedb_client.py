@@ -7,7 +7,7 @@ from django.conf import settings
 
 log = logging.getLogger('utils.kedb')
 
-from .request_util import BaseClient
+from .request_util import Req, BaseClient
 
 class Kedb(BaseClient):
 
@@ -26,7 +26,7 @@ class Kedb(BaseClient):
         return self.request('/known-errors')
 
     def event_list(self, events):
-        url = '/event-list/'
+        url = '/events/'
         payload = { "events": events }
         return self.request(url, "POST", payload)
 

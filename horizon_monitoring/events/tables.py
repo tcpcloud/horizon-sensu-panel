@@ -57,9 +57,9 @@ class RecheckEvent(EventAction):
     data_type_singular = _("Event")
     data_type_plural = _("Events")
     name = "recheck_event"
-    verbose_name = _("Resolve Event")
+    verbose_name = _("Recheck Event")
     success_url = "horizon:monitoring:events:index"
-    classes = ("btn-danger", "btn-info")
+    classes = ("btn-primary", "btn-info")
 
     def action(self, request, object_id):
         self.recheck(request, object_id)
@@ -75,7 +75,7 @@ class ResolveEvent(EventAction):
     name = "resolve_event"
     verbose_name = _("Resolve Event")
     success_url = "horizon:monitoring:events:index"
-    classes = ("btn-danger", "btn-delete")
+    classes = ("btn-primary", "btn-success")
 
     def action(self, request, object_id):
         self.resolve(request, object_id)
@@ -85,7 +85,7 @@ class ResolveEvent(EventAction):
 
 class EventDetail(tables.LinkAction):
     name = "event_detail"
-    verbose_name = _("Detail")
+    verbose_name = _("Event Detail")
     url = "horizon:monitoring:events:detail"
     classes = ("btn-edit")
 
@@ -124,7 +124,7 @@ class ErrorCreate(tables.LinkAction):
 
 class SilenceCheck(tables.LinkAction):
     name = "silence_check"  
-    verbose_name = _("Silence Check")
+    verbose_name = _("Globally Silence Check")
     url = "horizon:monitoring:events:silence_check"
     classes = ("ajax-modal", "btn-edit")
 
@@ -133,7 +133,7 @@ class SilenceCheck(tables.LinkAction):
 
 class SilenceClient(tables.LinkAction):
     name = "silence_client"  
-    verbose_name = _("Silence Client")
+    verbose_name = _("Silence All Checks on Client")
     url = "horizon:monitoring:events:silence_client"
     classes = ("ajax-modal", "btn-edit")
 
@@ -142,7 +142,7 @@ class SilenceClient(tables.LinkAction):
 
 class SilenceClientCheck(tables.LinkAction):
     name = "silence_client_check"  
-    verbose_name = _("Silence Client Check")
+    verbose_name = _("Silence Check on Client")
     url = "horizon:monitoring:events:silence_client_check"
     classes = ("ajax-modal", "btn")
 
@@ -167,8 +167,8 @@ class SensuEventsTable(tables.DataTable):
     if kedb:
         known_error = tables.Column('known_error', verbose_name=_("Known"))
         error_name = tables.Column('error_name', verbose_name=_("Error name"))
-        severity = tables.Column('severity', verbose_name=_("Error severity"))
-    output = tables.Column('output', verbose_name=_("Output"), truncate=100)
+#        severity = tables.Column('severity', verbose_name=_("Error severity"))
+    output = tables.Column('output', verbose_name=_("Output"), truncate=70)
     status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"))
     silenced = tables.Column('silenced', verbose_name=_("Silenced"), classes=('silenced_column',))

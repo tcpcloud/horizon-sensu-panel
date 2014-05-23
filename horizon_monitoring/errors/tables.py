@@ -65,8 +65,8 @@ class WorkaroundCreate(tables.LinkAction):
 class KedbErrorsTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
-    description = tables.Column('description', verbose_name=_("Description"))
     check = tables.Column('check', verbose_name=_("Check"))
+    output_pattern = tables.Column('output_pattern', verbose_name=_("Pattern"))
     severity = tables.Column('severity', verbose_name=_("Severity"))
     level = tables.Column('level', verbose_name=_("Level"))
     ownership = tables.Column('ownership', verbose_name=_("Ownership"))
