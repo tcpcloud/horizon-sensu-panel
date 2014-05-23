@@ -14,7 +14,7 @@ except:
 
 log = logging.getLogger('utils.sensu')
 
-from .request_util import BaseClient
+from horizon_contrib.utils.client import BaseClient
 
 class Sensu(BaseClient):
 

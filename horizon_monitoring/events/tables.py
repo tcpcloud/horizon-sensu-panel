@@ -145,12 +145,19 @@ class SilenceClientCheck(tables.LinkAction):
 
 class SensuEventsTable(tables.DataTable):
 
+    def get_error_link(self):
+        url = "horizon:monitoring:errors:update"
+        error_id = self.get("error_id", None)
+        if error_id:
+            return urlresolvers.reverse(url, args=(error_id,))
+        return ""
+
     client = tables.Column('client', verbose_name=_("Client"))
     check = tables.Column('check', verbose_name=_("Check"))
     
     if include_kedb:
         known_error = tables.Column('known_error', verbose_name=_("Known"))
-        error_name = tables.Column('error_name', verbose_name=_("Error name"))
+        error_name = tables.Column('error_name', verbose_name=_("Error name"), link=get_error_link)
 #        severity = tables.Column('severity', verbose_name=_("Error severity"))
     output = tables.Column('output', verbose_name=_("Output"), truncate=70)
     status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
