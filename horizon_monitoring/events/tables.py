@@ -12,6 +12,8 @@ from horizon_monitoring.utils.filters import timestamp_to_datetime, \
 
 from horizon_monitoring.utils.sensu_client import sensu_api
 
+from horizon_monitoring.dashboard import include_kedb
+
 class FullScreenView(tables.LinkAction):
     name = "fullscreen_view"
     verbose_name = _("Fullscreen Mode")
@@ -109,14 +111,10 @@ class ErrorCreate(tables.LinkAction):
 
     def allowed(self, request, instance):
         allowed = False
-        try:
-            kedb = getattr(settings, "KEDB_HOST", None)
-            if kedb:
+        if include_kedb:
+            if not instance.get("known_error", False):
                 allowed = True
-        except:
-            pass
-        finally:
-            return allowed
+        return allowed
 
 class SilenceCheck(tables.LinkAction):
     name = "silence_check"  
@@ -147,20 +145,10 @@ class SilenceClientCheck(tables.LinkAction):
 
 class SensuEventsTable(tables.DataTable):
 
-    @staticmethod
-    def kedb():
-        allowed = False
-        try:
-            kedb = getattr(settings, "KEDB_HOST", None)
-            if not kedb:
-                allowed = False
-        except:
-            return allowed
-
     client = tables.Column('client', verbose_name=_("Client"))
     check = tables.Column('check', verbose_name=_("Check"))
     
-    if kedb:
+    if include_kedb:
         known_error = tables.Column('known_error', verbose_name=_("Known"))
         error_name = tables.Column('error_name', verbose_name=_("Error name"))
 #        severity = tables.Column('severity', verbose_name=_("Error severity"))
