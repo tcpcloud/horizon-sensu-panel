@@ -44,10 +44,11 @@ class CreateView(forms.ModalFormView):
 
     form_class = ErrorCheckCreateForm
     template_name = 'horizon_monitoring/errors/create.html'
-    success_url = reverse_lazy("horizon:monitoring:errors:index")
+    success_url = reverse_lazy("horizon:monitoring:events:index")
 
     def get_form_class(self):
         if not self.get_context_data().get("check", None):
+            self.success_url = reverse_lazy("horizon:monitoring:errors:index")
             return ErrorCreateForm
         return self.form_class
 
