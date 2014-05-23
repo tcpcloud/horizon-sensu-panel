@@ -12,12 +12,12 @@ except:
 
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
-    name = _("Monitoring")
+    name = _("Service Monitoring")
     panels =  ('events', 'stashes', 'checks', 'clients', 'info', )
 
 class KEDBPanels(horizon.PanelGroup):
     slug = "kedb"
-    name = _("KEDB")
+    name = _("Known Errors DB")
     panels = ('errors', 'workarounds',)
 
 class MonitoringDashboard(horizon.Dashboard):
