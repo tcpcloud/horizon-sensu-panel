@@ -26,7 +26,7 @@ class StashDelete(tables.DeleteAction):
 class ReasonColumn(tables.Column):
 
     def get_raw_data(self, datum):
-        return datum['content']['reason']
+        return datum['content'].get('reason', "")
 
 class CreatedColumn(tables.Column):
 
