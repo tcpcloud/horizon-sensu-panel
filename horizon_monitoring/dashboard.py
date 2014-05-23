@@ -4,11 +4,12 @@ from django.utils.translation import ugettext_lazy as _
 
 import horizon
 
-try:
-    host = settings.KEDB_HOST
+include_kedb = False
+
+kedb = getattr(settings, "KEDB_HOST", None)
+
+if kedb:
     include_kedb = True
-except:
-    include_kedb = False
 
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
