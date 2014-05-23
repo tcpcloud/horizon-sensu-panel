@@ -54,8 +54,6 @@ class EventAction(tables.BatchAction):
 class RecheckEvent(EventAction):
     action_present = ("Recheck",)
     action_past = ("Rechecked",)
-    data_type_singular = _("Event")
-    data_type_plural = _("Events")
     name = "recheck_event"
     verbose_name = _("Recheck Event")
     success_url = "horizon:monitoring:events:index"
@@ -70,8 +68,6 @@ class RecheckEvent(EventAction):
 class ResolveEvent(EventAction):
     action_present = ("Resolve",)
     action_past = ("Resolved",)
-    data_type_singular = _("Event")
-    data_type_plural = _("Events")
     name = "resolve_event"
     verbose_name = _("Resolve Event")
     success_url = "horizon:monitoring:events:index"
