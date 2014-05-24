@@ -21,10 +21,15 @@ class CreateView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         context['known_error'] = self.kwargs['id']
+        context['form_url_action'] = self.success_url
         return context
 
     def get_initial(self):
         return self.get_context_data()
+
+class CreateFromErrorView(CreateView):
+    template_name = 'horizon_monitoring/errors/workaround_create.html'
+    success_url = reverse_lazy("horizon:monitoring:errors:index")
 
 class UpdateView(forms.ModalFormView):
     form_class = WorkaroundUpdateForm

@@ -20,11 +20,13 @@
 
 
 from django.utils.translation import ugettext_lazy as _
+from django.core import urlresolvers
 
 from django import template
 from horizon import exceptions
 from horizon import forms
 from horizon import workflows
+from horizon import messages
 from horizon_monitoring.workarounds.tables import WorkaroundTable
 from .tables import KedbErrorsFormsetTable, WorkaroundsFormSet
 from openstack_dashboard import api
@@ -84,14 +86,14 @@ class UpdateErrorWorkarounds(workflows.Step):
     no_available_text = _("No workarounds found.")
 
     template_name = "horizon_monitoring/errors/_update.html"
-    depends_on = ("id",)
+    depends_on = ("id", "workarounds")
     contributes = ("error_id",)
 
     def render(self):
         """Renders the step."""
         request = self.workflow.request
         step_template = template.loader.get_template(self.template_name)
-        data = kedb_api.error_update(self.workflow.context['id']).get("workarounds")
+        data = self.workflow.context['workarounds']
         kedb = KedbErrorsFormsetTable(request=request, data=data)
         extra_context = {"form": self.action,
                          "step": self,
@@ -158,7 +160,8 @@ class UpdateErrorAction(CreateErrorAction):
 class UpdateErrorInfo(workflows.Step):
     action_class = UpdateErrorAction
     depends_on = ("id",)
-    contributes = ("name",
+    contributes = ("id",
+                   "name",
                    "description",
                    "check",
                    "output_pattern",
@@ -180,11 +183,17 @@ class UpdateError(workflows.Workflow):
         return message % self.context['name']
 
     def handle(self, request, data):
+        """
+        if data["id"]:
+            messages.debug(request, data["id"])
+        """
         formset = WorkaroundsFormSet(request.POST, prefix="workarounds")
         workarounds = []
+        """
         for form in formset.forms:
             if form.is_valid():
                 workarounds.append(form.cleaned_data)       
+        """
         data["workarounds"] = workarounds
-        result = kedb_api.error_update(request=request,error=data["id"], data=data)
-        return result
+        result = kedb_api.error_update(error=data["id"], data=data)
+        return urlresolvers.reverse(self.success_url)
