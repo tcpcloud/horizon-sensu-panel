@@ -14,7 +14,8 @@ from horizon import workflows
 from horizon_monitoring.events.tables import SensuEventsTable, FullScreenSensuEventsTable
 from horizon_monitoring.events.tabs import SensuEventDetailTabs
 from horizon_monitoring.events.forms import SilenceForm
-from horizon_monitoring.utils.sensu_client import sensu_api
+from horizon_monitoring.utils.sensu_client import sensu_api, kedb_api
+from .workflows import DetailEvent
 
 class FullScreenIndexView(tables.DataTableView):
     table_class = FullScreenSensuEventsTable
@@ -44,6 +45,24 @@ class SilenceView(forms.ModalFormView):
     def get_initial(self):
         return self.get_context_data()
 
+class DetailView(workflows.WorkflowView):
+    
+    workflow_class = DetailEvent
+    #template_name = 'horizon_monitoring/errors/update.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailView, self).get_context_data(**kwargs)
+        context['event'] = sensu_api.event_detail(self.kwargs['check'], self.kwargs['client'])
+        context['workarounds'] = kedb_api.error_update(context['event'].get("error_id")).get("workarounds")
+        return context
+
+    def get_initial(self, **kwargs):
+        #context['id'] = self.kwargs['id']
+        context = {}
+        context['event'] = kedb_api.event_detail(self.kwargs['check'], self.kwargs['client'])
+        return context["event"]
+
+"""
 class DetailView(tabs.TabView):
     tab_group_class = SensuEventDetailTabs
     template_name = 'horizon_monitoring/events/detail.html'
@@ -74,7 +93,6 @@ class DetailView(tabs.TabView):
         instance = self.get_data()
         return self.tab_group_class(request, instance=instance, **kwargs)
 
-"""
 class UpdateView(workflows.WorkflowView):
     workflow_class = project_workflows.UpdateInstance
     success_url = reverse_lazy("horizon:project:instances:index")

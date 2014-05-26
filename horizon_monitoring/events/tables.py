@@ -88,13 +88,8 @@ class EventDetail(tables.LinkAction):
     classes = ("btn-edit")
 
     def get_link_url(self, event):
-        return self._get_link_url(event, 'overview')
-
-    def _get_link_url(self, event, step_slug):
-        base_url = urlresolvers.reverse(self.url, args=[event['check'], event['client']])
-        param = urlencode({"step": step_slug})
-        return "?".join([base_url, param])
-
+        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
+        
     def allowed(self, request, instance):
         return True
 
