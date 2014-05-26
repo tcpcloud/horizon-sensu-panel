@@ -7,7 +7,7 @@ from django.conf import settings
 
 log = logging.getLogger('utils.kedb')
 
-from horizon_contrib.utils.client import BaseClient
+from horizon_contrib.api.base import BaseClient
 
 class Kedb(BaseClient):
 

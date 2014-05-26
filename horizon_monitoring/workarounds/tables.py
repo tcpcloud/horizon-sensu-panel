@@ -2,7 +2,7 @@ from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
 from horizon_monitoring.utils.kedb_client import kedb_api
-from horizon_contrib.utils.actions import FilterAction
+from horizon_contrib.actions.filter import FilterAction
 
 class WorkaroundDetail(tables.LinkAction):
     """workaround detail

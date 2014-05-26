@@ -176,8 +176,8 @@ class UpdateError(workflows.Workflow):
     success_message = _('Modified error "%s".')
     failure_message = _('Unable to modify error "%s".')
     success_url = "horizon:monitoring:errors:index"
-    default_steps = (UpdateErrorInfo,
-                     UpdateErrorWorkarounds)
+
+    default_steps = (UpdateErrorInfo,UpdateErrorWorkarounds)
 
     def format_status_message(self, message):
         return message % self.context['name']

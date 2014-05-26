@@ -5,7 +5,7 @@ from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
-from horizon_monitoring.utils.tables import FilterAction
+from horizon_contrib.actions.filter import FilterAction
 
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times

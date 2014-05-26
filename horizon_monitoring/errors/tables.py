@@ -6,7 +6,7 @@ from horizon import tables
 #from horizon.tables import formset
 from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
 from horizon_monitoring.utils.kedb_client import kedb_api
-from horizon_monitoring.utils.tables import FilterAction
+from horizon_contrib.actions.filter import FilterAction
 
 class ErrorUpdate(tables.LinkAction):
     """error detail
@@ -54,9 +54,9 @@ class WorkaroundCreate(tables.LinkAction):
     name = "workaround_create"
     verbose_name = _("Create Workaround")
     classes = ("ajax-modal", "btn-edit")
-
+    
     def get_link_url(self, error):
-        url = "horizon:monitoring:workarounds:create"
+        url = "horizon:monitoring:workarounds:create_from_error"
         return urlresolvers.reverse(url, args=(error.get("id"),))
 
     def allowed(self, request, instance):
