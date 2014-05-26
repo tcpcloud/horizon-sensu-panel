@@ -157,7 +157,7 @@ class SensuEventsTable(tables.DataTable):
     
     if include_kedb:
         #known_error = tables.Column('known_error', verbose_name=_("Known"))
-        error_name = tables.Column('error_name', verbose_name=_("Error name"), link=get_error_link)
+        error_name = tables.Column('error_name', verbose_name=_("Error name"))
 #        severity = tables.Column('severity', verbose_name=_("Error severity"))
     output = tables.Column('output', verbose_name=_("Output"), truncate=70)
     status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)

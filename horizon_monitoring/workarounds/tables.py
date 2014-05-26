@@ -58,7 +58,7 @@ class WorkaroundTable(tables.DataTable):
         return urlresolvers.reverse(url, args=(error_id,))
 
     id = tables.Column('id', verbose_name=_("ID"))
-    known_error = ErrorColumn('known_error', verbose_name=_("Known error"), link=get_error_link)
+    known_error = tables.Column('known_error', verbose_name=_("Known error"), link=get_error_link)
     description = tables.Column('description', verbose_name=_("Description"))
     action = tables.Column('action', verbose_name=_("Action"))
     engine = tables.Column('engine', verbose_name=_("Engine"))
