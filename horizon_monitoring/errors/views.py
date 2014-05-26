@@ -35,11 +35,11 @@ class UpdateView(workflows.WorkflowView):
 
     def get_initial(self, **kwargs):
         context = super(UpdateView, self).get_initial(**kwargs)
-        context['id'] = self.kwargs['id']
+        #context['id'] = self.kwargs['id']
         context['error'] = kedb_api.error_update(self.kwargs['id'])
-        context['workarounds'] = context['error'].get("workarounds", [])
+        #context['workarounds'] = context['error'].get("workarounds", [])
         #context['workarounds_table'] = WorkaroundTable(request=self.request, data=context['workarounds'])
-        return context['error']
+        return context["error"]
 
 class CreateView(forms.ModalFormView):
 

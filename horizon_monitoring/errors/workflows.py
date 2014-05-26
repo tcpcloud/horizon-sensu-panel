@@ -48,10 +48,12 @@ class CreateErrorAction(workflows.Action):
     class Meta:
         name = _("Error Info")
         help_text = _("From here you can update a error.")
-
     def clean(self):
         cleaned_data = super(CreateErrorAction, self).clean()
         return cleaned_data
+
+    def cleaned_data(self):
+        return self.clean()
 
 class CreateErrorInfo(workflows.Step):
     action_class = CreateErrorAction
@@ -71,80 +73,13 @@ class UpdateErrorWorkaroundsAction(workflows.Action):
                                                        **kwargs)
         err_msg = _('Unable to retrieve workarounds list. '
                     'Please try again later.')
+  
+    def cleaned_data(self):
+        return self.clean()
 
     class Meta:
         name = _("Error Workarounds")
         slug = "update_error_workaounds"
-
-class UpdateErrorWorkarounds(workflows.Step):
-    action_class = UpdateErrorWorkaroundsAction
-    help_text = _("You can control access to this flavor by moving projects "
-                  "from the left column to the right column. Only projects "
-                  "in the right column can use the flavor. If there are no "
-                  "projects in the right column, all projects can use the "
-                  "flavor.")
-    no_available_text = _("No workarounds found.")
-
-    template_name = "horizon_monitoring/errors/_update.html"
-    depends_on = ("id", "workarounds")
-    contributes = ("error_id",)
-
-    def render(self):
-        """Renders the step."""
-        request = self.workflow.request
-        step_template = template.loader.get_template(self.template_name)
-        data = self.workflow.context['workarounds']
-        kedb = KedbErrorsFormsetTable(request=request, data=data)
-        extra_context = {"form": self.action,
-                         "step": self,
-                         "workarounds_table": kedb}
-        context = template.RequestContext(request, extra_context)
-        return step_template.render(context)
-
-class CreateFlavor(workflows.Workflow):
-    slug = "create_flavor"
-    name = _("Create Error")
-    finalize_button_name = _("Create Errorr")
-    success_message = _('Created new error "%s".')
-    failure_message = _('Unable to create error "%s".')
-    success_url = "horizon:monitoring:errors:index"
-    default_steps = (CreateErrorInfo,
-                     UpdateErrorWorkarounds)
-
-    def format_status_message(self, message):
-        return message % self.context['name']
-
-    def handle(self, request, data):
-        flavor_id = data.get('flavor_id') or 'auto'
-        flavor_access = data['flavor_access']
-        is_public = not flavor_access
-
-        # Create the flavor
-        try:
-            self.object = api.nova.flavor_create(request,
-                                                 name=data['name'],
-                                                 memory=data['memory_mb'],
-                                                 vcpu=data['vcpus'],
-                                                 disk=data['disk_gb'],
-                                                 ephemeral=data['eph_gb'],
-                                                 swap=data['swap_mb'],
-                                                 flavorid=flavor_id,
-                                                 is_public=is_public)
-        except Exception:
-            exceptions.handle(request, _('Unable to create flavor.'))
-            return False
-
-        # Update flavor access if the new flavor is not public
-        flavor_id = self.object.id
-        for project in flavor_access:
-            try:
-                api.nova.add_tenant_to_flavor(
-                    request, flavor_id, project)
-            except Exception:
-                exceptions.handle(request,
-                    _('Unable to set flavor access for project %s.') % project)
-        return True
-
 
 class UpdateErrorAction(CreateErrorAction):
 
@@ -169,6 +104,31 @@ class UpdateErrorInfo(workflows.Step):
                    "severity",
                    "ownership")
 
+class UpdateErrorWorkarounds(workflows.Step):
+    action_class = UpdateErrorWorkaroundsAction
+    help_text = _("You can control access to this flavor by moving projects "
+                  "from the left column to the right column. Only projects "
+                  "in the right column can use the flavor. If there are no "
+                  "projects in the right column, all projects can use the "
+                  "flavor.")
+    no_available_text = _("No workarounds found.")
+
+    template_name = "horizon_monitoring/errors/_update.html"
+    depends_on = ("id", )
+    contributes = ("workarounds",)
+
+    def render(self):
+        """Renders the step."""
+        request = self.workflow.request
+        step_template = template.loader.get_template(self.template_name)
+        data = self.workflow.context['workarounds']
+        kedb = KedbErrorsFormsetTable(request=request, data=data)
+        extra_context = {"form": self.action,
+                         "step": self,
+                         "workarounds_table": kedb}
+        context = template.RequestContext(request, extra_context)
+        return step_template.render(context)
+
 class UpdateError(workflows.Workflow):
     slug = "update_error"
     name = _("Edit Error")
@@ -176,24 +136,25 @@ class UpdateError(workflows.Workflow):
     success_message = _('Modified error "%s".')
     failure_message = _('Unable to modify error "%s".')
     success_url = "horizon:monitoring:errors:index"
-
-    default_steps = (UpdateErrorInfo,UpdateErrorWorkarounds)
+    #steps = (UpdateErrorWorkarounds,)
+    default_steps = [UpdateErrorInfo, UpdateErrorWorkarounds]
 
     def format_status_message(self, message):
         return message % self.context['name']
 
     def handle(self, request, data):
-        """
         if data["id"]:
-            messages.debug(request, data["id"])
+            pass
+        messages.debug(request, data["id"])
         """
         formset = WorkaroundsFormSet(request.POST, prefix="workarounds")
         workarounds = []
-        """
         for form in formset.forms:
             if form.is_valid():
                 workarounds.append(form.cleaned_data)       
         """
-        data["workarounds"] = workarounds
+        error = kedb_api.error_update(error=data["id"])
+        data["workarounds"] = error.get("workarounds")
         result = kedb_api.error_update(error=data["id"], data=data)
-        return urlresolvers.reverse(self.success_url)
+        messages.info(request, result.get("text"))
+        return False #urlresolvers.reverse(self.success_url, args=[])
