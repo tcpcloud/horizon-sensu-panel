@@ -6,7 +6,7 @@ from django.utils.http import urlencode
 
 from horizon_monitoring.utils.filters import join_list_with_newline
 from horizon_monitoring.utils.sensu_client import sensu_api
-from horizon_contrib.actions.filter import FilterAction
+from horizon_contrib.tables.actions import FilterAction
 
 class RequestCheck(tables.LinkAction):
     name = "request_check"

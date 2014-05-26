@@ -6,7 +6,7 @@ from horizon import tables
 #from horizon.tables import formset
 from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
 from horizon_monitoring.utils.kedb_client import kedb_api
-from horizon_contrib.actions.filter import FilterAction
+from horizon_contrib.tables.actions import FilterAction
 
 class ErrorUpdate(tables.LinkAction):
     """error detail
