@@ -146,7 +146,6 @@ class UpdateError(workflows.Workflow):
 
     def handle(self, request, data):
 
-        data["workarounds"] = (self.context['workarounds'] or [])
         result = kedb_api.error_update(error=data["id"], data=data)
         if not isinstance(result, Exception):
             return True#urlresolvers.reverse(self.success_url, args=[])
