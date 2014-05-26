@@ -123,9 +123,11 @@ class UpdateErrorWorkarounds(workflows.Step):
         step_template = template.loader.get_template(self.template_name)
         data = self.workflow.context['workarounds']
         kedb = KedbErrorsFormsetTable(request=request, data=data)
+        formset = WorkaroundsFormSet(initial=data, prefix="workarounds")
         extra_context = {"form": self.action,
                          "step": self,
-                         "workarounds_table": kedb}
+                         "workarounds_table": kedb,
+                         "workarounds": formset}
         context = template.RequestContext(request, extra_context)
         return step_template.render(context)
 
@@ -143,18 +145,9 @@ class UpdateError(workflows.Workflow):
         return message % self.context['name']
 
     def handle(self, request, data):
-        if data["id"]:
-            pass
-        messages.debug(request, data["id"])
-        """
-        formset = WorkaroundsFormSet(request.POST, prefix="workarounds")
-        workarounds = []
-        for form in formset.forms:
-            if form.is_valid():
-                workarounds.append(form.cleaned_data)       
-        """
-        error = kedb_api.error_update(error=data["id"])
-        data["workarounds"] = error.get("workarounds")
+
+        data["workarounds"] = (self.context['workarounds'] or [])
         result = kedb_api.error_update(error=data["id"], data=data)
-        messages.info(request, result.get("text"))
-        return False #urlresolvers.reverse(self.success_url, args=[])
+        if not isinstance(result, Exception):
+            return True#urlresolvers.reverse(self.success_url, args=[])
+        return False
