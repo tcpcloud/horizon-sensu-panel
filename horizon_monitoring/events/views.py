@@ -59,7 +59,8 @@ class DetailView(workflows.WorkflowView):
     def get_initial(self, **kwargs):
         #context['id'] = self.kwargs['id']
         context = {}
-        context['event'] = kedb_api.event_detail(self.kwargs['check'], self.kwargs['client'])
+        context['event'] = sensu_api.event_detail(self.kwargs['check'], self.kwargs['client'])
+        #context['event'] = kedb_api.event_detail(self.kwargs['check'], self.kwargs['client'])
         return context["event"]
 
 """

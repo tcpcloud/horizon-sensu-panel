@@ -114,7 +114,7 @@ class ErrorWorkaroundsInfo(workflows.Step):
         """Renders the step."""
         request = self.workflow.request
         step_template = template.loader.get_template(self.template_name)
-        data = kedb_api.error_update(self.workflow.context['error_id']).get("workarounds", [])
+        data = [] #kedb_api.error_update(self.workflow.context['error_id']).get("workarounds", [])
         workarounds_table = WorkaroundTable(request=request, data=data)
         extra_context = {"form": self.action,
                          "step": self,
