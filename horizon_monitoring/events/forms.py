@@ -44,7 +44,17 @@ class SilenceForm(EventForm):
             'reason': data.get('reason'),
         }
 
-        response = sensu_api.silence(check, client, expire, content)
+        payload = { "content": content }
+
+        if check and client:
+            payload["path"] = 'silence/%s/%s' % (client, check)
+        else:
+            payload["path"] = 'silence/%s' % client
+        
+        if expire != -1:
+            payload["expire"] = expire
+
+        response = sensu_api.silence(payload)
         try:
             messages.success(request, _('Silence check event %s.') % response)
         except Exception:

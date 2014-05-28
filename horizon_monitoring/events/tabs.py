@@ -1,11 +1,11 @@
 
+import json
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-
 from horizon import exceptions
 from horizon import tabs
 
-from openstack_dashboard import api
+from horizon_monitoring.workarounds.tables import WorkaroundTable
 
 class OverviewTab(tabs.Tab):
     name = _("Overview")
@@ -15,18 +15,16 @@ class OverviewTab(tabs.Tab):
     def get_context_data(self, request):
         return {"instance": self.tab_group.kwargs['instance']}
 
-class WorkaroundTab(tabs.Tab):
+class WorkaroundTab(tabs.TableTab):
+    table_classes = (WorkaroundTable,)
     name = _("Workarounds")
     slug = "workarounds"
     template_name = "horizon_monitoring/events/_detail_workarounds.html"
-    preload = False
+    preload = True
 
-    def get_context_data(self, request):
-        instance = self.tab_group.kwargs['instance']
-        # Currently prefer VNC over SPICE, since noVNC has had much more
-        # testing than spice-html5
-
-        return {'console_url': console_type, 'instance_id': instance.id}
+    def get_workarounds_data(self):
+        workarounds = self.tab_group.kwargs['instance'].get("workarounds", [])
+        return json.JSONEncoder().encode(workarounds)
 
 class SensuEventDetailTabs(tabs.TabGroup):
     slug = "event_detail"

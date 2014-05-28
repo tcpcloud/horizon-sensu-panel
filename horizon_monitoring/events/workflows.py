@@ -65,6 +65,7 @@ class DetailEventAction(workflows.Action):
         return self.clean()
 
 class DetailEventInfo(workflows.Step):
+    template_name = "horizon_monitoring/events/_detail_overview.html"
     action_class = DetailEventAction
     contributes = ( #event fields
                    "id",
@@ -108,13 +109,13 @@ class ErrorWorkaroundsInfo(workflows.Step):
 
     template_name = "horizon_monitoring/events/_detail_workarounds.html"
     depends_on = ("error_id",)
-    #contributes = ("workarounds",)
+    #contributes = ("error_id",)
 
     def render(self):
         """Renders the step."""
         request = self.workflow.request
         step_template = template.loader.get_template(self.template_name)
-        data = [] #kedb_api.error_update(self.workflow.context['error_id']).get("workarounds", [])
+        data = []#kedb_api.error_update(self.workflow.context['error_id']).get("workarounds", [])
         workarounds_table = WorkaroundTable(request=request, data=data)
         extra_context = {"form": self.action,
                          "step": self,

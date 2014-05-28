@@ -7,8 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from horizon import tables
 from horizon_contrib.tables.actions import FilterAction
 
-from horizon_monitoring.utils.filters import timestamp_to_datetime, \
-    nonbreakable_spaces, join_list_with_comma, unit_times
+from horizon_contrib.tables.filters import timestamp_to_datetime, \
+    nonbreakable_spaces, join_list_with_comma, unit_times, status_image
 
 from horizon_monitoring.utils.sensu_client import sensu_api, kedb_api
 
@@ -208,7 +208,7 @@ class SensuEventsTable(tables.DataTable):
     output = tables.Column('output', verbose_name=_("Output"), truncate=70)
     status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"))
-    silenced = tables.Column('silenced', verbose_name=_("Silenced"), classes=('silenced_column',))
+    silenced = tables.Column('silenced', verbose_name=_("Silenced"), classes=('silenced_column',), filters=(status_image,))
     occurrences = tables.Column('occurrences', verbose_name=_("Occured"), filters=(unit_times, ))
     issued = tables.Column('issued', verbose_name=_("Last occurence"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
 

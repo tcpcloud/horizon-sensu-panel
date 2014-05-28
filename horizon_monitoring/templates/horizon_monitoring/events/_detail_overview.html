@@ -8,8 +8,11 @@
   <hr class="header_rule">
   <dl>
     <dt>{% trans "Check" %}</dt>
-    <dd>{{ instance.0.check }}</dd>
+    <dd>{{ instance.check }}</dd>
     <dt>{% trans "Output" %}</dt>
-    <dd>{{ instance.0.output }}</dd>
+    <dd>{{ instance.output }}</dd>
+    <dt>{% trans "Error" %}</dt>
+    <dd>{{ instance.error_id }}</dd>
+    {{ instance }}
   </dl>
 </div>
