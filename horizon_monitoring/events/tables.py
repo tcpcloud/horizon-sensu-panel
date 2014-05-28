@@ -161,10 +161,8 @@ class StashDelete(tables.DeleteAction):
 
     def delete(self, request, path):
         client, check = self.get_check_client(path)
-        if self.is_client(client, check):
-            _path = "silence/%s" % client
-            sensu_api.stash_delete(_path)
-        else:
+        _path = "silence/%s" % client
+        if not self.is_client(client, check):
             _path = "%s/%s" % (_path, check)
         sensu_api.stash_delete(_path)
 
