@@ -10,7 +10,7 @@ from horizon_contrib.tables.actions import FilterAction
 from horizon_monitoring.utils.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
-from horizon_monitoring.utils.sensu_client import sensu_api
+from horizon_monitoring.utils.sensu_client import sensu_api, kedb_api
 
 from horizon_monitoring.dashboard import include_kedb
 
@@ -141,10 +141,30 @@ class StashDelete(tables.DeleteAction):
         finally:
             return client, check
 
+    def is_client(self, client, check):
+        """zjisti jestli jestli je stashlej jenom client/check nebo celej client
+        neprisli sme na lepsi reseni
+        """
+        events = sensu_api.event_list
+        stashes = sensu_api.stash_list
+        if include_kedb:
+          events = kedb_api.event_list(events)
+        stash_map = []
+        for stash in stashes:
+            stash_map.append(stash['path'])
+        for event in events:
+            if 'silence/%s/%s' % (event['client'], event['check']) in stash_map:
+                return False
+            elif 'silence/%s'% event['client'] in stash_map:
+                return True
+        return False
+
     def delete(self, request, path):
         client, check = self.get_check_client(path)
-        _path = "silence/%s" % client
-        if check:
+        if self.is_client(client, check):
+            _path = "silence/%s" % client
+            sensu_api.stash_delete(_path)
+        else:
             _path = "%s/%s" % (_path, check)
         sensu_api.stash_delete(_path)
 
