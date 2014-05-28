@@ -111,6 +111,7 @@ class ErrorCreate(tables.LinkAction):
                 allowed = True
         return allowed
 
+"""
 class SilenceCheck(tables.LinkAction):
     name = "silence_check"  
     verbose_name = _("Globally Silence Check")
@@ -119,6 +120,38 @@ class SilenceCheck(tables.LinkAction):
 
     def get_link_url(self, event):
         return urlresolvers.reverse(self.url, args=[event['check'],])
+"""
+
+class StashDelete(tables.DeleteAction):
+    action_present = ("Delete",)
+    action_past = ("Deleted",)
+    data_type_singular = _("Stash")
+    data_type_plural = _("stashes")
+    name = "stash_delete"
+    success_url = "horizon:monitoring:events:index"
+
+    def get_check_client(self, object_id):
+        check, client = None, None
+        try:
+            split = object_id.split("-")
+            check = split[1]
+            client = split[0]
+        except Exception, e:
+            pass
+        finally:
+            return client, check
+
+    def delete(self, request, path):
+        client, check = self.get_check_client(path)
+        _path = "silence/%s" % client
+        if check:
+            _path = "%s/%s" % (_path, check)
+        sensu_api.stash_delete(_path)
+
+    def allowed(self, request, instance):
+        if instance.get("silenced", False):
+            return True
+        return False
 
 class SilenceClient(tables.LinkAction):
     name = "silence_client"  
@@ -130,13 +163,13 @@ class SilenceClient(tables.LinkAction):
         return urlresolvers.reverse(self.url, args=[event['client'],])
 
 class SilenceClientCheck(tables.LinkAction):
-    name = "silence_client_check"  
+    name = "silence_client_check"
     verbose_name = _("Silence Check on Client")
     url = "horizon:monitoring:events:silence_client_check"
     classes = ("ajax-modal", "btn")
 
     def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['check'] , event['client']])
+        return urlresolvers.reverse(self.url, args=[event['client'], event['check']])
 
 class SensuEventsTable(tables.DataTable):
 
@@ -173,10 +206,11 @@ class SensuEventsTable(tables.DataTable):
         row_actions = (EventDetail,
                         ResolveEvent,
                         RecheckEvent,
-                        SilenceCheck,
+                        #SilenceCheck,
                         SilenceClient,
                         SilenceClientCheck,
-                        ErrorCreate)# SilenceClient)
+                        ErrorCreate,
+                        StashDelete)
         table_actions = (FullScreenView,
                          ResolveEvent,
                          FilterAction,
@@ -190,4 +224,4 @@ class FullScreenSensuEventsTable(SensuEventsTable):
     class Meta:
         name = "events"
         verbose_name = _("Current Events")
-        columns = ("client", "check", "output", "status", "silenced", "issued")
+        columns = ("client", "check", "output", "status", "issued")

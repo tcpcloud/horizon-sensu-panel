@@ -34,16 +34,18 @@ class Sensu(BaseClient):
         response = requests.get(url)
         return response.json()
 
-    def silence(self, check=None, client=None, expire=None, content=None):
-        url, payload = '/stashes', None
-        if check and client:
-            payload = { "path": '%s/%s' % (client, check), "expire": expire, "content": content }
-        if check or client:
-            payload = { "path": '%s' % (client or check), "expire": expire, "content": content }
-        if payload:
-            return self.request(url, "POST", payload)
-        else:
-            return None
+    def silence(self, payload):
+        """
+        {
+          "path": "random_stash",
+          "expire": 60,
+          "content": {
+            "reason": "things are stashy"
+          }
+        }
+        """ 
+        url = '/stashes'
+        return self.request(url, "POST", payload)
             
     def check_request(self, check, subscibers):
         payload = { "subscibers": subscibers, "check": check }
@@ -80,9 +82,9 @@ class Sensu(BaseClient):
         for stash in stashes:
             stash_map.append(stash['path'])
         for event in events:
-            if '%s/%s' % (event['client'], event['check']) in stash_map:
+            if 'silence/%s/%s' % (event['client'], event['check']) in stash_map:
                 event['silenced'] = True
-            elif event['client'] in stash_map:
+            elif 'silence/%s'% event['client'] in stash_map:
                 event['silenced'] = True
             else:
                 event['silenced'] = False
