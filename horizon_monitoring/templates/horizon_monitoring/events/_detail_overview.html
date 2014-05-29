@@ -11,8 +11,11 @@
     <dd>{{ instance.check }}</dd>
     <dt>{% trans "Output" %}</dt>
     <dd>{{ instance.output }}</dd>
-    <dt>{% trans "Error" %}</dt>
-    <dd>{{ instance.error_id }}</dd>
-    {{ instance }}
+    <dt>{% trans "Client" %}</dt>
+    <dd>{{ instance.client }}</dd>
+    <dt>{% trans "Known Error" %}</dt>
+    <dd>{{ instance.error_name }}</dd>
+    <dt>{% trans "Error Description" %}</dt>
+    <dd>{{ instance.description }}</dd>
   </dl>
 </div>
