@@ -114,14 +114,15 @@ class UpdateErrorWorkarounds(workflows.Step):
     no_available_text = _("No workarounds found.")
 
     template_name = "horizon_monitoring/errors/_update.html"
-    depends_on = ("id", )
-    contributes = ("workarounds",)
+    depends_on = ("id")
+    contributes = ("id",)
 
     def render(self):
         """Renders the step."""
         request = self.workflow.request
         step_template = template.loader.get_template(self.template_name)
-        data = self.workflow.context['workarounds']
+        id = self.workflow.context['id']
+        data = kedb_api.error_update(id).get("workarounds")
         kedb = WorkaroundTable(request=request, data=data)
         #formset = WorkaroundsFormSet(initial=data, prefix="workarounds")
         extra_context = {"form": self.action,
