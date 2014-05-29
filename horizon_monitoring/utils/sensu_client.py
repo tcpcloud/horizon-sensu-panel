@@ -2,6 +2,7 @@
 import requests
 import json
 import logging
+from horizon import messages
 
 from django.conf import settings
 
@@ -69,12 +70,15 @@ class Sensu(BaseClient):
     def client_list(self):
         return self.request('/clients')
 
-    @property
-    def event_list(self):
+    def event_list(self, request=None):
         events = self.request('/events')
         stashes = self.request('/stashes')
         if include_kedb:
-          events = kedb_api.event_list(events)
+            try:
+                events = kedb_api.event_list(events)
+            except requests.exceptions.ConnectionError:
+                if request:
+                    messages.error(request, "KEDB API is down !")
         stash_map = []
         for stash in stashes:
             stash_map.append(stash['path'])

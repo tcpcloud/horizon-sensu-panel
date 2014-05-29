@@ -30,7 +30,7 @@ class IndexView(tables.DataTableView):
     template_name = 'horizon_monitoring/events/index.html'
 
     def get_data(self):
-        return sensu_api.event_list
+        return sensu_api.event_list(self.request)
 
 class SilenceView(forms.ModalFormView):
     form_class = SilenceForm
