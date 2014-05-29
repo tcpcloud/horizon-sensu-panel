@@ -209,7 +209,7 @@ class SensuEventsTable(tables.DataTable):
     output = tables.Column('output', verbose_name=_("Output"), truncate=70)
     status = tables.Column('status', verbose_name=_("Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"))
-    silenced = tables.Column('silenced', verbose_name=_("Silenced"), classes=('silenced_column',), filters=(status_image,))
+    silenced = tables.Column('silenced', verbose_name=_("Silenced"), classes=('silenced_column', 'centered'), filters=(status_image,))
     occurrences = tables.Column('occurrences', verbose_name=_("Occured"), filters=(unit_times, ))
     issued = tables.Column('issued', verbose_name=_("Last occurence"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
 
