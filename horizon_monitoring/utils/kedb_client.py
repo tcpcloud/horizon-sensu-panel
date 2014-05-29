@@ -30,6 +30,11 @@ class Kedb(BaseClient):
         payload = { "events": events }
         return self.request(url, "POST", payload)
 
+    def event_detail(self, event):
+        url = '/events/detail/'
+        payload = { "event": event }
+        return self.request(url, "POST", payload)
+
     def workaround_update(self, workaround, data=None):
         """zapouzdruje jak detail tak update
         """

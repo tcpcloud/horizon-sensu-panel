@@ -45,6 +45,14 @@ class WorkaroundDelete(tables.DeleteAction):
     def allowed(self, request, instance):
         return True
 
+class ErrorColumn(tables.base.Column):
+
+    def get_raw_data(self, datum):
+        error_detail = datum.get("error_detail", None)
+        if error_detail:
+            return error_detail.get("name")
+        return "" 
+
 class WorkaroundTable(tables.DataTable):
 
     def get_error_link(self):
@@ -53,7 +61,7 @@ class WorkaroundTable(tables.DataTable):
         return urlresolvers.reverse(url, args=(error_id,))
 
     id = tables.Column('id', verbose_name=_("ID"))
-    known_error = tables.Column('known_error_name', verbose_name=_("Known error"))
+    known_error = ErrorColumn('known_error_name', verbose_name=_("Known error"))
     description = tables.Column('description', verbose_name=_("Description"))
     action = tables.Column('action', verbose_name=_("Action"))
     engine = tables.Column('engine', verbose_name=_("Engine"))
