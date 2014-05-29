@@ -23,8 +23,7 @@ class WorkaroundTab(tabs.TableTab):
     preload = True
 
     def get_workarounds_data(self):
-        workarounds = self.tab_group.kwargs['instance'].get("workarounds", [])
-        return json.JSONEncoder().encode(workarounds)
+        return self.tab_group.kwargs['instance'].get("workarounds", [])
 
 class SensuEventDetailTabs(tabs.TabGroup):
     slug = "event_detail"
