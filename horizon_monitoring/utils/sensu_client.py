@@ -54,10 +54,8 @@ class Sensu(BaseClient):
         return response
 
     def event_resolve(self, check, client):
-        payload = { "client": client, "check": check }
-        url = '%s/event_resolveve' % self.api
-        response = requests.post(url, data=json.dumps(payload))
-        return response.text
+        url = '/events/%s/%s' % (client, check)
+        return self.request(url, "DELETE")
 
     @property
     def stash_list(self):

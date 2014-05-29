@@ -30,6 +30,7 @@ class EventAction(tables.BatchAction):
 
     verbose_name = _("Resolve Event")
     success_url = "horizon:monitoring:events:index"
+    classes = ("btn-primary", "btn-danger")
 
     def get_check_client(self, object_id):
         check, client = None, None
@@ -59,7 +60,7 @@ class RecheckEvent(EventAction):
     name = "recheck_event"
     verbose_name = _("Recheck Event")
     success_url = "horizon:monitoring:events:index"
-    classes = ("btn-primary", "btn-info")
+    classes = ("btn-primary", "btn-danger", "btn-info")
 
     def action(self, request, object_id):
         self.recheck(request, object_id)
@@ -73,7 +74,7 @@ class ResolveEvent(EventAction):
     name = "resolve_event"
     verbose_name = _("Resolve Event")
     success_url = "horizon:monitoring:events:index"
-    classes = ("btn-primary", "btn-success")
+    classes = ("btn-primary", "btn-danger", "btn-success")
 
     def action(self, request, object_id):
         self.resolve(request, object_id)
