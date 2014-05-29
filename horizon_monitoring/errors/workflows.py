@@ -122,12 +122,11 @@ class UpdateErrorWorkarounds(workflows.Step):
         request = self.workflow.request
         step_template = template.loader.get_template(self.template_name)
         data = self.workflow.context['workarounds']
-        kedb = KedbErrorsFormsetTable(request=request, data=data)
-        formset = WorkaroundsFormSet(initial=data, prefix="workarounds")
+        kedb = WorkaroundTable(request=request, data=data)
+        #formset = WorkaroundsFormSet(initial=data, prefix="workarounds")
         extra_context = {"form": self.action,
                          "step": self,
-                         "workarounds_table": kedb,
-                         "workarounds": formset}
+                         "workarounds_table": kedb}
         context = template.RequestContext(request, extra_context)
         return step_template.render(context)
 
