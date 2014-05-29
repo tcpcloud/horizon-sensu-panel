@@ -5,12 +5,12 @@ LEVEL_CHOICES = (
 
 SEVERITY_CHOICES = (
     ("int", u"Internal"),
-    ("sla999", u"SLA 99.9"),
-    ("sla9999", u"SLA 99.99"),
+    ("999", u"SLA 99.9"),
+    ("9999", u"SLA 99.99"),
 )
 
 OWNERSHIP_CHOICES = (
-    ("cloudlab", u"Cloudlab"),
+    ("cloud", u"Cloud"),
     ("network", u"Network"),
     ("hardware", u"Hardware"),
 )
