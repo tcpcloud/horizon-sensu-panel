@@ -46,12 +46,11 @@ class Sensu(BaseClient):
         """ 
         url = '/stashes'
         return self.request(url, "POST", payload)
-            
+
     def check_request(self, check, subscibers):
         payload = { "subscibers": subscibers, "check": check }
-        url = '%s/request' % self.api
-        response = requests.post(url, data=json.dumps(payload))
-        return response
+        url = '/request'
+        return self.request(url, "POST", payload)
 
     def event_resolve(self, check, client):
         url = '/events/%s/%s' % (client, check)
