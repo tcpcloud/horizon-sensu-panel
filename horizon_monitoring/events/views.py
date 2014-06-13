@@ -23,7 +23,7 @@ class FullScreenIndexView(tables.DataTableView):
     template_name = 'horizon_monitoring/events/fullscreen.html'
 
     def get_data(self):
-        return sensu_api.event_list
+        return sensu_api.event_list()
 
 class IndexView(tables.DataTableView):
     table_class = SensuEventsTable
