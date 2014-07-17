@@ -34,14 +34,8 @@ class EventAction(tables.BatchAction):
 
     def get_check_client(self, object_id):
         check, client = None, None
-        try:
-            split = object_id.split("-")
-            check = split[1]
-            client = split[0]
-        except Exception, e:
-            pass
-        finally:
-            return check, client
+        client, check = object_id.split(" ")
+        return check, client
 
     def resolve(self, request, object_id):
         check, client = self.get_check_client(object_id)
@@ -133,14 +127,8 @@ class StashDelete(tables.DeleteAction):
 
     def get_check_client(self, object_id):
         check, client = None, None
-        try:
-            split = object_id.split("#")
-            check = split[1]
-            client = split[0]
-        except Exception, e:
-            pass
-        finally:
-            return client, check
+        client, check = object_id.split(" ")
+        return client, check
 
     def is_client(self, client, check):
         """zjisti jestli jestli je stashlej jenom client/check nebo celej client
@@ -214,10 +202,10 @@ class SensuEventsTable(tables.DataTable):
     issued = tables.Column('issued', verbose_name=_("Last occurence"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
 
     def get_object_id(self, datum):
-        return '%s#%s' % (datum['client'], datum['check'])
+        return '%s %s' % (datum['client'], datum['check'])
 
     def get_object_display(self, datum):
-        return '%s#%s' % (datum['client'], datum['check'])
+        return '%s %s' % (datum['client'], datum['check'])
 
     class Meta:
         name = "events"
@@ -238,7 +226,7 @@ class SensuEventsTable(tables.DataTable):
 class FullScreenSensuEventsTable(SensuEventsTable):
     
     def get_object_id(self, datum):
-        return '%s#%s' % (datum['client'], datum['check'])
+        return '%s %s' % (datum['client'], datum['check'])
 
     class Meta:
         name = "events"
