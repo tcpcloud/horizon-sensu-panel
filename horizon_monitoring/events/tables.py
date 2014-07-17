@@ -214,10 +214,10 @@ class SensuEventsTable(tables.DataTable):
     issued = tables.Column('issued', verbose_name=_("Last occurence"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
 
     def get_object_id(self, datum):
-        return '%s-%s' % (datum['client'], datum['check'])
+        return '%s#%s' % (datum['client'], datum['check'])
 
     def get_object_display(self, datum):
-        return '%s-%s' % (datum['client'], datum['check'])
+        return '%s#%s' % (datum['client'], datum['check'])
 
     class Meta:
         name = "events"
