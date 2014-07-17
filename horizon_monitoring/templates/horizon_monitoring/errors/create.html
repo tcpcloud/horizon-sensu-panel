@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Create Known Error" %}{% endblock %}
+
+{% block page_header %}
+{% include "horizon/common/_page_header.html" with title=_("Create Known Error") %}
+{% endblock %}
+
+{% block main %}
+{% include "horizon_monitoring/errors/_create.html" %}
+{% endblock %}
