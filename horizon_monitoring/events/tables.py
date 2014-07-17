@@ -134,7 +134,7 @@ class StashDelete(tables.DeleteAction):
     def get_check_client(self, object_id):
         check, client = None, None
         try:
-            split = object_id.split("-")
+            split = object_id.split("#")
             check = split[1]
             client = split[0]
         except Exception, e:
@@ -238,7 +238,7 @@ class SensuEventsTable(tables.DataTable):
 class FullScreenSensuEventsTable(SensuEventsTable):
     
     def get_object_id(self, datum):
-        return '%s-%s' % (datum['client'], datum['check'])
+        return '%s#%s' % (datum['client'], datum['check'])
 
     class Meta:
         name = "events"
