@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Recheck Event" %}{% endblock %}
+
+{% block page_header %}
+{% include "horizon/common/_page_header.html" with title=_("Recheck Event") %}
+{% endblock %}
+
+{% block main %}
+{% include "horizon_monitoring/events/_recheck.html" %}
+{% endblock %}

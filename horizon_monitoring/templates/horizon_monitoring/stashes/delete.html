@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Delete Stash" %}{% endblock %}
+
+{% block page_header %}
+{% include "horizon/common/_page_header.html" with title=_("Delete Stash") %}
+{% endblock %}
+
+{% block main %}
+{% include "horizon_monitoring/stashes/_delete.html" %}
+{% endblock %}

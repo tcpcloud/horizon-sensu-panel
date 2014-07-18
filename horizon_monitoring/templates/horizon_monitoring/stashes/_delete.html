@@ -1,0 +1,24 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}rebuild_instance_form{% endblock %}
+{% block form_action %}{% url "horizon:monitoring:stashes:delete" path %}{% endblock %}
+
+{% block modal_id %}rebuild_instance_modal{% endblock %}
+{% block modal-header %}{% trans "Delete Stash" %} {{ check.name }}{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+  {% include "horizon/common/_form_fields.html" %}
+</div>
+<div class="right">
+  <h4>{% trans "Description" %}:</h4>
+  <p>{% trans "Delete stash will reappear if root cause of problem is not fixed." %}</p>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Delete Stash" %}" />
+  <a href="{% url "horizon:monitoring:events:index" %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}

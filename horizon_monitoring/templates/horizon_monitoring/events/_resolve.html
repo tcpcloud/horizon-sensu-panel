@@ -1,0 +1,25 @@
+{% extends "horizon/common/_modal_form.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block form_id %}rebuild_instance_form{% endblock %}
+{% block form_action %}{% url "horizon:monitoring:events:resolve" check client %}{% endblock %}
+
+{% block modal_id %}rebuild_instance_modal{% endblock %}
+{% block modal-header %}{% trans "Resolve Event" %} {{ check.name }}{% endblock %}
+
+{% block modal-body %}
+<div class="left">
+  {% include "horizon/common/_form_fields.html" %}
+  {{ event }}
+</div>
+<div class="right">
+  <h4>{% trans "Description" %}:</h4>
+  <p>{% trans "Resolved events will reappear if root cause of problem is not fixed." %}</p>
+</div>
+{% endblock %}
+
+{% block modal-footer %}
+  <input class="btn btn-primary pull-right" type="submit" value="{% trans "Resolve Event" %}" />
+  <a href="{% url "horizon:monitoring:events:index" %}" class="btn secondary cancel close">{% trans "Cancel" %}</a>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Create Workaround" %}{% endblock %}
+
+{% block page_header %}
+{% include "horizon/common/_page_header.html" with title=_("Create Workaround") %}
+{% endblock %}
+
+{% block main %}
+{% include "horizon_monitoring/errors/_create.html" %}
+{% endblock %}

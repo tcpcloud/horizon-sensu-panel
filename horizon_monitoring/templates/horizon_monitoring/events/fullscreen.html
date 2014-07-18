@@ -1,0 +1,37 @@
+{% extends 'base_fullscreen.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Current Events" %}{% endblock %}
+
+{% block page_header %}
+{% include "horizon/common/_page_header.html" with title=_("Monitoring System") %}
+{% endblock page_header %}
+
+{% block main %}
+{{ table.render }}
+{% endblock %}
+
+{% block js %}
+{% include "horizon/_scripts.html" %}
+<script type='text/javascript' charset='utf-8'>
+$( document ).ready(function() {
+  $('td.status_column:contains("3")').parent().addClass('unknown');
+  $('td.status_column:contains("2")').parent().addClass('critical');
+  $('td.status_column:contains("1")').parent().addClass('warning');
+  $('td.silenced_column:contains("True")').parent().addClass('silenced');
+  setTimeout(function(){ window.location.reload(1); }, 15000);
+});
+</script>
+<style type="text/css">
+  .table_title, .table_caption, .page-header { display: none!important; }
+  th { font-weight: bold; font-size: 18px; padding: 12px!important; }
+  tfoot td { font-size: 14px!important; }
+  td { background-color: transparent!important; font-weight: bold; font-size: 18px; padding: 12px!important; }
+  tr.silenced { opacity:.6!important; }
+  tr.critical { background-color: rgb(244, 200, 197)!important; color: rgb(157, 38, 29)!important; }
+  tr.critical:hover { background-color: rgb(157, 38, 29)!important; color: rgb(255, 255, 255)!important; }
+  tr.warning { background-color: rgb(254, 233, 204)!important; color: rgb(248, 148, 6)!important; }
+  tr.warning:hover { background-color: rgb(248, 148, 6)!important; color: rgb(255, 255, 255)!important; }
+  #content_body { padding-top: 25px; padding-left: 25px; padding-right: 25px; }
+</style>
+{% endblock %}
