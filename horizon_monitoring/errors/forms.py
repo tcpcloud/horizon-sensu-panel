@@ -97,3 +97,29 @@ class ErrorCheckCreateForm(ErrorDetailForm):
             exceptions.handle(request, _("Unable to create kwown error."), redirect=redirect)
 
         return True
+
+class UpdateErrorForm(ErrorDetailForm):
+
+    id = forms.CharField(widget=forms.widgets.HiddenInput)
+
+    class Meta:
+        name = _("Error Info")
+        help_text = _("From here you can update a error.")
+
+    def __init__(self, *args, **kwargs):
+        super(ErrorDetailForm, self).__init__(*args, **kwargs)
+        self.fields.keyOrder = ['name','level', 'severity', 'description', 'check', 'output_pattern', 'ownership', 'id']
+
+    def handle(self, request, data):
+        
+        try:
+            error_id = data["id"]
+            data.pop("id")
+            response = kedb_api.error_update(error_id, data )
+            messages.success(request, _('Update error %s.') % response.get("name"))
+     
+        except Exception:
+            redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
+            exceptions.handle(request, _("Unable to create kwown error."), redirect=redirect)
+
+        return True
