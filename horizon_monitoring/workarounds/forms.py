@@ -47,10 +47,10 @@ class WorkaroundCreateForm(forms.SelfHandlingForm):
 
         try:
             response = kedb_api.workaround_create(data)
-            messages.success(request, _('Create workaround %s.') % response)
+            messages.success(request, _('Workaround Created.'))
         except Exception:
             redirect = urlresolvers.reverse('horizon:monitoring:workarounds:index')
-            exceptions.handle(request, _("Unable to create workaround."), redirect=redirect)
+            exceptions.handle(request, _(u"Unable to create workaround."), redirect=redirect)
 
         return True
 
@@ -65,7 +65,9 @@ class WorkaroundUpdateForm(WorkaroundCreateForm):
     def handle(self, request, data):
         
         try:
-            response = kedb_api.workaround_update(data["id"] , data)
+            id = data["id"]
+            data.pop("id")
+            response = kedb_api.workaround_update(id , data)
             messages.success(request, _('Update workaround %s.') % response.get("id"))
         except Exception:
             redirect = urlresolvers.reverse('horizon:monitoring:workarounds:index')
