@@ -8,13 +8,9 @@ include_kedb = False
 include_gitlab = False
 
 kedb = getattr(settings, "KEDB_HOST", None)
-gitlab = getattr(settings, "GITLAB_PORT", None)
 
 if kedb:
     include_kedb = True
-
-if gitlab:
-    include_gitlab = True
 
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
@@ -26,11 +22,6 @@ class KEDBPanels(horizon.PanelGroup):
     name = _("Known Errors DB")
     panels = ('errors', 'workarounds',)
 
-class GitlabPanels(horizon.PanelGroup):
-    slug = "gitlab"
-    name = _("Gitlab")
-    panels = ('projects', 'keys')
-
 class MonitoringDashboard(horizon.Dashboard):
     name = _("Monitoring")
     slug = "monitoring"
@@ -38,8 +29,6 @@ class MonitoringDashboard(horizon.Dashboard):
         panels = (MonitoringPanels, KEDBPanels, GitlabPanels, )
     elif include_kedb:
         panels = (MonitoringPanels, KEDBPanels, )
-    elif include_gitlab:
-        panels = (MonitoringPanels, GitlabPanels)
     else:
         panels = (MonitoringPanels)
 
