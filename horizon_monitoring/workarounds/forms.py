@@ -16,6 +16,7 @@ from horizon_monitoring.utils.kedb_client import kedb_api
 ENGINE_CHOICES = (
     ("salt", u"Salt call"),
     ("jenkins", u"Jenkins job"),
+    ("misc", u"Misc"),
 )
 
 class WorkaroundDetailForm(django_forms.Form):
