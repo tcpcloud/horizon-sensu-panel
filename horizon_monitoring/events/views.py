@@ -22,8 +22,16 @@ class FullScreenIndexView(tables.DataTableView):
     table_class = FullScreenSensuEventsTable
     template_name = 'horizon_monitoring/events/fullscreen.html'
 
+    def filter_silenced(self, events):
+        _events = []
+        for event in events:
+            if not event.get("silenced", False):
+                _events.append(event)
+        return _events
+
     def get_data(self):
-        return sensu_api.event_list()
+        events = sensu_api.event_list()
+        return self.filter_silenced(events)
 
 class IndexView(tables.DataTableView):
     table_class = SensuEventsTable

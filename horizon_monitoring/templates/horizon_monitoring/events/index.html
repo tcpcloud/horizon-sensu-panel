@@ -18,7 +18,7 @@ $( document ).ready(function() {
   $('td.status_column:contains("3")').parent().addClass('unknown');
   $('td.status_column:contains("2")').parent().addClass('critical');
   $('td.status_column:contains("1")').parent().addClass('warning');
-  $('td.silenced_column:contains("True")').parent().addClass('silenced');
+  $('td.silenced_column').has("i.icon-ok").parent().addClass('silenced'); 
   // setTimeout(function(){ window.location.reload(1); }, 15000);
 });
 </script>
