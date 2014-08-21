@@ -16,7 +16,7 @@
 <script type='text/javascript' charset='utf-8'>
 $( document ).ready(function() {
   $('td.status_column:contains("3")').parent().addClass('unknown');
-  $('td.status_column:contains("2")').parent().addClass('critical');
+  $('td.status_column:contains("2")').parent().addClass('danger');
   $('td.status_column:contains("1")').parent().addClass('warning');
   $('td.silenced_column').has("i.icon-ok").parent().addClass('silenced'); 
   // setTimeout(function(){ window.location.reload(1); }, 15000);
@@ -27,11 +27,11 @@ $( document ).ready(function() {
   tr.silenced { opacity:.6!important; }
   tr.silenced ul { opacity:1!important; }
   td.centered { text-align: center; }
-  /*
-  tr.critical { background-color: rgb(244, 200, 197)!important; color: rgb(157, 38, 29)!important; }
-  tr.critical:hover { background-color: rgb(157, 38, 29)!important; color: rgb(255, 255, 255)!important; }
-  tr.warning { background-color: rgb(254, 233, 204)!important; color: rgb(248, 148, 6)!important; }
-  tr.warning:hover { background-color: rgb(248, 148, 6)!important; color: rgb(255, 255, 255)!important; }
-  */
+
+  tr.danger { background-color:  #f39c12; color: #fff!important; }
+  tr.danger:hover { background-color:  #f39c12!important; color: #fff!important; }
+  tr.warning { background-color: rgb(254, 233, 204)!important; color: #fff!important; }
+  tr.warning:hover { background-color: rgb(248, 148, 6)!important; color: #fff!important; }
+  
 </style>
 {% endblock %}
