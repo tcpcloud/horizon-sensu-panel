@@ -6,8 +6,8 @@
   {% if dashboard.supports_tenants and request.user.authorized_tenants or not dashboard.supports_tenants %}
   {% if dashboard.name|slugify == 'monitoring' %}
   <li class="dropdown {% if current.slug == dashboard.slug %}active{% endif %}">
-    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="{{ dashboard.name|slugify }}">{{ dashboard.name }} <span class="caret"></span></a>
-    <ul class="dropdown-menu" aria-labelledby="{{ dashboard.name|slugify }}">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="{{ dashboard.name|slugify }}-board">{{ dashboard.name }} <span class="caret"></span></a>
+    <ul class="dropdown-menu" aria-labelledby="{{ dashboard.name|slugify }}-board">
   {% for heading, panels in panel_info.iteritems %}
   {% with panels|has_permissions_on_list:user as filtered_panels %}
   {% if filtered_panels %}
