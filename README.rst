@@ -1,23 +1,31 @@
-
-# Horizon Monitoring Dashboard
+==========
+Horizon Monitoring Dashboard
+==========
 
 This is a simple Horizon based interface for Sensu Monitoring Framework with Known Error Database.
 
-## Installation notes
+Installation notes
+---------
 
 * add 'horizon_monitoring' to INSTALLED_APPS tuple
 * add 'monitoring' to 'dashboards' key in HORIZON_CONFIG
 * add to horizon settings file
  
-      SENSU_HOST='localhost'
-      SENSU_PORT=4567
+.. code-block:: pyton
 
-  and optionally
+    SENSU_HOST='localhost'
+    SENSU_PORT=4567
 
-      KEDB_HOST='localhost'
-      KEDB_PORT=6754
 
-## Read more
+if you using service KEDB
+
+.. code-block:: python
+
+    KEDB_HOST='localhost'
+    KEDB_PORT=6754
+
+Read more
+--------
 
 * http://docs.openstack.org/developer/horizon/topics/tutorial.html
 * http://sensuapp.org/docs/0.12/api
