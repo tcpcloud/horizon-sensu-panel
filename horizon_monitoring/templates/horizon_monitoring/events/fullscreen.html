@@ -18,7 +18,9 @@ $( document ).ready(function() {
   $('td.status_column:contains("3")').parent().addClass('unknown');
   $('td.status_column:contains("2")').parent().addClass('danger');
   $('td.status_column:contains("1")').parent().addClass('warning');
+
   $('td.silenced_column:contains("True")').parent().addClass('silenced');
+  
   setTimeout(function(){ window.location.reload(1); }, 15000);
 });
 </script>
@@ -26,16 +28,15 @@ $( document ).ready(function() {
   .table_title, .table_caption, .page-header { display: none!important; }
   th { font-weight: bold; font-size: 18px; padding: 12px!important; }
   tfoot td { font-size: 14px!important; }
+  
+  table td { color: #fff!important; }
+
   td { background-color: transparent!important; font-weight: bold; font-size: 18px; padding: 12px!important; }
-  tr.silenced { opacity:.6!important; }
-  tr.silenced ul { opacity:1!important; }
 
   tr.danger { background-color: #e74c3c; }
-  tr.danger td { color: #fff!important; }
-  tr.danger:hover { background-color: #e74c3c; }
 
   tr.warning { background-color: #f39c12; }
-  tr.warning td { color: #fff!important; }
+
   tr.warning:hover { background-color: #f39c12; }
 
   #content_body { padding-top: 25px; padding-left: 25px; padding-right: 25px; }

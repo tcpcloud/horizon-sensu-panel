@@ -19,22 +19,20 @@ $( document ).ready(function() {
   $('td.status_column:contains("2")').parent().addClass('danger');
   $('td.status_column:contains("1")').parent().addClass('warning');
   $('td.silenced_column').has("i.icon-ok").parent().addClass('silenced'); 
-  // setTimeout(function(){ window.location.reload(1); }, 15000);
 });
 </script>
 <style type="text/css">
   td { background-color: transparent!important; }
-  tr.silenced { opacity:.6!important; }
-  tr.silenced ul { opacity:1!important; }
+
+  table td { color: #fff!important; }
+
   td.centered { text-align: center; }
 
-  tr.danger { background-color: #e74c3c; }
-  tr.danger td { color: #fff!important; }
-  tr.danger:hover { background-color: #e74c3c!important; }
+  tr.danger {  background: rgba(231, 76, 60, 1); }
+  tr.danger.silenced {  background: rgba(231, 76, 60, .5); }
 
-  tr.warning { background-color: #f39c12; }
-  tr.warning td { color: #fff!important; }
-  tr.warning:hover { background-color: #f39c12;  }
-  
+  tr.warning {  background: rgba(243, 156, 18, 1); }
+  tr.warning.silenced {  background: rgba(243, 156, 18, 1); }
+
 </style>
 {% endblock %}
