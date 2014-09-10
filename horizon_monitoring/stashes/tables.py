@@ -6,11 +6,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 
-from horizon_monitoring.utils.filters import timestamp_to_datetime, \
+from horizon_monitoring.templatetags.unit import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
-from horizon_monitoring.utils.sensu_client import sensu_api
+from horizon_monitoring.utils import sensu_api
 from horizon_contrib.tables.actions import FilterAction
+
 
 class StashDelete(tables.DeleteAction):
     action_present = ("Delete",)
@@ -23,20 +24,24 @@ class StashDelete(tables.DeleteAction):
     def delete(self, request, path):
         sensu_api.stash_delete(path)
 
+
 class ReasonColumn(tables.Column):
 
     def get_raw_data(self, datum):
         return datum['content'].get('reason', "")
+
 
 class CreatedColumn(tables.Column):
 
     def get_raw_data(self, datum):
         return datum['content']['timestamp']
 
+
 class SensuStashesTable(tables.DataTable):
     path = tables.Column('path', verbose_name=_("Path"), )
     reason = ReasonColumn('content', verbose_name=_("Reason"),)
-    created = CreatedColumn('created', verbose_name=_("Created"), filters=(timestamp_to_datetime, timesince, nonbreakable_spaces) )
+    created = CreatedColumn('created', verbose_name=_("Created"), filters=(
+        timestamp_to_datetime, timesince, nonbreakable_spaces))
     expire = tables.Column('expire', verbose_name=_("Expires"), )
 
     def get_object_display(self, datum):
@@ -49,5 +54,4 @@ class SensuStashesTable(tables.DataTable):
         name = "stashes"
         verbose_name = _("Stashes")
         row_actions = (StashDelete, )
-        table_actions = (StashDelete, FilterAction )
-
+        table_actions = (StashDelete, FilterAction)

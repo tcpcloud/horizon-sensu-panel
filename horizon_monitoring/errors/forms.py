@@ -4,7 +4,6 @@ from django.template.defaultfilters import timesince
 from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
-#from django import forms as django_forms
 from horizon import tables
 from horizon import forms
 from horizon import exceptions
@@ -15,40 +14,34 @@ from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
 from horizon_monitoring.utils.kedb_client import kedb_api
 from horizon_monitoring.utils.sensu_client import sensu_api
 
-"""
-class ErrorDetailForm(forms.Form):
-    name = forms.CharField(label=u"Name", required=True)
-    description = forms.CharField(label=u"Description", widget=forms.Textarea)
-
-    check = forms.CharField(label=u"Sensu check", max_length=255, required=True)
-    output_pattern = forms.CharField(label=u"Output pattern", required=False, widget=forms.Textarea)
-    level = forms.ChoiceField(label=u"Level", required=True, choices=LEVEL_CHOICES, initial='level1')
-    severity = forms.ChoiceField(label=u"Severity", required=True, choices=SEVERITY_CHOICES, initial='medium')
-
-    def __init__(self, *args, **kwargs):
-        super(ErrorDetailForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['name','level', 'severity', 'description', 'check', 'output_pattern',]
-"""
 
 class ErrorDetailForm(forms.SelfHandlingForm):
 
     name = forms.CharField(label=u"Name", required=True)
     description = forms.CharField(label=u"Description", widget=forms.Textarea)
 
-    check = forms.CharField(label=u"Sensu check", max_length=255, required=True)
-    output_pattern = forms.CharField(label=u"Output pattern", required=False, widget=forms.Textarea)
-    level = forms.ChoiceField(label=u"Level", required=True, choices=LEVEL_CHOICES)
-    severity = forms.ChoiceField(label=u"Severity", required=True, choices=SEVERITY_CHOICES)
-    ownership = forms.ChoiceField(required=True, initial='cloudlab', choices=OWNERSHIP_CHOICES)
+    check = forms.CharField(
+        label=u"Sensu check", max_length=255, required=True)
+    output_pattern = forms.CharField(
+        label=u"Output pattern", required=False, widget=forms.Textarea)
+    level = forms.ChoiceField(
+        label=u"Level", required=True, choices=LEVEL_CHOICES)
+    severity = forms.ChoiceField(
+        label=u"Severity", required=True, choices=SEVERITY_CHOICES)
+    ownership = forms.ChoiceField(
+        required=True, initial='cloudlab', choices=OWNERSHIP_CHOICES)
 
     def __init__(self, *args, **kwargs):
         super(ErrorDetailForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['name','level', 'severity', 'description', 'check', 'output_pattern', 'ownership']
+        self.fields.keyOrder = [
+            'name', 'level', 'severity', 'description', 'check', 'output_pattern', 'ownership']
 
     def handle(self, request, data):
         pass
 
+
 class ErrorCreateForm(ErrorDetailForm):
+
     """mel by jit volat bez sensu checku tak i snim
     """
 
@@ -56,17 +49,21 @@ class ErrorCreateForm(ErrorDetailForm):
         super(ErrorCreateForm, self).__init__(*args, **kwargs)
 
     def handle(self, request, data):
-        
+
         try:
             response = kedb_api.error_create(data)
-            messages.success(request, _('Create error %s.') % response.get("name"))
+            messages.success(
+                request, _('Create error %s.') % response.get("name"))
         except Exception:
             redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
-            exceptions.handle(request, _("Unable to create error."), redirect=redirect)
-        
+            exceptions.handle(
+                request, _("Unable to create error."), redirect=redirect)
+
         return True
 
+
 class ErrorCheckCreateForm(ErrorDetailForm):
+
     """mel by jit volat bez sensu checku tak i snim
     """
 
@@ -75,14 +72,16 @@ class ErrorCheckCreateForm(ErrorDetailForm):
 
     def __init__(self, *args, **kwargs):
         super(ErrorCheckCreateForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['name', 'level', 'severity', 'description', 'check', 'output_pattern', 'ownership']
+        self.fields.keyOrder = [
+            'name', 'level', 'severity', 'description', 'check', 'output_pattern', 'ownership']
 
     def handle(self, request, data):
-        
+
         try:
             response = kedb_api.error_create(data)
-            messages.success(request, _('Create error %s.') % response.get("name"))
-     
+            messages.success(
+                request, _('Create error %s.') % response.get("name"))
+
             """       
             if data.get("resolve", False):
                 try:
@@ -94,9 +93,11 @@ class ErrorCheckCreateForm(ErrorDetailForm):
 
         except Exception:
             redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
-            exceptions.handle(request, _("Unable to create kwown error."), redirect=redirect)
+            exceptions.handle(
+                request, _("Unable to create kwown error."), redirect=redirect)
 
         return True
+
 
 class UpdateErrorForm(ErrorDetailForm):
 
@@ -108,18 +109,21 @@ class UpdateErrorForm(ErrorDetailForm):
 
     def __init__(self, *args, **kwargs):
         super(ErrorDetailForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = ['name','level', 'severity', 'description', 'check', 'output_pattern', 'ownership', 'id']
+        self.fields.keyOrder = [
+            'name', 'level', 'severity', 'description', 'check', 'output_pattern', 'ownership', 'id']
 
     def handle(self, request, data):
-        
+
         try:
             error_id = data["id"]
             data.pop("id")
-            response = kedb_api.error_update(error_id, data )
-            messages.success(request, _('Update error %s.') % response.get("name"))
-     
+            response = kedb_api.error_update(error_id, data)
+            messages.success(
+                request, _('Update error %s.') % response.get("name"))
+
         except Exception:
             redirect = urlresolvers.reverse('horizon:monitoring:errors:index')
-            exceptions.handle(request, _("Unable to create kwown error."), redirect=redirect)
+            exceptions.handle(
+                request, _("Unable to create kwown error."), redirect=redirect)
 
         return True

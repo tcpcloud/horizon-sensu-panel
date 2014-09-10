@@ -10,7 +10,13 @@ from django.conf import settings
 log = logging.getLogger('utils.sensu')
 
 from horizon_monitoring.utils.api_client import BaseClient
+from horizon_monitoring.utils.kedb_client import Kedb
+
 from horizon_monitoring.dashboard import include_kedb
+
+if include_kedb:
+    kedb_api = Kedb()
+
 
 class Sensu(BaseClient):
 
@@ -31,20 +37,11 @@ class Sensu(BaseClient):
         return response.json()
 
     def silence(self, payload):
-        """
-        {
-          "path": "random_stash",
-          "expire": 60,
-          "content": {
-            "reason": "things are stashy"
-          }
-        }
-        """ 
         url = '/stashes'
         return self.request(url, "POST", payload)
 
     def check_request(self, check, subscibers):
-        payload = { "subscibers": subscibers, "check": check }
+        payload = {"subscibers": subscibers, "check": check}
         url = '/request'
         return self.request(url, "POST", payload)
 
@@ -80,14 +77,14 @@ class Sensu(BaseClient):
         for event in events:
             if 'silence/%s/%s' % (event['client'], event['check']) in stash_map:
                 event['silenced'] = True
-            elif 'silence/%s'% event['client'] in stash_map:
+            elif 'silence/%s' % event['client'] in stash_map:
                 event['silenced'] = True
             else:
                 event['silenced'] = False
             if event['status'] == 3:
                 event['status'] = 0
         return sorted(sorted(events, key=lambda x: x['client'], reverse=False), key=lambda x: x['status'], reverse=True)
-        #return events
+        # return events
 
     def event_detail(self, check, client):
         url = '%s/events/%s/%s' % (self.api, client, check)

@@ -3,6 +3,7 @@ from horizon import tables
 from .tables import SensuClientsTable
 from horizon_monitoring.utils.sensu_client import sensu_api
 
+
 class IndexView(tables.DataTableView):
     table_class = SensuClientsTable
     template_name = 'horizon_monitoring/clients/index.html'

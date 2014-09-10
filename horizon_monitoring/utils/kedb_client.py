@@ -1,5 +1,5 @@
 
-import requests 
+import requests
 import json
 import logging
 from horizon import messages
@@ -9,8 +9,8 @@ log = logging.getLogger('utils.kedb')
 
 from horizon_contrib.api.base import BaseClient
 
-class Kedb(BaseClient):
 
+class Kedb(BaseClient):
 
     def __init__(self):
         self.host = getattr(settings, "KEDB_HOST", None)
@@ -26,12 +26,12 @@ class Kedb(BaseClient):
 
     def event_list(self, events):
         url = '/events/'
-        payload = { "events": events }
+        payload = {"events": events}
         return self.request(url, "POST", payload)
 
     def event_detail(self, event):
         url = '/events/detail/'
-        payload = { "event": event }
+        payload = {"event": event}
         return self.request(url, "POST", payload)
 
     def workaround_update(self, workaround, data=None):

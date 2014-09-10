@@ -14,6 +14,7 @@ from horizon import workflows
 from horizon_monitoring.stashes.tables import SensuStashesTable
 from horizon_monitoring.utils.sensu_client import sensu_api
 
+
 class IndexView(tables.DataTableView):
     table_class = SensuStashesTable
     template_name = 'horizon_monitoring/stashes/index.html'

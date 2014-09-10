@@ -7,6 +7,7 @@ from horizon import tabs
 
 from horizon_monitoring.workarounds.tables import WorkaroundTable
 
+
 class OverviewTab(tabs.Tab):
     name = _("Overview")
     slug = "overview"
@@ -14,6 +15,7 @@ class OverviewTab(tabs.Tab):
 
     def get_context_data(self, request):
         return {"instance": self.tab_group.kwargs['instance']}
+
 
 class WorkaroundTab(tabs.TableTab):
     table_classes = (WorkaroundTable,)
@@ -24,6 +26,7 @@ class WorkaroundTab(tabs.TableTab):
 
     def get_workarounds_data(self):
         return self.tab_group.kwargs['instance'].get("workarounds", [])
+
 
 class SensuEventDetailTabs(tabs.TabGroup):
     slug = "event_detail"
