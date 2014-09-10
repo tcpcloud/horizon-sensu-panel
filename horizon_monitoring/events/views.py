@@ -15,7 +15,7 @@ from horizon_monitoring.dashboard import include_kedb
 from horizon_monitoring.events.tables import SensuEventsTable, FullScreenSensuEventsTable
 from horizon_monitoring.events.tabs import SensuEventDetailTabs
 from horizon_monitoring.events.forms import SilenceForm
-from horizon_monitoring.utils.sensu_client import sensu_api, kedb_api
+from horizon_monitoring.utils import sensu_api, kedb_api
 from .workflows import DetailEvent
 
 class FullScreenIndexView(tables.DataTableView):

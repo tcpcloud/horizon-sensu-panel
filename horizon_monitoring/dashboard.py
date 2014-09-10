@@ -6,10 +6,9 @@ import horizon
 
 include_kedb = False
 
-kedb = getattr(settings, "KEDB_HOST", None)
-
-if kedb:
+if hasattr(settings, "KEDB_HOST"):
     include_kedb = True
+
 
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
@@ -28,7 +27,7 @@ class MonitoringDashboard(horizon.Dashboard):
     if include_kedb:
         panels = (MonitoringPanels, KEDBPanels, )
     else:
-        panels = (MonitoringPanels)
+        panels = (MonitoringPanels,)
 
     default_panel = 'events'
 #    permissions = ('openstack.roles.admin',)

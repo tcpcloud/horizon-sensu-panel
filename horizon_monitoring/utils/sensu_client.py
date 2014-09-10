@@ -6,16 +6,11 @@ from horizon import messages
 
 from django.conf import settings
 
-try:
-    from horizon_monitoring.utils.kedb_client import kedb_api
-    host = settings.KEDB_HOST
-    include_kedb = True
-except:
-    include_kedb = False
 
 log = logging.getLogger('utils.sensu')
 
 from horizon_monitoring.utils.api_client import BaseClient
+from horizon_monitoring.dashboard import include_kedb
 
 class Sensu(BaseClient):
 

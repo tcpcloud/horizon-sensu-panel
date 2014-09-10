@@ -10,7 +10,7 @@ from horizon_contrib.tables.actions import FilterAction
 from horizon_contrib.tables.filters import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times, status_image
 
-from horizon_monitoring.utils.sensu_client import sensu_api, kedb_api
+from horizon_monitoring.utils import sensu_api, kedb_api
 
 from horizon_monitoring.dashboard import include_kedb
 

@@ -11,11 +11,10 @@ from horizon_contrib.api.base import BaseClient
 
 class Kedb(BaseClient):
 
-    host = settings.KEDB_HOST
-    port = settings.KEDB_PORT
 
     def __init__(self):
-        pass
+        self.host = getattr(settings, "KEDB_HOST", None)
+        self.port = getattr(settings, "KEDB_PORT", None)
 
     @property
     def workaround_list(self):
