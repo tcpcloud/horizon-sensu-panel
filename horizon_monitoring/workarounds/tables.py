@@ -2,9 +2,11 @@ from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
 from horizon_monitoring.utils.kedb_client import kedb_api
-from horizon_contrib.tables.actions import FilterAction
+from horizon_monitoring.utils import FilterAction
+
 
 class WorkaroundDetail(tables.LinkAction):
+
     """workaround detail
     """
     name = "workaround_detail"
@@ -19,7 +21,9 @@ class WorkaroundDetail(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+
 class WorkaroundUpdate(tables.LinkAction):
+
     """workaround detail
     """
     name = "workaround_update"
@@ -34,6 +38,7 @@ class WorkaroundUpdate(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+
 class WorkaroundDelete(tables.DeleteAction):
 
     data_type_singular = _("Workaround")
@@ -45,13 +50,15 @@ class WorkaroundDelete(tables.DeleteAction):
     def allowed(self, request, instance):
         return True
 
+
 class ErrorColumn(tables.base.Column):
 
     def get_raw_data(self, datum):
         error_detail = datum.get("error_detail", None)
         if error_detail:
             return error_detail.get("name")
-        return "" 
+        return ""
+
 
 class WorkaroundTable(tables.DataTable):
 
@@ -61,11 +68,12 @@ class WorkaroundTable(tables.DataTable):
         return urlresolvers.reverse(url, args=(error_id,))
 
     id = tables.Column('id', verbose_name=_("ID"))
-    known_error = ErrorColumn('known_error_name', verbose_name=_("Known error"))
+    known_error = ErrorColumn(
+        'known_error_name', verbose_name=_("Known error"))
     description = tables.Column('description', verbose_name=_("Description"))
     action = tables.Column('action', verbose_name=_("Action"))
     engine = tables.Column('engine', verbose_name=_("Engine"))
-    
+
     def get_object_id(self, datum):
         return datum['id']
 
@@ -75,5 +83,5 @@ class WorkaroundTable(tables.DataTable):
     class Meta:
         name = "workarounds"
         verbose_name = _("Workarounds list")
-        row_actions = (WorkaroundUpdate, WorkaroundDelete )
-        table_actions = (WorkaroundDelete, FilterAction )
+        row_actions = (WorkaroundUpdate, WorkaroundDelete)
+        table_actions = (WorkaroundDelete, FilterAction)

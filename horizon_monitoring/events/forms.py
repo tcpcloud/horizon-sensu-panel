@@ -12,6 +12,7 @@ from horizon.utils import validators
 
 from horizon_monitoring.utils.sensu_client import sensu_api
 
+
 class EventForm(forms.SelfHandlingForm):
     client = forms.CharField(widget=forms.HiddenInput(), required=False)
     check = forms.CharField(widget=forms.HiddenInput(), required=False)
@@ -22,6 +23,7 @@ class EventForm(forms.SelfHandlingForm):
 
     def handle(self, request, data):
         pass
+
 
 class SilenceForm(EventForm):
     expire = forms.IntegerField(required=True)
@@ -44,13 +46,13 @@ class SilenceForm(EventForm):
             'reason': data.get('reason'),
         }
 
-        payload = { "content": content }
+        payload = {"content": content}
 
         if check and client:
             payload["path"] = 'silence/%s/%s' % (client, check)
         else:
             payload["path"] = 'silence/%s' % client
-        
+
         if expire != -1:
             payload["expire"] = expire
 
@@ -61,4 +63,3 @@ class SilenceForm(EventForm):
             redirect = reverse('horizon:monitoring:events:index')
             exceptions.handle(request, _("Silence check."), redirect=redirect)
         return True
-

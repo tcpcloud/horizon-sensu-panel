@@ -1,14 +1,17 @@
 # -*- coding: UTF-8 -*-
+
 from django.core import urlresolvers
 from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
-#from horizon.tables import formset
+
 from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
 from horizon_monitoring.utils.kedb_client import kedb_api
-from horizon_contrib.tables.actions import FilterAction
+from horizon_monitoring.utils import FilterAction
+
 
 class ErrorUpdate(tables.LinkAction):
+
     """error detail
     """
     name = "error_update"
@@ -22,7 +25,9 @@ class ErrorUpdate(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+
 class ErrorDelete(tables.DeleteAction):
+
     """error delete
     """
     data_type_singular = _("Error")
@@ -34,7 +39,9 @@ class ErrorDelete(tables.DeleteAction):
     def allowed(self, request, instance):
         return True
 
+
 class ErrorCreate(tables.LinkAction):
+
     """error create
     """
     name = "error_create"
@@ -48,19 +55,22 @@ class ErrorCreate(tables.LinkAction):
     def allowed(self, request, instance):
         return True
 
+
 class WorkaroundCreate(tables.LinkAction):
+
     """workaround create
     """
     name = "workaround_create"
     verbose_name = _("Create Workaround")
     classes = ("ajax-modal", "btn-edit")
-    
+
     def get_link_url(self, error):
         url = "horizon:monitoring:workarounds:create_from_error"
         return urlresolvers.reverse(url, args=(error.get("id"),))
 
     def allowed(self, request, instance):
         return True
+
 
 class KedbErrorsTable(tables.DataTable):
     id = tables.Column('id', verbose_name=_("ID"))
@@ -81,12 +91,11 @@ class KedbErrorsTable(tables.DataTable):
         name = "errors"
         verbose_name = _("Known Errors Database")
         row_actions = (ErrorUpdate, WorkaroundCreate, ErrorDelete)
-        table_actions= (ErrorCreate, ErrorDelete, FilterAction)
+        table_actions = (ErrorCreate, ErrorDelete, FilterAction)
 
 WorkaroundsFormSet = formset_factory(WorkaroundDetailForm)
-from random import randint
 
-#class KedbErrorsFormsetTable(formset.FormsetDataTable):
+
 class KedbErrorsFormsetTable(tables.DataTable):
     formset_class = WorkaroundsFormSet
 

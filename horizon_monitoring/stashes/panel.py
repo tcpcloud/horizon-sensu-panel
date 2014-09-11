@@ -5,6 +5,7 @@ import horizon
 
 from horizon_monitoring import dashboard
 
+
 class StashesPanel(horizon.Panel):
     name = _("Event Stashes")
     slug = 'stashes'

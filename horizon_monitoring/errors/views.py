@@ -11,7 +11,7 @@ from horizon_monitoring.utils.sensu_client import sensu_api
 from .tables import KedbErrorsTable
 from horizon_monitoring.workarounds.tables import WorkaroundTable
 from .forms import ErrorDetailForm, ErrorCreateForm, ErrorCheckCreateForm, UpdateErrorForm
-from .workflows import UpdateError
+
 
 class IndexView(tables.DataTableView):
     table_class = KedbErrorsTable
@@ -19,6 +19,7 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         return kedb_api.error_list
+
 
 class UpdateView(forms.ModalFormView):
     template_name = "horizon_monitoring/errors/update.html"
@@ -28,7 +29,7 @@ class UpdateView(forms.ModalFormView):
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
         context['error'] = kedb_api.error_update(self.kwargs['id'])
-        context['workarounds'] = WorkaroundTable(request=self.request, 
+        context['workarounds'] = WorkaroundTable(request=self.request,
                                                  data=context['error'].get("workarounds", []))
         return context
 
@@ -36,6 +37,7 @@ class UpdateView(forms.ModalFormView):
         error = self.get_context_data()["error"]
         error["id"] = self.kwargs['id']
         return error
+
 
 class CreateView(forms.ModalFormView):
 
@@ -56,7 +58,8 @@ class CreateView(forms.ModalFormView):
         if check and client:
             context["check"] = check
             context["client"] = client
-            context["output_pattern"] = sensu_api.event_detail(check, client)["output"]
+            context["output_pattern"] = sensu_api.event_detail(
+                check, client)["output"]
         return context
 
     def get_initial(self):

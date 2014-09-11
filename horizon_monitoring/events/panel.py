@@ -5,6 +5,7 @@ import horizon
 
 from horizon_monitoring import dashboard
 
+
 class EventsPanel(horizon.Panel):
     name = _("Current Events")
     slug = 'events'

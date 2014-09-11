@@ -10,6 +10,7 @@ from horizon import messages
 
 from horizon_monitoring.utils.sensu_client import sensu_api
 
+
 class RequestCheckForm(forms.SelfHandlingForm):
     subscibers = forms.CharField()
     check = forms.CharField(widget=forms.HiddenInput())
@@ -22,7 +23,6 @@ class RequestCheckForm(forms.SelfHandlingForm):
         cleaned_data = super(RequestCheckForm, self).clean()
         return cleaned_data
 
-    # @sensitive_variables('data', 'password')
     def handle(self, request, data):
         check = data.get('check')
         subscibers = data.get('subscibers').split(',')
@@ -32,6 +32,7 @@ class RequestCheckForm(forms.SelfHandlingForm):
             messages.success(request, _('Requesting check %s.') % response)
         except Exception:
             redirect = reverse('horizon:monitoring:checks:index')
-            exceptions.handle(request, _("Unable to request check."), redirect=redirect)
+            exceptions.handle(
+                request, _("Unable to request check."), redirect=redirect)
 
         return True

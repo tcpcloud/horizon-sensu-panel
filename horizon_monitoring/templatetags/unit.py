@@ -17,5 +17,3 @@ def join_list_with_comma(value):
 
 def join_list_with_newline(value):
     return SafeString('<br />'.join(value))
-
-

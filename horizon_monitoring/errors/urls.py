@@ -1,6 +1,6 @@
 
 from django.conf.urls import *
-from .views import IndexView, CreateView, UpdateView
+from horizon_monitoring.errors.views import IndexView, CreateView, UpdateView
 
 urlpatterns = patterns('',
     url(r'^$', IndexView.as_view(), name='index'),

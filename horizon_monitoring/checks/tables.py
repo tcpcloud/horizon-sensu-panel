@@ -4,9 +4,10 @@ from horizon import tables
 from django.core import urlresolvers
 from django.utils.http import urlencode
 
-from horizon_monitoring.utils.filters import join_list_with_newline
+from horizon_monitoring.templatetags.unit import join_list_with_newline
 from horizon_monitoring.utils.sensu_client import sensu_api
-from horizon_contrib.tables.actions import FilterAction
+from horizon_monitoring.utils import FilterAction
+
 
 class RequestCheck(tables.LinkAction):
     name = "request_check"
@@ -17,10 +18,13 @@ class RequestCheck(tables.LinkAction):
     def get_link_url(self, check):
         return urlresolvers.reverse(self.url, args=[check['name']])
 
+
 class SensuChecksTable(tables.DataTable):
     name = tables.Column('name', verbose_name=_("Name"))
-    subscribers = tables.Column('subscribers', verbose_name=_("Subscribers"), filters=(join_list_with_newline,))
-    handlers = tables.Column('handlers', verbose_name=_("Handlers"), filters=(join_list_with_newline,))
+    subscribers = tables.Column('subscribers', verbose_name=_(
+        "Subscribers"), filters=(join_list_with_newline,))
+    handlers = tables.Column('handlers', verbose_name=_(
+        "Handlers"), filters=(join_list_with_newline,))
     interval = tables.Column('interval', verbose_name=_("Interval"))
     command = tables.Column('command', verbose_name=_("Command"))
     customer = tables.Column('customer', verbose_name=_("Customer"))

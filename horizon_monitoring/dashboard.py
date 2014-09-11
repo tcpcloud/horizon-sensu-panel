@@ -5,12 +5,10 @@ from django.utils.translation import ugettext_lazy as _
 import horizon
 
 include_kedb = False
-include_gitlab = False
 
-kedb = getattr(settings, "KEDB_HOST", None)
-
-if kedb:
+if hasattr(settings, "KEDB_HOST"):
     include_kedb = True
+
 
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
@@ -25,12 +23,11 @@ class KEDBPanels(horizon.PanelGroup):
 class MonitoringDashboard(horizon.Dashboard):
     name = _("Monitoring")
     slug = "monitoring"
-    if include_kedb and include_gitlab:
-        panels = (MonitoringPanels, KEDBPanels, GitlabPanels, )
-    elif include_kedb:
+    
+    if include_kedb:
         panels = (MonitoringPanels, KEDBPanels, )
     else:
-        panels = (MonitoringPanels)
+        panels = (MonitoringPanels,)
 
     default_panel = 'events'
 #    permissions = ('openstack.roles.admin',)
