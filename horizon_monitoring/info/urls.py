@@ -1,5 +1,5 @@
+from django.conf.urls import patterns, url, include
 
-from django.conf.urls.defaults import *
 from .views import InfoView
 
 urlpatterns = patterns('horizon_monitoring',
