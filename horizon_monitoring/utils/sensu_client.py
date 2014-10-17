@@ -75,11 +75,14 @@ class Sensu(BaseClient):
         for stash in stashes:
             stash_map.append(stash['path'])
         for event in events:
-            if 'silence/%s/%s' % (event['client'], event['check']) in stash_map:
-                event['silenced'] = True
-            elif 'silence/%s' % event['client'] in stash_map:
-                event['silenced'] = True
-            else:
+            try:
+                if 'silence/%s/%s' % (event['client'], event['check']) in stash_map:
+                    event['silenced'] = True
+                elif 'silence/%s' % event['client'] in stash_map:
+                    event['silenced'] = True
+                else:
+                    event['silenced'] = False
+            except Exception, e:
                 event['silenced'] = False
             if event['status'] == 3:
                 event['status'] = 0
