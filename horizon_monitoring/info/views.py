@@ -30,7 +30,9 @@ class InfoView(tables.DataTableView):
     def get_data(self):
         data = sensu_api.service_status
 
+        transport = data.get('transport', data.get('rabbitmq'))
+
         return [
-        	{'name': _('RabbitMQ connected'), 'value': data['rabbitmq']['connected']},
+        	{'name': _('RabbitMQ connected'), 'value': transport['connected']},
         	{'name': _('Redis connected'), 'value': data['redis']['connected']},
         ]
