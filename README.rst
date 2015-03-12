@@ -1,22 +1,41 @@
 |License badge|
 
-==========
+============================
 Horizon Monitoring Dashboard
-==========
+============================
 
-This is a simple Horizon based interface for Sensu Monitoring Framework with Known Error Database.
+Sensu panels in the Horizon interface. With configured KEDB provide Known Error with workarounds over Sensu checks.
 
+Dashboards
+----------
+
+* Monitoring
+
+Panels
+------
+
+* Current Events
+* Event Stahes
+* Service Checks
+* Monitored Clients
+* Monitoring Status
+
+Panels with configured KEDB
+---------------------------
+
+* Known Errors
+* Workarounds
 
 Requirements
------
+------------
 
 * Python 2.6 / 2.7
 * Openstack Horizon
 * Sensu API >= 0.16.0
-* KEDB is opetional
+* KEDB is optional
 
 Installation notes
-------------
+------------------
 
 * add 'horizon_monitoring' to INSTALLED_APPS tuple
 * add 'monitoring' to 'dashboards' key in HORIZON_CONFIG
@@ -36,22 +55,17 @@ if you using service KEDB
     KEDB_PORT=6754
 
 
-Screenshots
------
-
-.. image:: /docs/source/_static/imgs/show_me.gif
-
 Read more
 -----
 
 * http://docs.openstack.org/developer/horizon/topics/tutorial.html
-* http://sensuapp.org/docs/0.12/api
+* http://sensuapp.org/docs/0.16/api
 * http://docs.openstack.org/developer/horizon/_modules/horizon/tables/base.html
 * http://docs.openstack.org/developer/horizon/ref/tables.html
 * http://nagios.sourceforge.net/docs/3_0/flapping.html
 * https://packages.debian.org/wheezy/nagios-plugins-openstack
 * https://github.com/ehazlett/sensu-py/
-
+* https://github.com/tcpcloud/kedb.git
 
 `Documentation`_
 
