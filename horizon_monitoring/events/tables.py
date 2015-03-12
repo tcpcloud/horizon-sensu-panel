@@ -89,7 +89,7 @@ class EventDetail(tables.LinkAction):
     classes = ("btn-edit")
 
     def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['check'], event['client']])
+        return urlresolvers.reverse(self.url, args=[event['check']['name'], event['client']['name']])
 
     def allowed(self, request, instance):
         return True
@@ -105,7 +105,7 @@ class ErrorCreate(tables.LinkAction):
     url = "horizon:monitoring:errors:create_check"
 
     def get_link_url(self, datum):
-        return urlresolvers.reverse(self.url, kwargs={'check': datum.get("check"), 'client': datum.get("client")})
+        return urlresolvers.reverse(self.url, kwargs={'check': datum.get("check").get('name'), 'client': datum.get("client").get('name')})
 
     def allowed(self, request, instance):
         allowed = False
@@ -140,9 +140,9 @@ class StashDelete(tables.DeleteAction):
         for stash in stashes:
             stash_map.append(stash['path'])
         for event in events:
-            if 'silence/%s/%s' % (event['client'], event['check']) in stash_map:
+            if 'silence/%s/%s' % (event['client']['name'], event['check']['name']) in stash_map:
                 return False
-            elif 'silence/%s' % event['client'] in stash_map:
+            elif 'silence/%s' % event['client']['name'] in stash_map:
                 return True
         return False
 
@@ -166,7 +166,7 @@ class SilenceClient(tables.LinkAction):
     classes = ("ajax-modal", "btn-edit")
 
     def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['client'], ])
+        return urlresolvers.reverse(self.url, args=[event['client']['name'], ])
 
 
 class SilenceCheck(tables.LinkAction):
@@ -176,7 +176,7 @@ class SilenceCheck(tables.LinkAction):
     classes = ("ajax-modal", "btn")
 
     def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['client'], event['check']])
+        return urlresolvers.reverse(self.url, args=[event['client']['name'], event['check']['name']])
 
 
 class SensuEventsTable(tables.DataTable):
@@ -188,8 +188,8 @@ class SensuEventsTable(tables.DataTable):
             return urlresolvers.reverse(url, args=(error_id,))
         return ""
 
-    client = tables.Column('client', verbose_name=_("Client"))
-    check = tables.Column('check', verbose_name=_("Check"))
+    client = tables.Column('client', verbose_name=_("Client"), filters=(lambda c: c['name'],))
+    check = tables.Column('check', verbose_name=_("Check"), filters=(lambda c: c['name'],))
 
     if include_kedb:
         #known_error = tables.Column('known_error', verbose_name=_("Known"))

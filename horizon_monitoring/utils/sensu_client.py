@@ -84,9 +84,9 @@ class Sensu(BaseClient):
                     event['silenced'] = False
             except Exception, e:
                 event['silenced'] = False
-            if event['status'] == 3:
+            if event['check']['status'] == 3:
                 event['status'] = 0
-        return sorted(sorted(events, key=lambda x: x['client'], reverse=False), key=lambda x: x['status'], reverse=True)
+        return sorted(sorted(events, key=lambda x: x['client'], reverse=False), key=lambda x: x['check']['status'], reverse=True)
         # return events
 
     def event_detail(self, check, client):

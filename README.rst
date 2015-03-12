@@ -12,7 +12,7 @@ Requirements
 
 * Python 2.6 / 2.7
 * Openstack Horizon
-* Sensu API
+* Sensu API >= 0.16.0
 * KEDB is opetional
 
 Installation notes
