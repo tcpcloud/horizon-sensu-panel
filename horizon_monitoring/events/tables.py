@@ -1,14 +1,13 @@
-from django.conf import settings
+
 from django.core import urlresolvers
 from django.template.defaultfilters import timesince
-from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
 from horizon_contrib.tables.actions import FilterAction
 
 from horizon_contrib.tables.filters import timestamp_to_datetime, \
-    nonbreakable_spaces, join_list_with_comma, unit_times, status_image
+    nonbreakable_spaces, unit_times, status_icon
 
 from horizon_monitoring.utils import sensu_api, kedb_api
 
@@ -199,9 +198,9 @@ class SensuEventsTable(tables.DataTable):
     status = tables.Column('status', verbose_name=_(
         "Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"), classes=(
-        'silenced_column', 'centered'), filters=(status_image,))
+        'silenced_column', 'centered'), filters=(status_icon,))
     silenced = tables.Column('silenced', verbose_name=_("Silenced"),
-                             classes=('silenced_column', 'centered'), filters=(status_image,))
+                             classes=('silenced_column', 'centered'), filters=(status_icon,))
     occurrences = tables.Column(
         'occurrences', verbose_name=_("Occured"), filters=(unit_times, ))
     issued = tables.Column('issued', verbose_name=_("Last occurence"),
