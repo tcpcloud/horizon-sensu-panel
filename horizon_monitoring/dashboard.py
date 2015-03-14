@@ -25,6 +25,7 @@ class KEDBPanels(horizon.PanelGroup):
 class MonitoringDashboard(horizon.Dashboard):
     name = _("Monitoring")
     slug = "monitoring"
+    icon = "fa fa-area-chart"
 
     if include_kedb:
         panels = (MonitoringPanels, KEDBPanels, )
