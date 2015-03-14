@@ -53,12 +53,6 @@ class Req(object):
             
         if request:
             messages.debug(request, "%s - %s - %s - %s - %s" % (method, path, params, response.status_code, str(response.text)))
-        else:
-            try:
-                LOG.debug(request, "%s - %s - %s - %s - %s" % (method, path, params, response.status_code, str(response.text)))
-            except UnicodeEncodeError:
-                pass
-        
         try:
             response = response.json()
         except Exception, e:

@@ -13,7 +13,7 @@ if hasattr(settings, "KEDB_HOST"):
 class MonitoringPanels(horizon.PanelGroup):
     slug = "monitoring"
     name = _("Service Monitoring")
-    panels = ('events', 'stashes', 'checks', 'clients', 'info', )
+    panels = ('events', 'stashes', 'checks', 'clients', 'aggregates', 'info', )
 
 
 class KEDBPanels(horizon.PanelGroup):

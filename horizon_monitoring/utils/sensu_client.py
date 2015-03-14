@@ -31,6 +31,17 @@ class Sensu(BaseClient):
     def check_list(self):
         return self.request('/checks')
 
+    @property
+    def aggregates(self):
+        return self.request('/aggregates')
+
+    def aggregate_check(self, check, client=None):
+        if client:
+            url = '/aggregates/{0}/{1}'.format(client, check)
+        else:
+            url = '/aggregates/{0}'.format(check)
+        return self.request(url)
+
     def check_detail(self, check):
         url = '%s/checks/%s' % (self.api, check)
         response = requests.get(url)
