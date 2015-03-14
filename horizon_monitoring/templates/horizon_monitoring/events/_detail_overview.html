@@ -1,21 +1,22 @@
 {% load i18n sizeformat %}
 {% load url from future %}
 
-<h3>{% trans "Event Overview" %}</h3>
-
-<div class="specs row-fluid detail">
-  <h4>{% trans "Event" %}</h4>
-  <hr class="header_rule">
-  <dl>
-    <dt>{% trans "Check" %}</dt>
-    <dd>{{ instance.check }}</dd>
-    <dt>{% trans "Output" %}</dt>
-    <dd>{{ instance.output }}</dd>
-    <dt>{% trans "Client" %}</dt>
-    <dd>{{ instance.client }}</dd>
-    <dt>{% trans "Known Error" %}</dt>
-    <dd>{{ instance.error_name }}</dd>
-    <dt>{% trans "Error Description" %}</dt>
-    <dd>{{ instance.description }}</dd>
-  </dl>
+<div class="box">
+  <div class="box-header with-border">
+    <h3 class="box-title">{% trans "Event Overview" %}</h3>
+  </div>
+  <div class="box-body">
+    <dl>
+      <dt>{% trans "Check" %}</dt>
+      <dd>{{ instance.check }}</dd>
+      <dt>{% trans "Output" %}</dt>
+      <dd>{{ instance.output }}</dd>
+      <dt>{% trans "Client" %}</dt>
+      <dd>{{ instance.client }}</dd>
+      <dt>{% trans "Known Error" %}</dt>
+      <dd>{{ instance.error_name }}</dd>
+      <dt>{% trans "Error Description" %}</dt>
+      <dd>{{ instance.description }}</dd>
+    </dl>
+  </div>
 </div>
