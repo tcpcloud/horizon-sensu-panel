@@ -17,6 +17,7 @@ Panels
 * Current Events
 * Event Stahes
 * Service Checks
+* Aggregations
 * Monitored Clients
 * Monitoring Status
 
