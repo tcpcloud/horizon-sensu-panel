@@ -1,24 +1,23 @@
 
-import requests
 import json
 import logging
-from horizon import messages
 
+import requests
 from django.conf import settings
-
+from horizon import messages
+from horizon_contrib.api import Manager
+from horizon_contrib.api.base import ClientBase
+from horizon_monitoring.dashboard import include_kedb
+from horizon_monitoring.utils.kedb_client import Kedb
 
 log = logging.getLogger('utils.sensu')
 
-from horizon_monitoring.utils.api_client import BaseClient
-from horizon_monitoring.utils.kedb_client import Kedb
-
-from horizon_monitoring.dashboard import include_kedb
 
 if include_kedb:
     kedb_api = Kedb()
 
 
-class Sensu(BaseClient):
+class Sensu(ClientBase):
 
     host = settings.SENSU_HOST
     port = settings.SENSU_PORT
@@ -114,3 +113,8 @@ class Sensu(BaseClient):
         return self.request('/info')
 
 sensu_api = Sensu()
+
+
+class SensuManager(Sensu):
+
+    pass

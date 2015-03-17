@@ -1,12 +1,12 @@
 
-from django.utils.translation import ugettext_lazy as _
-from horizon import tables
 from django.core import urlresolvers
 from django.utils.http import urlencode
-
+from django.utils.translation import ugettext_lazy as _
+from horizon import tables
+from horizon_contrib.tables import PaginatedTable, ModelTable
 from horizon_monitoring.templatetags.unit import join_list_with_newline
+from horizon_contrib.tables import FilterAction
 from horizon_monitoring.utils.sensu_client import sensu_api
-from horizon_monitoring.utils import FilterAction
 
 
 class RequestCheck(tables.LinkAction):
@@ -16,10 +16,12 @@ class RequestCheck(tables.LinkAction):
     classes = ("ajax-modal", "btn-edit")
 
     def get_link_url(self, check):
-        return urlresolvers.reverse(self.url, args=[check['name']])
+        return urlresolvers.reverse(self.url, args=[check.name])
 
 
-class SensuChecksTable(tables.DataTable):
+class SensuChecksTable(ModelTable):
+
+    """
     name = tables.Column('name', verbose_name=_("Name"))
     subscribers = tables.Column('subscribers', verbose_name=_(
         "Subscribers"), filters=(join_list_with_newline,))
@@ -30,14 +32,19 @@ class SensuChecksTable(tables.DataTable):
     customer = tables.Column('customer', verbose_name=_("Customer"))
     asset = tables.Column('asset', verbose_name=_("Asset"))
 
+    """
+
     def get_object_id(self, datum):
-        return datum['name']
+        return datum.name
 
     def get_object_display(self, datum):
-        return datum['name']
+        return datum.name
 
     class Meta:
         name = "checks"
+        model_class = 'check'
         verbose_name = _("Service Checks Database")
         row_actions = (RequestCheck,)
-        table_actions = (FilterAction, )
+        table_actions = (FilterAction,)
+        extra_columns = True
+        ajax_update = False

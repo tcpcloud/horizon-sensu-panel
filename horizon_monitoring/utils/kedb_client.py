@@ -7,10 +7,10 @@ from django.conf import settings
 
 log = logging.getLogger('utils.kedb')
 
-from horizon_contrib.api.base import BaseClient
+from horizon_contrib.api import ClientBase
 
 
-class Kedb(BaseClient):
+class Kedb(ClientBase):
 
     def __init__(self):
         self.host = getattr(settings, "KEDB_HOST", None)
@@ -65,3 +65,8 @@ class Kedb(BaseClient):
         return self.request(url, "DELETE", {}, request)
 
 kedb_api = Kedb()
+
+
+class KedbManager(Kedb):
+
+    pass

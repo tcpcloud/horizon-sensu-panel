@@ -12,13 +12,11 @@ from .tables import KedbErrorsTable
 from horizon_monitoring.workarounds.tables import WorkaroundTable
 from .forms import ErrorDetailForm, ErrorCreateForm, ErrorCheckCreateForm, UpdateErrorForm
 
+from horizon_contrib.tables import views
 
-class IndexView(tables.DataTableView):
+
+class IndexView(views.IndexView):
     table_class = KedbErrorsTable
-    template_name = 'horizon_monitoring/errors/index.html'
-
-    def get_data(self):
-        return kedb_api.error_list
 
 
 class UpdateView(forms.ModalFormView):
