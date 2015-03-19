@@ -9,7 +9,6 @@ class Manager(KedbManager):
         return self.request('/known-errors')
 
     def get(self, id):
-
         return self.update(id)
 
     def update(self, error, data=None):

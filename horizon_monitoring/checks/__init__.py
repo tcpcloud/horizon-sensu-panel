@@ -1,14 +1,13 @@
 
-
 from django.db import models
-from horizon_contrib.api.models import DictModel
+from horizon_contrib.api.models import APIModel
 from horizon_contrib.common.model_registry import register
 
 from .managers import CheckManager
 
 
-class Check(DictModel):
-    name = models.CharField('name')
+class Check(APIModel):
+    name = models.CharField('name', primary_key=True)
     subscribers = models.CharField(u"Subscribers")
     handlers = models.CharField(u"Handlers")
     interval = models.CharField(u"Interval")
@@ -16,12 +15,11 @@ class Check(DictModel):
     customer = models.CharField(u"Customer")
     occurrences = models.CharField(u"occurrences")
     asset = models.CharField(u"Asset")
-    #workarounds = models.CharField(u"Asset")
 
     objects = CheckManager()
 
-    def __unicode__(self):
-        return self["name"]
+    def __repr__(self):
+        return str(self.name)
 
     class Meta:
         abstract = True

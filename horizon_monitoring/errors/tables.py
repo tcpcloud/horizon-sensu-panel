@@ -11,7 +11,7 @@ from horizon_monitoring.utils import FilterAction
 
 
 from horizon_contrib import tables
-
+from .models import Error
 
 class ErrorUpdate(tables.LinkAction):
 
@@ -89,7 +89,7 @@ class KedbErrorsTable(tables.ModelTable):
     class Meta:
         name = "errors"
         verbose_name = _("Known Errors Database")
-        model_class = 'error'
+        model_class = Error
         row_actions = tables.ROW_ACTIONS
         table_actions = tables.TABLE_ACTIONS
         extra_columns = True

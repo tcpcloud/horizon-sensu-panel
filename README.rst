@@ -6,6 +6,10 @@ Horizon Monitoring Dashboard
 
 Sensu panels in the Horizon interface. With configured KEDB provide Known Error with workarounds over Sensu checks.
 
+This dashboard is example usage of `Horizon Contrib library <https://github.com/michaelkuty/horizon-contrib>`_
+
+For this purpose see checks and errors panels.
+
 Dashboards
 ----------
 
@@ -34,6 +38,7 @@ Requirements
 * Openstack Horizon
 * Sensu API >= 0.16.0
 * KEDB is optional
+* Horizon Contrib >= 1.0.1
 
 Installation notes
 ------------------
