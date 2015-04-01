@@ -11,7 +11,7 @@ class WorkaroundsPanel(ModelPanel):
     name = _("Workarounds")
     slug = 'workarounds'
 
-    model_class = 'workaround'
+    #model_class = 'workaround'
 
 if include_kedb:
     MonitoringDashboard.register(WorkaroundsPanel)
