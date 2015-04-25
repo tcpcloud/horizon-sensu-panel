@@ -23,9 +23,6 @@ class Sensu(ClientBase):
     port = settings.SENSU_PORT
     api_prefix = ""
 
-    def __init__(self):
-        pass
-
     @property
     def check_list(self):
         return self.request('/checks')

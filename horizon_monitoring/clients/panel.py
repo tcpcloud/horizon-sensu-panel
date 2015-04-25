@@ -8,6 +8,6 @@ class ClientsPanel(ModelPanel):
     name = _("Monitored Clients")
     slug = 'clients'
 
-    #model_class = 'client'
+    model_class = 'client'
 
 dashboard.MonitoringDashboard.register(ClientsPanel)

@@ -57,7 +57,7 @@ class CreateView(forms.ModalFormView):
             context["check"] = check
             context["client"] = client
             context["output_pattern"] = sensu_api.event_detail(
-                check, client)["output"]
+                check, client)['check']['output']
         return context
 
     def get_initial(self):

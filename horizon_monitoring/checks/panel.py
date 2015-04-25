@@ -9,6 +9,6 @@ class ChecksPanel(ModelPanel):
     name = _("Service Checks")
     slug = 'checks'
 
-    #model_class = 'check'
+    model_class = 'check'
 
 dashboard.MonitoringDashboard.register(ChecksPanel)

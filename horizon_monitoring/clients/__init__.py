@@ -17,7 +17,7 @@ class Client(APIModel):
 
     objects = ClientManager()
 
-    def __repr__(self):
+    def __str__(self):
         return str(self.name)
 
     class Meta:

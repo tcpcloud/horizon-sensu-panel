@@ -76,7 +76,7 @@ class WorkaroundCreate(tables.LinkAction):
 
 
 class KedbErrorsTable(tables.ModelTable):
-    """
+
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
     check = tables.Column('check', verbose_name=_("Check"))
@@ -84,14 +84,13 @@ class KedbErrorsTable(tables.ModelTable):
     severity = tables.Column('severity', verbose_name=_("Severity"))
     level = tables.Column('level', verbose_name=_("Level"))
     ownership = tables.Column('ownership', verbose_name=_("Ownership"))
-    """
 
     class Meta:
         name = "errors"
         verbose_name = _("Known Errors Database")
         model_class = Error
-        row_actions = tables.ROW_ACTIONS
-        table_actions = tables.TABLE_ACTIONS
+        row_actions = [WorkaroundCreate, ErrorUpdate, ErrorDelete]
+        table_actions = [ErrorCreate, ErrorDelete]
         extra_columns = True
         ajax_update = False
 

@@ -194,7 +194,7 @@ class SensuEventsTable(tables.DataTable):
         #known_error = tables.Column('known_error', verbose_name=_("Known"))
         error_name = tables.Column('error_name', verbose_name=_("Error name"))
 #        severity = tables.Column('severity', verbose_name=_("Error severity"))
-    output = tables.Column('output', verbose_name=_("Output"), truncate=70)
+    output = tables.Column('check', verbose_name=_("Output"), truncate=180, filters=(lambda c: c['output'],))
     status = tables.Column('status', verbose_name=_(
         "Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"), classes=(
@@ -202,11 +202,12 @@ class SensuEventsTable(tables.DataTable):
     silenced = tables.Column('silenced', verbose_name=_("Silenced"),
                              classes=('silenced_column', 'centered'), filters=(status_icon,))
     occurrences = tables.Column(
-        'occurrences', verbose_name=_("Occured"), filters=(unit_times, ))
-    issued = tables.Column('issued', verbose_name=_("Last occurence"),
-                           filters=(timestamp_to_datetime, timesince, nonbreakable_spaces))
+        'occurrences', verbose_name=_("Occured"), filters=(unit_times,))
+    issued = tables.Column('check', verbose_name=_("Last occurence"),
+                           filters=(lambda c: c['issued'], timestamp_to_datetime, timesince, nonbreakable_spaces))
 
     def get_object_id(self, datum):
+        #raise Exception(datum['check']['flapping'])
         return '%s %s' % (datum['client'], datum['check'])
 
     def get_object_display(self, datum):
