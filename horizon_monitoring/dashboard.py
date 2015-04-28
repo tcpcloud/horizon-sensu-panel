@@ -32,6 +32,7 @@ class MonitoringDashboard(horizon.Dashboard):
     else:
         panels = (MonitoringPanels,)
 
+    permissions = ('openstack.roles.admin',)
     default_panel = 'events'
 #    permissions = ('openstack.roles.admin',)
 
