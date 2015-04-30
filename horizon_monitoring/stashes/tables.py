@@ -1,7 +1,5 @@
 
-from django.core import urlresolvers
 from django.template.defaultfilters import timesince
-from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
@@ -9,8 +7,8 @@ from horizon import tables
 from horizon_monitoring.templatetags.unit import timestamp_to_datetime, \
     nonbreakable_spaces, join_list_with_comma, unit_times
 
-from horizon_monitoring.utils import sensu_api
-from horizon_contrib.tables.actions import FilterAction
+from horizon_monitoring.api import sensu_api
+from horizon_monitoring.utils import FilterAction
 
 
 class StashDelete(tables.DeleteAction):

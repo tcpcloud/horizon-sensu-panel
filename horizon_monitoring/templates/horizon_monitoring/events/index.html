@@ -4,7 +4,7 @@
 {% block title %}{% trans "Current Events" %}{% endblock %}
 
 {% block page_header %}
-{% include "horizon/common/_page_header.html" with title=_("Monitoring System") %}
+{% include "horizon/common/_page_header.html" with title=_("Current Events") %}
 {% endblock page_header %}
 
 {% block main %}
@@ -24,15 +24,15 @@ $( document ).ready(function() {
 <style type="text/css">
   td { background-color: transparent!important; }
 
-  table td { color: #fff!important; }
+  /*table td { color: #fff!important; }*/
 
   td.centered { text-align: center; }
 
   tr.danger {  background: rgba(231, 76, 60, 1); }
-  tr.danger.silenced {  background: rgba(231, 76, 60, .5); }
+  tr.danger.silenced {  background-color: #f8c9c4; }
 
-  tr.warning {  background: rgba(243, 156, 18, 1); }
-  tr.warning.silenced {  background: rgba(243, 156, 18, 1); }
+  tr.warning {  background-color: rgba(243, 156, 18, 1); }
+  tr.warning.silenced {  background-color: #fbe1b7; }
 
 </style>
 {% endblock %}

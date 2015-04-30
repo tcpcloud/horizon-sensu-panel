@@ -1,10 +1,11 @@
 
-import horizon
 from django.utils.translation import ugettext_lazy as _
 from horizon_monitoring import dashboard
 
+from horizon import Panel
 
-class ChecksPanel(horizon.Panel):
+
+class ChecksPanel(Panel):
     name = _("Service Checks")
     slug = 'checks'
 

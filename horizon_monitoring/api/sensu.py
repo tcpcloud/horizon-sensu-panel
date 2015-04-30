@@ -1,35 +1,46 @@
 
-import requests
-import json
 import logging
-from horizon import messages
 
+import requests
 from django.conf import settings
-
+from horizon import messages
+from .base import ClientBase
+from horizon_monitoring.dashboard import include_kedb
+from .kedb import Kedb
 
 log = logging.getLogger('utils.sensu')
 
-from horizon_monitoring.utils.api_client import BaseClient
-from horizon_monitoring.utils.kedb_client import Kedb
-
-from horizon_monitoring.dashboard import include_kedb
 
 if include_kedb:
     kedb_api = Kedb()
 
 
-class Sensu(BaseClient):
+class Sensu(ClientBase):
 
-    host = settings.SENSU_HOST
-    port = settings.SENSU_PORT
+    host = getattr(settings, 'SENSU_HOST', 'localhost')
+    port = getattr(settings, 'SENSU_PORT', 4567)
+
     api_prefix = ""
 
-    def __init__(self):
-        pass
+    def set_sensu_api(self, config):
+        self.host = config.get('host', 'localhost')
+        self.port = config.get('port', 4567)
+        return True
 
     @property
     def check_list(self):
         return self.request('/checks')
+
+    @property
+    def aggregates(self):
+        return self.request('/aggregates')
+
+    def aggregate_check(self, check, client=None):
+        if client:
+            url = '/aggregates/{0}/{1}'.format(client, check)
+        else:
+            url = '/aggregates/{0}'.format(check)
+        return self.request(url)
 
     def check_detail(self, check):
         url = '%s/checks/%s' % (self.api, check)
@@ -46,8 +57,8 @@ class Sensu(BaseClient):
         return self.request(url, "POST", payload)
 
     def event_resolve(self, check, client):
-        url = '/events/%s/%s' % (client, check)
-        return self.request(url, "DELETE")
+        payload = {"client": client, "check": check}
+        return self.request('/events/resolve', "POST", payload)
 
     @property
     def stash_list(self):
@@ -75,15 +86,21 @@ class Sensu(BaseClient):
         for stash in stashes:
             stash_map.append(stash['path'])
         for event in events:
-            if 'silence/%s/%s' % (event['client'], event['check']) in stash_map:
-                event['silenced'] = True
-            elif 'silence/%s' % event['client'] in stash_map:
-                event['silenced'] = True
-            else:
+            try:
+                if 'silence/%s/%s' % (event['client']['name'],
+                                      event['check']['name']) in stash_map:
+                    event['silenced'] = True
+                elif 'silence/%s' % event['client'] in stash_map:
+                    event['silenced'] = True
+                else:
+                    event['silenced'] = False
+            except Exception:
                 event['silenced'] = False
-            if event['status'] == 3:
+            if event['check']['status'] == 3:
                 event['status'] = 0
-        return sorted(sorted(events, key=lambda x: x['client'], reverse=False), key=lambda x: x['status'], reverse=True)
+        return sorted(sorted(events, key=lambda x: x['client']['name'],
+                             reverse=False),
+                      key=lambda x: x['check']['status'], reverse=True)
         # return events
 
     def event_detail(self, check, client):

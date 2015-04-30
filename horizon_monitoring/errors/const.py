@@ -14,3 +14,9 @@ OWNERSHIP_CHOICES = (
     ("network", u"Network"),
     ("hardware", u"Hardware"),
 )
+
+ENGINE_CHOICES = (
+    ("salt", u"Salt call"),
+    ("jenkins", u"Jenkins job"),
+    ("misc", u"Misc"),
+)

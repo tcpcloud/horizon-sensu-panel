@@ -1,11 +1,11 @@
 
 
+from django.template.defaultfilters import timesince
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
-
-from django.template.defaultfilters import timesince
-
-from horizon_monitoring.templatetags.unit import timestamp_to_datetime, nonbreakable_spaces, join_list_with_comma
+from horizon_monitoring.templatetags.unit import (join_list_with_comma,
+                                                  nonbreakable_spaces,
+                                                  timestamp_to_datetime)
 from horizon_monitoring.utils import FilterAction
 
 

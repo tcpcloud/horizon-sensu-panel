@@ -1,7 +1,7 @@
 
 from horizon import tables
 from .tables import SensuClientsTable
-from horizon_monitoring.utils.sensu_client import sensu_api
+from horizon_monitoring.api import sensu_api
 
 
 class IndexView(tables.DataTableView):

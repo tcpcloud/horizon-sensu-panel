@@ -1,18 +1,10 @@
 # -*- coding: UTF-8 -*-
 from django.core import urlresolvers
-from django.template.defaultfilters import timesince
-from django.utils.http import urlencode
 from django.utils.translation import ugettext_lazy as _
-from django.template.defaultfilters import slugify
-from horizon import tables
-from horizon import forms
-from horizon import exceptions
-from horizon import messages
-from django.db.models.fields import BLANK_CHOICE_DASH
-from django.conf import settings
-from .const import LEVEL_CHOICES, SEVERITY_CHOICES, OWNERSHIP_CHOICES
-from horizon_monitoring.utils.kedb_client import kedb_api
-from horizon_monitoring.utils.sensu_client import sensu_api
+from horizon import exceptions, forms, messages
+from horizon_monitoring.api import kedb_api
+
+from .const import LEVEL_CHOICES, OWNERSHIP_CHOICES, SEVERITY_CHOICES
 
 
 class ErrorDetailForm(forms.SelfHandlingForm):

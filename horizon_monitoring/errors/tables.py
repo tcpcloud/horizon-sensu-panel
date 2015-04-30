@@ -3,11 +3,13 @@
 from django.core import urlresolvers
 from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext_lazy as _
-from horizon import tables
 
 from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
-from horizon_monitoring.utils.kedb_client import kedb_api
+from horizon_monitoring.api import kedb_api
 from horizon_monitoring.utils import FilterAction
+
+
+from horizon import tables
 
 
 class ErrorUpdate(tables.LinkAction):
@@ -73,6 +75,7 @@ class WorkaroundCreate(tables.LinkAction):
 
 
 class KedbErrorsTable(tables.DataTable):
+
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
     check = tables.Column('check', verbose_name=_("Check"))
@@ -81,17 +84,13 @@ class KedbErrorsTable(tables.DataTable):
     level = tables.Column('level', verbose_name=_("Level"))
     ownership = tables.Column('ownership', verbose_name=_("Ownership"))
 
-    def get_object_id(self, datum):
-        return datum['id']
-
-    def get_object_display(self, datum):
-        return datum['name']
-
     class Meta:
         name = "errors"
         verbose_name = _("Known Errors Database")
-        row_actions = (ErrorUpdate, WorkaroundCreate, ErrorDelete)
-        table_actions = (ErrorCreate, ErrorDelete, FilterAction)
+        row_actions = [WorkaroundCreate, ErrorUpdate, ErrorDelete]
+        table_actions = [ErrorCreate, ErrorDelete, FilterAction]
+        extra_columns = True
+        ajax_update = False
 
 WorkaroundsFormSet = formset_factory(WorkaroundDetailForm)
 

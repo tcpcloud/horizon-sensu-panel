@@ -1,16 +1,11 @@
 
-from django import http
-from django import shortcuts
-from django.core.urlresolvers import reverse
+import six
 from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
-
-from horizon import tables
-from horizon import forms
-
-from horizon_monitoring.checks.tables import SensuChecksTable
+from horizon import forms, messages, tables
 from horizon_monitoring.checks.forms import RequestCheckForm
-from horizon_monitoring.utils.sensu_client import sensu_api
+from horizon_monitoring.checks.tables import SensuChecksTable
+from horizon_monitoring.utils import sensu_settings
+from horizon_monitoring.api import sensu_api
 
 
 class IndexView(tables.DataTableView):
@@ -18,7 +13,27 @@ class IndexView(tables.DataTableView):
     template_name = 'horizon_monitoring/checks/index.html'
 
     def get_data(self):
-        return sensu_api.check_list
+        """ return tagged events from all sensu APIs
+        iterate and create clients for every sensu
+        load events and tag it with sensu name
+        """
+        data = []
+
+        if sensu_settings.SENSU_MULTI:
+            for dc, config in six.iteritems(sensu_settings.SENSU_API):
+                try:
+                    sensu_api.set_sensu_api(config)
+                    _checks = sensu_api.check_list
+                    checks = []
+                    for c in _checks:
+                        c['datacenter'] = dc
+                        checks.append(c)
+                    data += checks
+                except Exception as e:
+                    messages.error(self.request, '{} - {}'.format(dc, e))
+        else:
+            data = sensu_api.check_list
+        return data
 
 
 class RequestView(forms.ModalFormView):

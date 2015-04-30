@@ -1,12 +1,9 @@
 
+from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
 from horizon import tables
-from django.core import urlresolvers
-from django.utils.http import urlencode
-
 from horizon_monitoring.templatetags.unit import join_list_with_newline
-from horizon_monitoring.utils.sensu_client import sensu_api
-from horizon_monitoring.utils import FilterAction
+from horizon_monitoring.utils.actions import FilterAction
 
 
 class RequestCheck(tables.LinkAction):
@@ -20,6 +17,7 @@ class RequestCheck(tables.LinkAction):
 
 
 class SensuChecksTable(tables.DataTable):
+
     name = tables.Column('name', verbose_name=_("Name"))
     subscribers = tables.Column('subscribers', verbose_name=_(
         "Subscribers"), filters=(join_list_with_newline,))
@@ -38,6 +36,7 @@ class SensuChecksTable(tables.DataTable):
 
     class Meta:
         name = "checks"
+        model_class = 'check'
         verbose_name = _("Service Checks Database")
         row_actions = (RequestCheck,)
-        table_actions = (FilterAction, )
+        table_actions = (FilterAction,)

@@ -1,7 +1,6 @@
 
-from django.utils.safestring import SafeString
-
 from datetime import datetime
+from django.utils.safestring import SafeString
 
 
 def timestamp_to_datetime(value):
@@ -22,3 +21,9 @@ def join_list_with_comma(value):
 
 def join_list_with_newline(value):
     return SafeString('<br />'.join(value))
+
+
+def status_image(value):
+    if value is True:
+        return SafeString('<i class=\"icon-large fa fa-ok\"></i>')
+    return SafeString('<i class=\"icon-large fa fa-remove"></i>')
