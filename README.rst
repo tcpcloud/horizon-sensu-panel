@@ -40,7 +40,6 @@ Installation notes
 Requirements
 ------------
 
-* Python 2.6 / 2.7
 * Openstack Horizon
 * Sensu API >= 0.16.0
 * KEDB is optional
@@ -54,13 +53,17 @@ Configuration Sensu
 
 * add 'horizon_monitoring' to ``INSTALLED_APPS`` tuple
 * add 'monitoring' to 'dashboards' key in ``HORIZON_CONFIG``
-* and config for your Sensu API::
+* and config for your Sensu API
  
+.. code-block:: python
+
     SENSU_HOST='localhost'
     SENSU_PORT=4567
 
 
-for more Sensu APIs write this::
+for more Sensu APIs write this
+
+.. code-block:: python
 
     SENSU_API = {
         'DC1': {'host': '10.10.10.10'},
