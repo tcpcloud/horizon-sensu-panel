@@ -104,7 +104,5 @@ Read more
 * https://github.com/ehazlett/sensu-py/
 * https://github.com/tcpcloud/kedb.git
 
-`Documentation`_
-
 .. |License badge| image:: http://img.shields.io/badge/license-Apache%202.0-green.svg?style=flat
 .. |Animation| image:: https://github.com/tcpcloud/horizon-sensu-panel/raw/master/docs/images/animation.gif
