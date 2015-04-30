@@ -1,14 +1,12 @@
 
-import json
 import logging
 
 import requests
 from django.conf import settings
 from horizon import messages
-from horizon_contrib.api import Manager
-from horizon_contrib.api.base import ClientBase
+from .base import ClientBase
 from horizon_monitoring.dashboard import include_kedb
-from horizon_monitoring.utils.kedb_client import Kedb
+from .kedb import Kedb
 
 log = logging.getLogger('utils.sensu')
 
@@ -19,9 +17,15 @@ if include_kedb:
 
 class Sensu(ClientBase):
 
-    host = settings.SENSU_HOST
-    port = settings.SENSU_PORT
+    host = getattr(settings, 'SENSU_HOST', 'localhost')
+    port = getattr(settings, 'SENSU_PORT', 4567)
+
     api_prefix = ""
+
+    def set_sensu_api(self, config):
+        self.host = config.get('host', 'localhost')
+        self.port = config.get('port', 4567)
+        return True
 
     @property
     def check_list(self):
@@ -53,8 +57,8 @@ class Sensu(ClientBase):
         return self.request(url, "POST", payload)
 
     def event_resolve(self, check, client):
-        url = '/events/%s/%s' % (client, check)
-        return self.request(url, "DELETE")
+        payload = {"client": client, "check": check}
+        return self.request('/events/resolve', "POST", payload)
 
     @property
     def stash_list(self):
@@ -83,17 +87,20 @@ class Sensu(ClientBase):
             stash_map.append(stash['path'])
         for event in events:
             try:
-                if 'silence/%s/%s' % (event['client'], event['check']) in stash_map:
+                if 'silence/%s/%s' % (event['client']['name'],
+                                      event['check']['name']) in stash_map:
                     event['silenced'] = True
                 elif 'silence/%s' % event['client'] in stash_map:
                     event['silenced'] = True
                 else:
                     event['silenced'] = False
-            except Exception, e:
+            except Exception:
                 event['silenced'] = False
             if event['check']['status'] == 3:
                 event['status'] = 0
-        return sorted(sorted(events, key=lambda x: x['client'], reverse=False), key=lambda x: x['check']['status'], reverse=True)
+        return sorted(sorted(events, key=lambda x: x['client']['name'],
+                             reverse=False),
+                      key=lambda x: x['check']['status'], reverse=True)
         # return events
 
     def event_detail(self, check, client):
@@ -110,8 +117,3 @@ class Sensu(ClientBase):
         return self.request('/info')
 
 sensu_api = Sensu()
-
-
-class SensuManager(Sensu):
-
-    pass

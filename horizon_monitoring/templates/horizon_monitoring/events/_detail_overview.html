@@ -8,11 +8,11 @@
   <div class="box-body">
     <dl>
       <dt>{% trans "Check" %}</dt>
-      <dd>{{ instance.check }}</dd>
+      <dd>{{ instance.check.name }}</dd>
       <dt>{% trans "Output" %}</dt>
-      <dd>{{ instance.output }}</dd>
+      <dd>{{ instance.check.output }}</dd>
       <dt>{% trans "Client" %}</dt>
-      <dd>{{ instance.client }}</dd>
+      <dd>{{ instance.client.name }} - {{ instance.client.address }}</dd>
       <dt>{% trans "Known Error" %}</dt>
       <dd>{{ instance.error_name }}</dd>
       <dt>{% trans "Error Description" %}</dt>

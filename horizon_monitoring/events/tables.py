@@ -1,17 +1,19 @@
 
+from collections import defaultdict
+import random
+import six
+from django.conf import settings
 from django.core import urlresolvers
 from django.template.defaultfilters import timesince
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
-
 from horizon import tables
-from horizon_contrib.tables.actions import FilterAction
-
-from horizon_contrib.tables.filters import timestamp_to_datetime, \
-    nonbreakable_spaces, unit_times, status_icon
-
-from horizon_monitoring.utils import sensu_api, kedb_api
+from horizon_monitoring.templatetags.tables import *
 
 from horizon_monitoring.dashboard import include_kedb
+from horizon_monitoring.utils import settings as sensu_settings, FilterAction
+from horizon_monitoring.api import kedb_api, sensu_api
+from horizon import messages
 
 
 class FullScreenView(tables.LinkAction):
@@ -35,17 +37,21 @@ class EventAction(tables.BatchAction):
     classes = ("btn-primary", "btn-danger")
 
     def get_check_client(self, object_id):
-        check, client = None, None
-        client, check = object_id.split(" ")
-        return check, client
+        """returns check, client, and dc if multi
+        """
+        attrs = object_id.split(" ")
+        return attrs[0], attrs[1]
+
+    def set_sensu(self, object_id):
+        if sensu_settings.SENSU_MULTI:
+            dc = object_id.split(" ")[2]
+            sensu_api.set_sensu_api(sensu_settings.SENSU_API.get(dc))
 
     def resolve(self, request, object_id):
+        self.set_sensu(object_id)
         check, client = self.get_check_client(object_id)
         response = sensu_api.event_resolve(check, client)
-
-    def recheck(self, request, object_id):
-        check, client = self.get_check_client(object_id)
-        response = sensu_api.event_recheck(check, client)
+        messages.info(request, response)
 
     def action(self, request, object_id):
         pass
@@ -60,7 +66,11 @@ class RecheckEvent(EventAction):
     classes = ("btn-primary", "btn-danger", "btn-info")
 
     def action(self, request, object_id):
-        self.recheck(request, object_id)
+        self.set_sensu(object_id)
+        check, client = self.get_check_client(object_id)
+        response = sensu_api.event_recheck(check, client)
+        raise Exception(response)
+        messages.info(request, response)
 
     def allowed(self, request, instance):
         return True
@@ -87,8 +97,12 @@ class EventDetail(tables.LinkAction):
     url = "horizon:monitoring:events:detail"
     classes = ("btn-edit")
 
-    def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['check']['name'], event['client']['name']])
+    def get_link_url(self, e):
+        if sensu_settings.SENSU_MULTI:
+            args = [e['check']['name'], e['client']['name'], e['datacenter']]
+        else:
+            args = [e['check']['name'], e['client']['name']]
+        return urlresolvers.reverse(self.url, args=args)
 
     def allowed(self, request, instance):
         return True
@@ -164,8 +178,11 @@ class SilenceClient(tables.LinkAction):
     url = "horizon:monitoring:events:silence_client"
     classes = ("ajax-modal", "btn-edit")
 
-    def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['client']['name'], ])
+    def get_link_url(self, e):
+        args = [e['client']['name']]
+        if sensu_settings.SENSU_MULTI:
+            args = [e['client']['name'], e['datacenter']]
+        return urlresolvers.reverse(self.url, args=args)
 
 
 class SilenceCheck(tables.LinkAction):
@@ -174,8 +191,61 @@ class SilenceCheck(tables.LinkAction):
     url = "horizon:monitoring:events:silence_client_check"
     classes = ("ajax-modal", "btn")
 
-    def get_link_url(self, event):
-        return urlresolvers.reverse(self.url, args=[event['client']['name'], event['check']['name']])
+    def get_link_url(self, e):
+        args = [e['client']['name'], e['check']['name']]
+        if sensu_settings.SENSU_MULTI:
+            args = [e['client']['name'], e['check']['name'], e['datacenter']]
+        return urlresolvers.reverse(self.url, args=args)
+
+
+class EventFilter(tables.FixedFilterAction):
+
+    def get_fixed_buttons(self):
+        """generate category buttons
+        """
+        def make_dict(text, datacenter, icon):
+            return dict(text=text, value=datacenter, icon=icon)
+
+        append = []
+        for dc, config in six.iteritems(getattr(settings, 'SENSU_API', {})):
+            icon = config.get(
+                'icon', random.choice(['fa fa-database',
+                                       'fa fa-server',
+                                       'fa fa-cloud-upload',
+                                       'fa fa-cloud-download']))
+            append.append(
+                make_dict(config.get("name", dc), slugify(unicode(dc)), icon))
+        return append + [make_dict(_("All"), "all", "fa fa-cloud")]
+
+    def categorize(self, table, items):
+        results = defaultdict(list)
+
+        self.items = items
+        # must be reloaded
+        for item in items:
+            results['all'].append(item)
+            results[item['datacenter']].append(item)
+        return results
+
+
+class EventRow(tables.Row):
+
+    def load_cells(self, event=None):
+        super(EventRow, self).load_cells(event)
+        # Tag the event with the datacenter
+        self.classes.append('category-all')
+        self.classes.append('category-' + self.datum['datacenter'])
+
+if sensu_settings.SENSU_MULTI:
+    FILTER_ACTION = [EventFilter]
+    FULL_FILTER_ACTION = [EventFilter]
+else:
+    FILTER_ACTION = [FilterAction]
+    FULL_FILTER_ACTION = []
+
+check_filter = getattr(
+    settings, 'SENSU_CHECK_FILTER',
+    lambda c: c['name'])
 
 
 class SensuEventsTable(tables.DataTable):
@@ -187,31 +257,35 @@ class SensuEventsTable(tables.DataTable):
             return urlresolvers.reverse(url, args=(error_id,))
         return ""
 
-    client = tables.Column('client', verbose_name=_("Client"), filters=(lambda c: c['name'],))
-    check = tables.Column('check', verbose_name=_("Check"), filters=(lambda c: c['name'],))
+    client = tables.Column(
+        'client', verbose_name=_("Client"), filters=(lambda c: c['name'],))
+    address = tables.Column(
+        'client', verbose_name=_("Address"), filters=(lambda c: c['address'],))
+    check = tables.Column(
+        'check', verbose_name=_("Check"), filters=(check_filter,))
 
     if include_kedb:
-        #known_error = tables.Column('known_error', verbose_name=_("Known"))
         error_name = tables.Column('error_name', verbose_name=_("Error name"))
-#        severity = tables.Column('severity', verbose_name=_("Error severity"))
-    output = tables.Column('check', verbose_name=_("Output"), truncate=180, filters=(lambda c: c['output'],))
+    output = tables.Column('check', verbose_name=_(
+        "Output"), truncate=180, filters=(lambda c: c['output'],))
     status = tables.Column('status', verbose_name=_(
         "Status"), classes=('status_column',), hidden=True)
     flapping = tables.Column('flapping', verbose_name=_("Flapping"), classes=(
-        'silenced_column', 'centered'), filters=(status_icon,))
+        'silenced_column', 'centered'), filters=(status_image,))
     silenced = tables.Column('silenced', verbose_name=_("Silenced"),
-                             classes=('silenced_column', 'centered'), filters=(status_icon,))
+                             classes=('silenced_column', 'centered'), filters=(status_image,))
     occurrences = tables.Column(
         'occurrences', verbose_name=_("Occured"), filters=(unit_times,))
     issued = tables.Column('check', verbose_name=_("Last occurence"),
                            filters=(lambda c: c['issued'], timestamp_to_datetime, timesince, nonbreakable_spaces))
 
     def get_object_id(self, datum):
-        #raise Exception(datum['check']['flapping'])
-        return '%s %s' % (datum['client'], datum['check'])
+        if sensu_settings.SENSU_MULTI:
+            return '%s %s %s' % (datum['client']['name'], datum['check']['name'], datum['datacenter'])
+        return '%s %s' % (datum['client']['name'], datum['check']['name'])
 
     def get_object_display(self, datum):
-        return '%s %s' % (datum['client'], datum['check'])
+        return '%s %s' % (datum['client']['name'], datum['check']['name'])
 
     class Meta:
         name = "events"
@@ -224,10 +298,11 @@ class SensuEventsTable(tables.DataTable):
                        SilenceCheck,
                        ErrorCreate,
                        StashDelete)
-        table_actions = (FullScreenView,
+        table_actions = [FullScreenView,
                          ResolveEvent,
-                         FilterAction,
-                         RecheckEvent)
+                         RecheckEvent] + FILTER_ACTION
+        if sensu_settings.SENSU_MULTI:
+            row_class = EventRow
 
 
 class FullScreenSensuEventsTable(SensuEventsTable):
@@ -239,3 +314,4 @@ class FullScreenSensuEventsTable(SensuEventsTable):
         name = "events"
         verbose_name = _("Current Events")
         columns = ("client", "check", "output", "status", "issued")
+        table_actions = FULL_FILTER_ACTION

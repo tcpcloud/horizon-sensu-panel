@@ -1,21 +1,16 @@
 import time
 
 from django.core.urlresolvers import reverse
-from django.template.defaultfilters import filesizeformat
 from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.debug import sensitive_variables
-
-from horizon import exceptions
-from horizon import forms
-from horizon import messages
-from horizon.utils import validators
-
-from horizon_monitoring.utils.sensu_client import sensu_api
+from horizon import exceptions, forms, messages
+from horizon_monitoring.utils import settings as sensu_settings
+from horizon_monitoring.api import sensu_api
 
 
 class EventForm(forms.SelfHandlingForm):
     client = forms.CharField(widget=forms.HiddenInput(), required=False)
     check = forms.CharField(widget=forms.HiddenInput(), required=False)
+    dc = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     def clean(self):
         cleaned_data = super(EventForm, self).clean()
@@ -55,6 +50,10 @@ class SilenceForm(EventForm):
 
         if expire != -1:
             payload["expire"] = expire
+
+        dc = data.get('dc', None)
+        if dc and sensu_settings.SENSU_MULTI:
+            sensu_api.set_sensu_api(sensu_settings.SENSU_API.get(dc))
 
         response = sensu_api.silence(payload)
         try:

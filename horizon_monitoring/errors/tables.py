@@ -3,15 +3,14 @@
 from django.core import urlresolvers
 from django.forms.formsets import formset_factory
 from django.utils.translation import ugettext_lazy as _
-#from horizon import tables
 
 from horizon_monitoring.workarounds.forms import WorkaroundDetailForm
-from horizon_monitoring.utils.kedb_client import kedb_api
+from horizon_monitoring.api import kedb_api
 from horizon_monitoring.utils import FilterAction
 
 
-from horizon_contrib import tables
-from .models import Error
+from horizon import tables
+
 
 class ErrorUpdate(tables.LinkAction):
 
@@ -75,7 +74,7 @@ class WorkaroundCreate(tables.LinkAction):
         return True
 
 
-class KedbErrorsTable(tables.ModelTable):
+class KedbErrorsTable(tables.DataTable):
 
     id = tables.Column('id', verbose_name=_("ID"))
     name = tables.Column('name', verbose_name=_("Name"))
@@ -88,9 +87,8 @@ class KedbErrorsTable(tables.ModelTable):
     class Meta:
         name = "errors"
         verbose_name = _("Known Errors Database")
-        model_class = Error
         row_actions = [WorkaroundCreate, ErrorUpdate, ErrorDelete]
-        table_actions = [ErrorCreate, ErrorDelete]
+        table_actions = [ErrorCreate, ErrorDelete, FilterAction]
         extra_columns = True
         ajax_update = False
 

@@ -4,12 +4,12 @@ from django.template.defaultfilters import timesince
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import tables
-from horizon_contrib.tables.actions import FilterAction
 
 from horizon_contrib.tables.filters import timestamp_to_datetime, \
     nonbreakable_spaces, unit_times, status_icon
 
-from horizon_monitoring.utils import sensu_api, kedb_api
+from horizon_monitoring.api import sensu_api, kedb_api
+from horizon_monitoring.utils import FilterAction
 
 from horizon_monitoring.dashboard import include_kedb
 

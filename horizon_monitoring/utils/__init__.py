@@ -1,4 +1,3 @@
 
-from horizon_monitoring.utils.sensu_client import sensu_api
-from horizon_monitoring.utils.kedb_client import kedb_api
-from horizon_contrib.tables.actions import FilterAction
+from horizon_monitoring.utils.actions import FilterAction
+from horizon_monitoring.utils import settings as sensu_settings

@@ -1,6 +1,6 @@
 
 from horizon import tables
-from horizon_monitoring.utils import sensu_api
+from horizon_monitoring.api import sensu_api
 
 from .tables import AggregatesTable
 

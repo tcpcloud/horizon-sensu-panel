@@ -1,10 +1,10 @@
 
 from django.utils.translation import ugettext_lazy as _
-from horizon_contrib.panel import ModelPanel
+from horizon import Panel
 from horizon_monitoring import dashboard
 
 
-class ClientsPanel(ModelPanel):
+class ClientsPanel(Panel):
     name = _("Monitored Clients")
     slug = 'clients'
 
