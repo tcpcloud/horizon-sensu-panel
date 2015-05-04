@@ -40,7 +40,6 @@ Installation notes
 Requirements
 ------------
 
-* Python 2.6 / 2.7
 * Openstack Horizon
 * Sensu API >= 0.16.0
 * KEDB is optional
@@ -54,13 +53,17 @@ Configuration Sensu
 
 * add 'horizon_monitoring' to ``INSTALLED_APPS`` tuple
 * add 'monitoring' to 'dashboards' key in ``HORIZON_CONFIG``
-* and config for your Sensu API::
+* and config for your Sensu API
  
+.. code-block:: python
+
     SENSU_HOST='localhost'
     SENSU_PORT=4567
 
 
-for more Sensu APIs write this::
+for more Sensu APIs write this
+
+.. code-block:: python
 
     SENSU_API = {
         'DC1': {'host': '10.10.10.10'},
@@ -100,8 +103,6 @@ Read more
 * http://nagios.sourceforge.net/docs/3_0/flapping.html
 * https://github.com/ehazlett/sensu-py/
 * https://github.com/tcpcloud/kedb.git
-
-`Documentation`_
 
 .. |License badge| image:: http://img.shields.io/badge/license-Apache%202.0-green.svg?style=flat
 .. |Animation| image:: https://github.com/tcpcloud/horizon-sensu-panel/raw/master/docs/images/animation.gif

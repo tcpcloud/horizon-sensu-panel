@@ -11,7 +11,7 @@ from horizon import messages
 from django import forms as django_forms
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.conf import settings
-from horizon_monitoring.utils.kedb_client import kedb_api
+from horizon_monitoring.api import kedb_api
 
 ENGINE_CHOICES = (
     ("salt", u"Salt call"),
