@@ -1,10 +1,11 @@
 from django.core.urlresolvers import reverse_lazy
 from horizon import tables
 from horizon import forms
-from horizon_monitoring.utils.kedb_client import kedb_api
+from horizon_monitoring.api import kedb_api
 
 from .tables import WorkaroundTable
 from .forms import WorkaroundDetailForm, WorkaroundCreateForm, WorkaroundUpdateForm
+
 
 class IndexView(tables.DataTableView):
     table_class = WorkaroundTable
@@ -12,6 +13,7 @@ class IndexView(tables.DataTableView):
 
     def get_data(self):
         return kedb_api.workaround_list
+
 
 class CreateView(forms.ModalFormView):
     form_class = WorkaroundCreateForm
